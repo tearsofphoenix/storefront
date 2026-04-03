@@ -1,0 +1,340 @@
+type StorefrontThemeManifestEntry = {
+  id: string
+  slug: string
+  name: string
+  version: string
+  capabilities: string[]
+  config: Record<string, string | boolean>
+  artifactUrl?: string | null
+  artifactIntegrity?: string | null
+  assets?: Record<string, unknown> | null
+  assetUpdatedAt?: string | null
+}
+
+type StorefrontThemeManifestEnvelope = {
+  version: string
+  storeId: string
+  generatedAt: string
+  manifestHash: string
+  activeThemeId: string | null
+  theme: StorefrontThemeManifestEntry | null
+}
+
+const DEFAULT_PRIMARY = "#108474"
+const DEFAULT_ACCENT = "#d7ded8"
+const DEFAULT_BODY_FONT_FAMILY =
+  'var(--font-body), Quicksand, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+const DEFAULT_SANS_FONT_FAMILY =
+  'var(--font-heading), Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+const DEFAULT_SERIF_FONT_FAMILY =
+  'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif'
+
+export type StorefrontThemePresentation = {
+  themeId: string | null
+  themeName: string
+  brandName: string
+  heroEyebrow: string
+  announcement: string
+  heroHeading: string
+  heroSubheading: string
+  heroFeatureBullets: string[]
+  heroMetrics: Array<{ label: string; value: string }>
+  secondaryCtaLabel: string | null
+  secondaryCtaHref: string | null
+  footerNote: string | null
+  ctaLabel: string
+  ctaHref: string
+  primaryColor: string
+  accentColor: string
+  buttonFillColor: string
+  buttonTextColor: string
+  surfaceStyle: "soft" | "contrast" | "glass"
+  heroStyle: "split" | "editorial" | "spotlight"
+  cardStyle: "shadowed" | "minimal" | "outline"
+  headingStyle: "sans" | "serif"
+  headingFontFamily: string
+  bodyFontFamily: string
+  panelRadiusStyle: "soft" | "balanced" | "crisp"
+  panelRadius: number
+  shellBackground: string
+  navBackground: string
+  footerBackground: string
+}
+
+export function readStorefrontThemeManifest(): StorefrontThemeManifestEnvelope {
+  const raw = process.env.MEDUSA_SAAS_THEME_MANIFEST
+
+  if (!raw) {
+    return createEmptyThemeManifest()
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as StorefrontThemeManifestEnvelope
+    return {
+      version:
+        parsed.version ??
+        process.env.MEDUSA_SAAS_THEME_MANIFEST_VERSION ??
+        "legacy",
+      storeId: parsed.storeId ?? "unknown",
+      generatedAt: parsed.generatedAt ?? "",
+      manifestHash:
+        parsed.manifestHash ??
+        process.env.MEDUSA_SAAS_THEME_MANIFEST_HASH ??
+        "unknown",
+      activeThemeId: parsed.activeThemeId ?? parsed.theme?.id ?? null,
+      theme: parsed.theme ?? null,
+    }
+  } catch {
+    return createEmptyThemeManifest()
+  }
+}
+
+export function getActiveStorefrontTheme(): StorefrontThemeManifestEntry | null {
+  return readStorefrontThemeManifest().theme
+}
+
+export function getStorefrontThemePresentation(): StorefrontThemePresentation {
+  const theme = getActiveStorefrontTheme()
+  const config = theme?.config ?? {}
+  const storefrontAssets = readRecord(theme?.assets?.storefront)
+  const heroAssets = readRecord(storefrontAssets?.hero)
+  const footerAssets = readRecord(storefrontAssets?.footer)
+  const surfaceStyle = normalizeSelectValue(
+    config.surfaceStyle,
+    ["soft", "contrast", "glass"],
+    "soft"
+  )
+  const heroStyle = normalizeSelectValue(
+    config.heroStyle,
+    ["split", "editorial", "spotlight"],
+    "split"
+  )
+  const cardStyle = normalizeSelectValue(
+    config.cardStyle,
+    ["shadowed", "minimal", "outline"],
+    "shadowed"
+  )
+  const headingStyle = normalizeSelectValue(
+    config.headingStyle,
+    ["sans", "serif"],
+    "sans"
+  )
+  const panelRadiusStyle = normalizeSelectValue(
+    config.panelRadius,
+    ["soft", "balanced", "crisp"],
+    "balanced"
+  )
+  const panelRadius =
+    panelRadiusStyle === "crisp"
+      ? 14
+      : panelRadiusStyle === "balanced"
+      ? 24
+      : 34
+  const defaultShellBackground =
+    surfaceStyle === "contrast"
+      ? "#f0ebe2"
+      : surfaceStyle === "glass"
+      ? "#f8f6f0"
+      : "#f5f3ee"
+  const defaultNavBackground =
+    surfaceStyle === "glass"
+      ? "rgba(251, 249, 243, 0.86)"
+      : surfaceStyle === "contrast"
+      ? "#eee8df"
+      : "#faf8f2"
+  const defaultFooterBackground =
+    surfaceStyle === "contrast"
+      ? "#e8e1d6"
+      : surfaceStyle === "glass"
+      ? "#f1ede6"
+      : "#ede8df"
+  const primaryColor = readColor(config.primaryColor, DEFAULT_PRIMARY)
+  const accentColor = readColor(config.accentColor, DEFAULT_ACCENT)
+  const buttonFillColor = readColor(config.buttonFillColor, "#111111")
+  const buttonTextColor = readColor(
+    config.buttonTextColor,
+    getReadableTextColor(buttonFillColor)
+  )
+
+  return {
+    themeId: theme?.id ?? null,
+    themeName: theme?.name ?? "Quiet Focus",
+    brandName: readString(config.brandName, "Panda AI Store"),
+    heroEyebrow:
+      readStringValue(heroAssets?.eyebrow) ??
+      `${theme?.name ?? "Quiet Focus"} · curated storefront`,
+    announcement: readString(config.announcement, ""),
+    heroHeading: readString(
+      config.heroHeading,
+      "A quieter storefront for thoughtful products"
+    ),
+    heroSubheading: readString(
+      config.heroSubheading,
+      "Warm neutrals, generous spacing, and product-first storytelling for modern commerce."
+    ),
+    heroFeatureBullets: readStringArray(heroAssets?.featureBullets),
+    heroMetrics: readMetricArray(heroAssets?.metrics) ?? [
+      { label: "Theme", value: theme?.name ?? "Quiet Focus" },
+      { label: "Surface", value: surfaceStyle },
+      { label: "Typography", value: "Poppins + Quicksand" },
+      { label: "Card style", value: cardStyle },
+    ],
+    secondaryCtaLabel: readStringValue(heroAssets?.secondaryCtaLabel),
+    secondaryCtaHref: readStringValue(heroAssets?.secondaryCtaHref),
+    footerNote: readStringValue(footerAssets?.note),
+    ctaLabel: readString(config.ctaLabel, "Explore store"),
+    ctaHref: readString(config.ctaHref, "/store"),
+    primaryColor,
+    accentColor,
+    buttonFillColor,
+    buttonTextColor,
+    surfaceStyle,
+    heroStyle,
+    cardStyle,
+    headingStyle,
+    headingFontFamily:
+      headingStyle === "serif"
+        ? DEFAULT_SERIF_FONT_FAMILY
+        : DEFAULT_SANS_FONT_FAMILY,
+    bodyFontFamily: readString(config.bodyFontFamily, DEFAULT_BODY_FONT_FAMILY),
+    panelRadiusStyle,
+    panelRadius,
+    shellBackground: readColor(config.shellBackground, defaultShellBackground),
+    navBackground: readColor(config.navBackground, defaultNavBackground),
+    footerBackground: readColor(
+      config.footerBackground,
+      defaultFooterBackground
+    ),
+  }
+}
+
+export function toRgba(hex: string, alpha: number): string {
+  const normalized = hex.replace("#", "")
+  const fullHex =
+    normalized.length === 3
+      ? normalized
+          .split("")
+          .map((segment) => `${segment}${segment}`)
+          .join("")
+      : normalized
+
+  if (!/^[0-9a-fA-F]{6}$/.test(fullHex)) {
+    return `rgba(15, 118, 110, ${alpha})`
+  }
+
+  const int = Number.parseInt(fullHex, 16)
+  const red = (int >> 16) & 255
+  const green = (int >> 8) & 255
+  const blue = int & 255
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+}
+
+function createEmptyThemeManifest(): StorefrontThemeManifestEnvelope {
+  return {
+    version: process.env.MEDUSA_SAAS_THEME_MANIFEST_VERSION ?? "legacy",
+    storeId: "unknown",
+    generatedAt: "",
+    manifestHash: process.env.MEDUSA_SAAS_THEME_MANIFEST_HASH ?? "unknown",
+    activeThemeId: null,
+    theme: null,
+  }
+}
+
+function readString(
+  value: string | boolean | undefined,
+  fallback: string
+): string {
+  return typeof value === "string" && value.trim().length > 0
+    ? value.trim()
+    : fallback
+}
+
+function readStringValue(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0
+    ? value.trim()
+    : null
+}
+
+function readStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter(
+        (entry): entry is string =>
+          typeof entry === "string" && entry.trim().length > 0
+      )
+    : []
+}
+
+function readMetricArray(
+  value: unknown
+): Array<{ label: string; value: string }> | null {
+  if (!Array.isArray(value)) {
+    return null
+  }
+
+  const metrics = value
+    .map((entry) => readRecord(entry))
+    .filter((entry): entry is Record<string, unknown> => Boolean(entry))
+    .map((entry) => {
+      const label = readStringValue(entry.label)
+      const metricValue = readStringValue(entry.value)
+      if (!label || !metricValue) {
+        return null
+      }
+
+      return { label, value: metricValue }
+    })
+    .filter((entry): entry is { label: string; value: string } =>
+      Boolean(entry)
+    )
+
+  return metrics.length > 0 ? metrics : null
+}
+
+function readRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null
+}
+
+function readColor(
+  value: string | boolean | undefined,
+  fallback: string
+): string {
+  return typeof value === "string" &&
+    /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
+    ? value
+    : fallback
+}
+
+function normalizeSelectValue<T extends string>(
+  value: string | boolean | undefined,
+  options: T[],
+  fallback: T
+): T {
+  return typeof value === "string" && options.includes(value as T)
+    ? (value as T)
+    : fallback
+}
+
+function getReadableTextColor(hex: string): string {
+  const normalized = hex.replace("#", "")
+  const fullHex =
+    normalized.length === 3
+      ? normalized
+          .split("")
+          .map((segment) => `${segment}${segment}`)
+          .join("")
+      : normalized
+
+  if (!/^[0-9a-fA-F]{6}$/.test(fullHex)) {
+    return "#ffffff"
+  }
+
+  const int = Number.parseInt(fullHex, 16)
+  const red = (int >> 16) & 255
+  const green = (int >> 8) & 255
+  const blue = int & 255
+  const luminance = (red * 299 + green * 587 + blue * 114) / 1000
+
+  return luminance >= 160 ? "#111111" : "#ffffff"
+}

@@ -1,0 +1,52 @@
+"use client"
+
+import { loadStripe } from "@stripe/stripe-js"
+import React from "react"
+import StripeWrapper from "./stripe-wrapper"
+import { HttpTypes } from "@medusajs/types"
+import { isStripeLike } from "@lib/constants"
+
+type PaymentWrapperProps = {
+  cart: HttpTypes.StoreCart
+  stripeKey?: string | null
+  medusaAccountId?: string | null
+  children: React.ReactNode
+}
+
+const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
+  cart,
+  stripeKey,
+  medusaAccountId,
+  children,
+}) => {
+  const paymentSession = cart.payment_collection?.payment_sessions?.find(
+    (s) => s.status === "pending"
+  )
+  const resolvedStripeKey = stripeKey ?? undefined
+  const stripePromise = stripeKey
+    ? loadStripe(
+        stripeKey,
+        medusaAccountId ? { stripeAccount: medusaAccountId } : undefined
+      )
+    : null
+
+  if (
+    isStripeLike(paymentSession?.provider_id) &&
+    paymentSession &&
+    stripePromise
+  ) {
+    return (
+      <StripeWrapper
+        paymentSession={paymentSession}
+        stripeKey={resolvedStripeKey}
+        stripePromise={stripePromise}
+      >
+        {children}
+      </StripeWrapper>
+    )
+  }
+
+  return <div>{children}</div>
+}
+
+export default PaymentWrapper
