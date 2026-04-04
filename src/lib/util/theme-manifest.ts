@@ -20,8 +20,8 @@ type StorefrontThemeManifestEnvelope = {
   theme: StorefrontThemeManifestEntry | null
 }
 
-const DEFAULT_PRIMARY = "#108474"
-const DEFAULT_ACCENT = "#d7ded8"
+const DEFAULT_PRIMARY = "#0a3149"
+const DEFAULT_ACCENT = "#eef0f5"
 const DEFAULT_BODY_FONT_FAMILY =
   'var(--font-body), Quicksand, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
 const DEFAULT_SANS_FONT_FAMILY =
@@ -126,31 +126,31 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
   )
   const panelRadius =
     panelRadiusStyle === "crisp"
-      ? 14
+      ? 10
       : panelRadiusStyle === "balanced"
-      ? 24
-      : 34
+      ? 14
+      : 18
   const defaultShellBackground =
     surfaceStyle === "contrast"
-      ? "#f0ebe2"
+      ? "#f7f7fa"
       : surfaceStyle === "glass"
-      ? "#f8f6f0"
-      : "#f5f3ee"
+      ? "#fafbfc"
+      : "#ffffff"
   const defaultNavBackground =
     surfaceStyle === "glass"
-      ? "rgba(251, 249, 243, 0.86)"
+      ? "rgba(255, 255, 255, 0.94)"
       : surfaceStyle === "contrast"
-      ? "#eee8df"
-      : "#faf8f2"
+      ? "#ffffff"
+      : "#ffffff"
   const defaultFooterBackground =
     surfaceStyle === "contrast"
-      ? "#e8e1d6"
+      ? "#f7f7fa"
       : surfaceStyle === "glass"
-      ? "#f1ede6"
-      : "#ede8df"
+      ? "#fafbfc"
+      : "#f7f7fa"
   const primaryColor = readColor(config.primaryColor, DEFAULT_PRIMARY)
   const accentColor = readColor(config.accentColor, DEFAULT_ACCENT)
-  const buttonFillColor = readColor(config.buttonFillColor, "#111111")
+  const buttonFillColor = readColor(config.buttonFillColor, "#111827")
   const buttonTextColor = readColor(
     config.buttonTextColor,
     getReadableTextColor(buttonFillColor)
@@ -158,31 +158,31 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
 
   return {
     themeId: theme?.id ?? null,
-    themeName: theme?.name ?? "Quiet Focus",
+    themeName: theme?.name ?? "Minimal Commerce",
     brandName: readString(config.brandName, "Panda AI Store"),
     heroEyebrow:
       readStringValue(heroAssets?.eyebrow) ??
-      `${theme?.name ?? "Quiet Focus"} · curated storefront`,
+      `${theme?.name ?? "Minimal Commerce"} · storefront`,
     announcement: readString(config.announcement, ""),
     heroHeading: readString(
       config.heroHeading,
-      "A quieter storefront for thoughtful products"
+      "A cleaner storefront for curated essentials"
     ),
     heroSubheading: readString(
       config.heroSubheading,
-      "Warm neutrals, generous spacing, and product-first storytelling for modern commerce."
+      "Quiet surfaces, sharp hierarchy, and product-first layouts inspired by the Nuxt reference storefront."
     ),
     heroFeatureBullets: readStringArray(heroAssets?.featureBullets),
     heroMetrics: readMetricArray(heroAssets?.metrics) ?? [
-      { label: "Theme", value: theme?.name ?? "Quiet Focus" },
-      { label: "Surface", value: surfaceStyle },
-      { label: "Typography", value: "Poppins + Quicksand" },
-      { label: "Card style", value: cardStyle },
+      { label: "Theme", value: theme?.name ?? "Minimal Commerce" },
+      { label: "Layout", value: "Split hero" },
+      { label: "Grid", value: "4-column catalog" },
+      { label: "Focus", value: "Product detail" },
     ],
     secondaryCtaLabel: readStringValue(heroAssets?.secondaryCtaLabel),
     secondaryCtaHref: readStringValue(heroAssets?.secondaryCtaHref),
     footerNote: readStringValue(footerAssets?.note),
-    ctaLabel: readString(config.ctaLabel, "Explore store"),
+    ctaLabel: readString(config.ctaLabel, "Browse products"),
     ctaHref: readString(config.ctaHref, "/store"),
     primaryColor,
     accentColor,
