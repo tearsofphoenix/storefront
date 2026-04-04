@@ -23,7 +23,7 @@ export default async function Home(props: {
 
   const { countryCode } = params
 
-  const region = await getRegion(countryCode); console.log("DEBUG: Home Page region object is:", JSON.stringify(region?.id));
+  const region = await getRegion(countryCode)
 
   if (!region) {
     return null

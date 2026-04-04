@@ -2,33 +2,22 @@
 
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
-import { getCacheOptions } from "./cookies"
 
 export const listRegions = async () => {
-  const next = {
-    ...(await getCacheOptions("regions")),
-  }
-
   return sdk.client
     .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
       method: "GET",
-      next,
-      cache: "force-cache",
+      cache: "no-store",
     })
     .then(({ regions }) => regions)
     .catch(() => null)
 }
 
 export const retrieveRegion = async (id: string) => {
-  const next = {
-    ...(await getCacheOptions(["regions", id].join("-"))),
-  }
-
   return sdk.client
     .fetch<{ region: HttpTypes.StoreRegion }>(`/store/regions/${id}`, {
       method: "GET",
-      next,
-      cache: "force-cache",
+      cache: "no-store",
     })
     .then(({ region }) => region)
     .catch(() => null)
@@ -36,30 +25,44 @@ export const retrieveRegion = async (id: string) => {
 
 const regionMap = new Map<string, HttpTypes.StoreRegion>()
 
+const normalizeCountryCode = (countryCode?: string | null) =>
+  (countryCode ?? "").trim().toLowerCase()
+
+const rebuildRegionMap = (regions: HttpTypes.StoreRegion[]) => {
+  regionMap.clear()
+
+  regions.forEach((region) => {
+    region.countries?.forEach((country) => {
+      const code = normalizeCountryCode(country?.iso_2)
+
+      if (code) {
+        regionMap.set(code, region)
+      }
+    })
+  })
+}
+
 export const getRegion = async (countryCode: string) => {
   try {
-    if (regionMap.has(countryCode)) {
-      return regionMap.get(countryCode.toLowerCase())
-    }
-
     const regions = await listRegions()
 
     if (!regions) {
       return null
     }
 
-    regions.forEach((region) => {
-      region.countries?.forEach((c) => {
-        regionMap.set((c?.iso_2 ?? "").toLowerCase(), region)
-      })
-    })
+    rebuildRegionMap(regions)
 
-    console.log("DEBUG: countryCode is:", countryCode); console.log("DEBUG: regionMap keys are:", Array.from(regionMap.keys())); const region = countryCode
-      ? regionMap.get(countryCode.toLowerCase())
-      : regionMap.get("us")
+    const normalizedCountryCode = normalizeCountryCode(countryCode) || "us"
+    const region = regionMap.get(normalizedCountryCode) ?? null
+
+    if (!region) {
+      console.warn(
+        `[regions] 未找到国家代码 "${normalizedCountryCode}" 对应的 Region，请检查 Medusa Admin 中该 Region 的 Countries 配置。`
+      )
+    }
 
     return region
-  } catch (e: any) {
+  } catch {
     return null
   }
 }
