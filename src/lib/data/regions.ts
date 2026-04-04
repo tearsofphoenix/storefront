@@ -39,7 +39,7 @@ const regionMap = new Map<string, HttpTypes.StoreRegion>()
 export const getRegion = async (countryCode: string) => {
   try {
     if (regionMap.has(countryCode)) {
-      return regionMap.get(countryCode)
+      return regionMap.get(countryCode.toLowerCase())
     }
 
     const regions = await listRegions()
@@ -50,12 +50,12 @@ export const getRegion = async (countryCode: string) => {
 
     regions.forEach((region) => {
       region.countries?.forEach((c) => {
-        regionMap.set(c?.iso_2 ?? "", region)
+        regionMap.set((c?.iso_2 ?? "").toLowerCase(), region)
       })
     })
 
     const region = countryCode
-      ? regionMap.get(countryCode)
+      ? regionMap.get(countryCode.toLowerCase())
       : regionMap.get("us")
 
     return region
