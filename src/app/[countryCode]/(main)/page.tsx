@@ -1,6 +1,5 @@
 import { Metadata } from "next"
 
-import CollectionSpotlights from "@modules/home/components/collection-spotlights"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
 import { listCollections } from "@lib/data/collections"
@@ -40,15 +39,10 @@ export default async function Home(props: {
   return (
     <>
       <Hero collection={collections[0] ?? null} region={region} />
-      <CollectionSpotlights collections={collections} region={region} />
-      <div className="pb-16">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts
-            collections={collections.slice(0, 3)}
-            region={region}
-          />
-        </ul>
-      </div>
+      <FeaturedProducts
+        collections={collections.slice(0, 1)}
+        region={region}
+      />
     </>
   )
 }

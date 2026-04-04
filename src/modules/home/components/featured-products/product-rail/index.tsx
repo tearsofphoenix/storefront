@@ -23,6 +23,7 @@ export default async function ProductRail({
     regionId: region.id,
     queryParams: {
       collection_id: collection.id,
+      limit: 4,
       fields: "*variants.calculated_price",
     },
   })
@@ -32,48 +33,30 @@ export default async function ProductRail({
   }
 
   return (
-    <div
-      className="content-container py-8 small:py-14"
-      style={{
-        borderTop: `1px solid ${toRgba(theme.primaryColor, 0.1)}`,
-      }}
-    >
-      <div
-        className="mb-8 grid gap-4 small:grid-cols-[1fr_auto] small:items-end"
-        style={{ gap: 20 }}
-      >
-        <div style={{ display: "grid", gap: 10 }}>
-          <span className="theme-eyebrow" style={{ color: theme.primaryColor }}>
-            {messages.home.featuredCollection}
-          </span>
+    <section className="content-container py-12 small:py-16">
+      <div className="mb-6 flex items-end justify-between gap-6 border-b pb-6">
+        <div className="grid gap-1">
           <h2
-            className="text-3xl leading-tight small:text-4xl"
-            style={{
-              fontFamily: theme.headingFontFamily,
-              color: "#111827",
-            }}
+            className="text-[1.75rem] font-semibold text-grey-80 small:text-[2rem]"
+            style={{ fontFamily: theme.headingFontFamily }}
           >
-            {collection.title}
+            Featured
           </h2>
           <p
-            className="max-w-[34rem] text-base leading-7"
-            style={{
-              color: "#4b5563",
-              fontFamily: theme.bodyFontFamily,
-            }}
+            className="text-sm text-grey-60 small:text-base"
+            style={{ fontFamily: theme.bodyFontFamily }}
           >
-            {messages.home.productRailDescription}
+            {collection.title}
           </p>
         </div>
         <LocalizedClientLink
-          href={`/collections/${collection.handle}`}
-          className="theme-outline-button"
-          style={{ borderColor: toRgba(theme.primaryColor, 0.16) }}
+          href="/store"
+          className="hidden items-center gap-2 text-sm font-medium text-grey-60 transition-colors hover:text-grey-90 small:inline-flex"
         >
-          {messages.common.viewAll}
+          {messages.common.browseAllProducts}
         </LocalizedClientLink>
       </div>
-      <ul className="grid grid-cols-1 gap-6 xsmall:grid-cols-2 small:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-6 small:grid-cols-4" data-testid="featured-products-list">
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>
@@ -81,6 +64,6 @@ export default async function ProductRail({
             </li>
           ))}
       </ul>
-    </div>
+    </section>
   )
 }
