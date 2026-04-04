@@ -15,26 +15,27 @@ export default async function CheckoutLayout({
   const theme = getStorefrontThemePresentation()
 
   return (
-    <div className="w-full bg-white relative small:min-h-screen">
-      <div className="h-16 bg-white border-b ">
-        <nav className="flex h-full items-center content-container justify-between">
+    <div className="relative w-full bg-[#f7f7fa] small:min-h-screen">
+      <div className="border-b border-[#d9dfe8] bg-white">
+        <nav className="content-container flex min-h-[64px] items-center justify-between">
           <LocalizedClientLink
             href="/cart"
-            className="text-small-semi text-ui-fg-base flex items-center gap-x-2 uppercase flex-1 basis-0"
+            className="flex flex-1 basis-0 items-center gap-x-2 text-[13px] font-medium uppercase text-grey-70"
             data-testid="back-to-cart-link"
           >
             <ChevronDown className="rotate-90" size={16} />
-            <span className="mt-px hidden small:block txt-compact-plus text-ui-fg-subtle hover:text-ui-fg-base ">
+            <span className="mt-px hidden small:block text-grey-60 transition-colors hover:text-grey-90">
               {messages.common.backToShoppingCart}
             </span>
-            <span className="mt-px block small:hidden txt-compact-plus text-ui-fg-subtle hover:text-ui-fg-base">
+            <span className="mt-px block text-grey-60 transition-colors hover:text-grey-90 small:hidden">
               {messages.common.back}
             </span>
           </LocalizedClientLink>
           <LocalizedClientLink
             href="/"
-            className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+            className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
             data-testid="store-link"
+            style={{ fontFamily: theme.headingFontFamily }}
           >
             {theme.brandName}
           </LocalizedClientLink>
@@ -42,7 +43,7 @@ export default async function CheckoutLayout({
         </nav>
       </div>
       <div className="relative" data-testid="checkout-container">{children}</div>
-      <div className="py-4 w-full flex items-center justify-center">
+      <div className="flex w-full items-center justify-center border-t border-[#e5e7eb] bg-white py-4">
         <MedusaCTA />
       </div>
     </div>

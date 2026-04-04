@@ -5,7 +5,6 @@ import {
 import { getI18n } from "@lib/i18n/server"
 import {
   getStorefrontThemePresentation,
-  toRgba,
 } from "@lib/util/theme-manifest"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -50,7 +49,7 @@ const StorefrontPluginHighlights = async () => {
   return (
     <section className="grid gap-6">
       <div className="grid gap-2">
-        <span className="theme-eyebrow" style={{ color: theme.primaryColor }}>
+        <span className="theme-eyebrow">
           {messages.product.pluginExtensions}
         </span>
         <h3
@@ -67,18 +66,10 @@ const StorefrontPluginHighlights = async () => {
         {highlights.map((highlight) => (
           <article
             key={highlight.pluginId}
-            className="rounded-[28px] border p-6"
-            style={{
-              background: `linear-gradient(180deg, ${theme.navBackground} 0%, #ffffff 100%)`,
-              borderColor: toRgba(theme.primaryColor, 0.1),
-              boxShadow: `0 18px 40px ${toRgba(theme.primaryColor, 0.06)}`,
-            }}
+            className="rounded-[14px] border border-[#e5e7eb] bg-white p-6"
           >
             <div className="grid gap-3">
-              <span
-                className="theme-eyebrow"
-                style={{ color: theme.primaryColor }}
-              >
+              <span className="theme-eyebrow">
                 {highlight.badge}
               </span>
               <div className="grid gap-2">

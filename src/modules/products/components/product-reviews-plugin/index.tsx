@@ -6,7 +6,6 @@ import {
 } from "@lib/util/plugin-manifest"
 import {
   getStorefrontThemePresentation,
-  toRgba,
 } from "@lib/util/theme-manifest"
 
 type ProductReviewsPluginProps = {
@@ -26,15 +25,10 @@ const ProductReviewsPlugin = async ({ product }: ProductReviewsPluginProps) => {
 
   return (
     <section
-      className="rounded-[32px] border px-6 py-8 small:px-10"
-      style={{
-        background: `linear-gradient(180deg, ${theme.navBackground} 0%, #ffffff 100%)`,
-        borderColor: toRgba(theme.primaryColor, 0.1),
-        boxShadow: `0 20px 44px ${toRgba(theme.primaryColor, 0.08)}`,
-      }}
+      className="rounded-[14px] border border-[#e5e7eb] bg-white px-6 py-8 small:px-10"
     >
       <div className="grid gap-3">
-        <span className="theme-eyebrow" style={{ color: theme.primaryColor }}>
+        <span className="theme-eyebrow">
           {plugin.name ?? "Reviews"}
         </span>
         <div className="grid gap-2">
@@ -59,22 +53,12 @@ const ProductReviewsPlugin = async ({ product }: ProductReviewsPluginProps) => {
         </div>
         <div className="flex flex-wrap gap-3 pt-2">
           <span
-            className="rounded-full px-4 py-2 text-sm"
-            style={{
-              background: "rgba(255,255,255,0.8)",
-              border: `1px solid ${toRgba(theme.primaryColor, 0.1)}`,
-              color: "#374151",
-            }}
+            className="rounded-md border border-[#d9dfe8] bg-[#f7f7fa] px-4 py-2 text-sm text-grey-70"
           >
             {t(messages.product.pluginSlug, { slug: plugin.slug })}
           </span>
           <span
-            className="rounded-full px-4 py-2 text-sm"
-            style={{
-              background: "rgba(255,255,255,0.8)",
-              border: `1px solid ${toRgba(theme.primaryColor, 0.1)}`,
-              color: "#374151",
-            }}
+            className="rounded-md border border-[#d9dfe8] bg-[#f7f7fa] px-4 py-2 text-sm text-grey-70"
           >
             {t(messages.product.storefrontModules, { count: reviewerCount })}
           </span>
