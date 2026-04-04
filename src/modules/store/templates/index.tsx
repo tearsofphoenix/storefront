@@ -19,24 +19,26 @@ const StoreTemplate = ({
   const sort = sortBy || "created_at"
 
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
-    >
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+    <section className="content-container py-10" data-testid="category-container">
+      <div className="mb-8 flex flex-col gap-4 border-b border-[#e5e7eb] pb-6 small:flex-row small:items-end small:justify-between">
+        <div className="grid gap-2">
+          <h1 className="text-[1.75rem] font-semibold text-grey-80 small:text-[2rem]" data-testid="store-page-title">
+            All products
+          </h1>
+          <p className="max-w-[32rem] text-sm leading-6 text-grey-60 small:text-base">
+            Browse the full catalog in a simpler product grid inspired by the Nuxt storefront theme.
+          </p>
         </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-          />
-        </Suspense>
+        <RefinementList sortBy={sort} />
       </div>
-    </div>
+      <Suspense fallback={<SkeletonProductGrid />}>
+        <PaginatedProducts
+          sortBy={sort}
+          page={pageNumber}
+          countryCode={countryCode}
+        />
+      </Suspense>
+    </section>
   )
 }
 

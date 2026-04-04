@@ -1,6 +1,6 @@
 "use client"
 
-import FilterRadioGroup from "@modules/common/components/filter-radio-group"
+import NativeSelect from "@modules/common/components/native-select"
 
 export type SortOptions = "price_asc" | "price_desc" | "created_at"
 
@@ -30,18 +30,28 @@ const SortProducts = ({
   sortBy,
   setQueryParams,
 }: SortProductsProps) => {
-  const handleChange = (value: SortOptions) => {
-    setQueryParams("sortBy", value)
+  const handleChange = (value: string) => {
+    setQueryParams("sortBy", value as SortOptions)
   }
 
   return (
-    <FilterRadioGroup
-      title="Sort by"
-      items={sortOptions}
-      value={sortBy}
-      handleChange={handleChange}
-      data-testid={dataTestId}
-    />
+    <label className="grid gap-2">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
+        Sort by
+      </span>
+      <NativeSelect
+        data-testid={dataTestId}
+        value={sortBy}
+        onChange={(event) => handleChange(event.target.value)}
+        className="min-w-[220px] border-[#d9dfe8] bg-white text-sm text-grey-80 hover:bg-white"
+      >
+        {sortOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </NativeSelect>
+    </label>
   )
 }
 

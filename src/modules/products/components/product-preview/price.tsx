@@ -10,7 +10,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
     <>
       {price.price_type === "sale" && (
         <Text
-          className="line-through text-ui-fg-muted text-sm"
+          className="text-sm line-through text-grey-40"
           style={{ color: "#9ca3af" }}
           data-testid="original-price"
         >
@@ -18,8 +18,9 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
         </Text>
       )}
       <Text
-        className={clx("text-ui-fg-muted text-sm", {
-          "text-ui-fg-interactive": price.price_type === "sale",
+        className={clx("text-sm font-semibold", {
+          "text-grey-90": price.price_type === "sale",
+          "text-grey-70": price.price_type !== "sale",
         })}
         style={{ color: price.price_type === "sale" ? "#111827" : "#4b5563" }}
         data-testid="price"
