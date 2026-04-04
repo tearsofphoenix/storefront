@@ -126,7 +126,7 @@ const Payment = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="text-sm font-medium text-grey-80 transition-colors hover:text-grey-90"
               data-testid="edit-payment-button"
             >
               {messages.common.edit}
@@ -225,7 +225,7 @@ const Payment = ({
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
                   data-testid="payment-details-summary"
                 >
-                  <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
+                  <Container className="flex h-7 w-fit items-center rounded-md border border-[#d9dfe8] bg-white p-2 shadow-none">
                     {paymentInfoMap[selectedPaymentMethod]?.icon || (
                       <CreditCard />
                     )}

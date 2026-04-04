@@ -53,7 +53,7 @@ const Addresses = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="text-sm font-medium text-grey-80 transition-colors hover:text-grey-90"
               data-testid="edit-address-button"
             >
               Edit

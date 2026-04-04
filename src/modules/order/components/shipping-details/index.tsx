@@ -119,7 +119,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                             href={label.tracking_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-ui-fg-interactive"
+                            className="text-sm font-medium text-grey-90 transition-colors hover:text-grey-70"
                             data-testid="fulfillment-tracking-link"
                           >
                             Track shipment
@@ -130,7 +130,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                             href={label.label_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-ui-fg-interactive"
+                            className="text-sm font-medium text-grey-90 transition-colors hover:text-grey-70"
                           >
                             View label
                           </a>

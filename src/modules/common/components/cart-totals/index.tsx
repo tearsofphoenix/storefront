@@ -46,7 +46,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           <div className="flex items-center justify-between">
             <span>{messages.common.discount}</span>
             <span
-              className="text-ui-fg-interactive"
+              className="font-semibold text-grey-90"
               data-testid="cart-discount"
               data-value={discount_subtotal || 0}
             >

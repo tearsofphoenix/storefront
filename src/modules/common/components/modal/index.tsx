@@ -65,7 +65,7 @@ const Modal = ({
                     "max-w-xl": size === "medium",
                     "max-w-3xl": size === "large",
                     "bg-transparent shadow-none": search,
-                    "bg-white shadow-xl border rounded-rounded": !search,
+                    "rounded-[14px] border border-[#d9dfe8] bg-white shadow-[0_20px_48px_rgba(15,23,42,0.12)]": !search,
                   }
                 )}
               >
@@ -86,7 +86,11 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <Dialog.Title className="flex items-center justify-between">
       <div className="text-large-semi">{children}</div>
       <div>
-        <button onClick={close} data-testid="close-modal-button">
+        <button
+          onClick={close}
+          data-testid="close-modal-button"
+          className="rounded-md border border-[#d9dfe8] p-2"
+        >
           <X size={20} />
         </button>
       </div>

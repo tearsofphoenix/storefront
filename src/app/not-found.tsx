@@ -10,21 +10,22 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col gap-4 items-center justify-center min-h-[calc(100vh-64px)]">
-      <h1 className="text-2xl-semi text-ui-fg-base">Page not found</h1>
-      <p className="text-small-regular text-ui-fg-base">
-        The page you tried to access does not exist.
-      </p>
-      <Link
-        className="flex gap-x-1 items-center group"
-        href="/"
-      >
-        <Text className="text-ui-fg-interactive">Go to frontpage</Text>
-        <ArrowUpRightMini
-          className="group-hover:rotate-45 ease-in-out duration-150"
-          color="var(--fg-interactive)"
-        />
-      </Link>
+    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4">
+      <div className="grid gap-4 rounded-[14px] border border-[#e5e7eb] bg-white p-8 text-center">
+        <h1 className="text-2xl font-semibold text-grey-90">Page not found</h1>
+        <p className="text-sm text-grey-60">
+          The page you tried to access does not exist.
+        </p>
+        <Link className="group flex items-center justify-center gap-x-1" href="/">
+          <Text className="text-sm font-medium text-grey-70 transition-colors group-hover:text-grey-90">
+            Go to frontpage
+          </Text>
+          <ArrowUpRightMini
+            className="ease-in-out duration-150 group-hover:rotate-45"
+            color="#6b7280"
+          />
+        </Link>
+      </div>
     </div>
   )
 }
