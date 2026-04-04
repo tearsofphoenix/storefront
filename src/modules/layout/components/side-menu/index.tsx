@@ -29,7 +29,7 @@ const SideMenu = ({
   currentLocale,
   brandName = "Panda Store",
   primaryColor = "#2559f4",
-  navBackground = "#faf8f2",
+  navBackground = "#ffffff",
   headingFontFamily = "var(--font-heading), Poppins, sans-serif",
   bodyFontFamily = "var(--font-body), Quicksand, sans-serif",
 }: SideMenuProps) => {
@@ -57,10 +57,10 @@ const SideMenu = ({
               <div className="relative flex h-full">
                 <Popover.Button
                   data-testid="nav-menu-button"
-                  className="relative flex items-center rounded-full border px-4 py-2 transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
+                  className="relative flex items-center rounded-md border px-3 py-2 text-[13px] font-medium transition-colors ease-out duration-200 focus:outline-none"
                   style={{
-                    borderColor: `${primaryColor}26`,
-                    background: "rgba(255,255,255,0.72)",
+                    borderColor: "#d9dfe8",
+                    background: "#ffffff",
                     color: "#111827",
                   }}
                 >
@@ -81,27 +81,27 @@ const SideMenu = ({
                 as={Fragment}
                 enter="transition ease-out duration-150"
                 enterFrom="opacity-0"
-                enterTo="opacity-100 backdrop-blur-2xl"
+                enterTo="opacity-100"
                 leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 backdrop-blur-2xl"
+                leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
                 <PopoverPanel className="absolute inset-x-0 z-[51] m-2 flex h-[calc(100vh-1rem)] w-full flex-col pr-4 text-sm sm:min-w-min sm:w-1/3 sm:pr-0 2xl:w-1/4">
                   <div
                     data-testid="nav-menu-popup"
-                    className="flex h-full flex-col justify-between rounded-[28px] p-6"
+                    className="flex h-full flex-col justify-between rounded-[14px] p-6"
                     style={{
                       background: `${navBackground}`,
-                      border: `1px solid ${primaryColor}1f`,
-                      boxShadow: `0 24px 48px ${primaryColor}1c`,
+                      border: "1px solid #d9dfe8",
+                      boxShadow: "0 12px 30px rgba(15, 23, 42, 0.08)",
                       color: "#111827",
                       fontFamily: bodyFontFamily,
                     }}
                   >
                     <div
                       style={{
-                        color: primaryColor,
-                        fontSize: "0.72rem",
+                        color: "#6b7280",
+                        fontSize: "0.68rem",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
                         fontFamily: headingFontFamily,
@@ -110,17 +110,21 @@ const SideMenu = ({
                       {brandName}
                     </div>
                     <div className="flex justify-end" id="xmark">
-                      <button data-testid="close-menu-button" onClick={close}>
+                      <button
+                        data-testid="close-menu-button"
+                        onClick={close}
+                        className="rounded-md border border-[#d9dfe8] p-2"
+                      >
                         <XMark />
                       </button>
                     </div>
-                    <ul className="flex flex-col items-start justify-start gap-5">
+                    <ul className="flex flex-col items-start justify-start gap-4">
                       {sideMenuItems.map(({ label, href, testId }) => {
                         return (
                           <li key={href}>
                             <LocalizedClientLink
                               href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
+                              className="text-[1.75rem] leading-9 transition-colors hover:text-grey-60"
                               onClick={close}
                               data-testid={testId}
                               style={{
@@ -172,7 +176,7 @@ const SideMenu = ({
                           )}
                         />
                       </div>
-                      <Text className="flex justify-between txt-compact-small">
+                      <Text className="flex justify-between txt-compact-small text-grey-50">
                         © {new Date().getFullYear()} {brandName}.{" "}
                         {messages.common.rightsReserved}
                       </Text>

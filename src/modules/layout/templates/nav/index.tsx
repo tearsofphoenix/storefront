@@ -21,41 +21,38 @@ export default async function Nav() {
   ])
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
-  const isSerif = theme.headingStyle === "serif"
+  const localeLabel = currentLocale?.toUpperCase() ?? "GLOBAL"
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
+    <div className="sticky top-0 inset-x-0 z-50">
       {theme.announcement ? (
         <div
           className="border-b px-4 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
           style={{
-            background: "#ffffff",
-            borderColor: toRgba(theme.primaryColor, 0.08),
-            color: "#4b5563",
+            background: "#f7f7fa",
+            borderColor: "#d9dfe8",
+            color: "#6b7280",
           }}
         >
           {theme.announcement}
         </div>
       ) : null}
       <header
-        className="relative mx-auto border-b duration-200"
+        className="relative mx-auto border-b bg-white"
         style={{
+          borderColor: "#d9dfe8",
           background: theme.navBackground,
-          borderColor: toRgba(theme.primaryColor, 0.16),
-          backdropFilter:
-            theme.surfaceStyle === "glass" ? "blur(14px)" : undefined,
-          boxShadow: `0 16px 34px ${toRgba(theme.primaryColor, 0.06)}`,
         }}
       >
         <nav
-          className="content-container flex min-h-[76px] items-center justify-between gap-4 text-small-regular"
+          className="content-container flex min-h-[64px] items-center justify-between gap-4 text-sm"
           style={{
-            color: isSerif ? "#3f3f46" : undefined,
+            color: "#6b7280",
             fontFamily: theme.bodyFontFamily,
           }}
         >
-          <div className="flex flex-1 basis-0 items-center">
-            <div className="flex h-full items-center">
+          <div className="flex flex-1 basis-0 items-center gap-3">
+            <div className="flex h-full items-center shrink-0">
               <SideMenu
                 regions={regions}
                 locales={locales}
@@ -67,27 +64,11 @@ export default async function Nav() {
                 bodyFontFamily={theme.bodyFontFamily}
               />
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div
-              className="hidden h-9 w-9 items-center justify-center rounded-full border small:flex"
-              style={{
-                borderColor: toRgba(theme.primaryColor, 0.14),
-                background: "rgba(255,255,255,0.72)",
-                color: theme.primaryColor,
-                fontFamily: theme.headingFontFamily,
-                fontSize: "0.78rem",
-              }}
-            >
-              {theme.brandName.slice(0, 1)}
-            </div>
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
+              className="truncate text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
               style={{
                 color: "#111827",
-                letterSpacing: isSerif ? "0.06em" : "0.12em",
                 fontFamily: theme.headingFontFamily,
               }}
               data-testid="nav-store-link"
@@ -96,20 +77,39 @@ export default async function Nav() {
             </LocalizedClientLink>
           </div>
 
-          <div className="flex flex-1 basis-0 items-center justify-end gap-x-6">
-            <div className="hidden items-center gap-x-6 small:flex">
+          <div className="hidden items-center gap-x-6 small:flex">
+            <LocalizedClientLink
+              className="transition-colors hover:text-grey-90"
+              href="/store"
+              style={{ color: "#4b5563" }}
+            >
+              {messages.common.store}
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              className="transition-colors hover:text-grey-90"
+              href="/account"
+              data-testid="nav-account-link"
+              style={{ color: "#4b5563" }}
+            >
+              {messages.common.account}
+            </LocalizedClientLink>
+          </div>
+
+          <div className="flex flex-1 basis-0 items-center justify-end gap-x-3">
+            <div
+              className="hidden items-center rounded-md border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] small:inline-flex"
+              style={{
+                borderColor: "#d9dfe8",
+                background: "#ffffff",
+                color: "#6b7280",
+              }}
+            >
+              {localeLabel}
+            </div>
+            <div className="small:hidden">
               <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/store"
-                style={{ color: "#4b5563" }}
-              >
-                {messages.common.store}
-              </LocalizedClientLink>
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
+                className="inline-flex items-center rounded-md border border-[#d9dfe8] bg-white px-3 py-2 text-[13px] font-medium text-grey-70"
                 href="/account"
-                data-testid="nav-account-link"
-                style={{ color: "#4b5563" }}
               >
                 {messages.common.account}
               </LocalizedClientLink>
@@ -117,13 +117,13 @@ export default async function Nav() {
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="hover:text-ui-fg-base flex gap-2 rounded-full border px-4 py-2"
+                  className="inline-flex items-center rounded-md border px-3 py-2 text-[13px] font-medium"
                   href="/cart"
                   data-testid="nav-cart-link"
                   style={{
                     color: "#111827",
-                    borderColor: toRgba(theme.primaryColor, 0.16),
-                    background: "rgba(255,255,255,0.72)",
+                    borderColor: "#d9dfe8",
+                    background: "#ffffff",
                   }}
                 >
                   {messages.common.cart} (0)

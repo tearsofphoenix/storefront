@@ -3,9 +3,8 @@ import { listCollections } from "@lib/data/collections"
 import { getI18n } from "@lib/i18n/server"
 import {
   getStorefrontThemePresentation,
-  toRgba,
 } from "@lib/util/theme-manifest"
-import { Text, clx } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import MedusaCTA from "@modules/layout/components/medusa-cta"
@@ -13,7 +12,6 @@ import MedusaCTA from "@modules/layout/components/medusa-cta"
 export default async function Footer() {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
-  const isSerif = theme.headingStyle === "serif"
   const { collections } = await listCollections({
     fields: "*products",
   })
@@ -21,28 +19,18 @@ export default async function Footer() {
 
   return (
     <footer
-      className="border-t w-full"
-      style={{
-        borderColor: toRgba(theme.primaryColor, 0.12),
-        background: `linear-gradient(180deg, ${theme.shellBackground}, ${theme.footerBackground})`,
-      }}
+      className="w-full border-t bg-white"
+      style={{ borderColor: "#d9dfe8" }}
     >
       <div className="content-container flex flex-col w-full">
-        <div className="grid gap-10 py-16 small:grid-cols-[1.1fr_0.9fr] small:py-24">
+        <div className="grid gap-10 py-14 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
           <div className="grid gap-6">
-            <span
-              className="theme-eyebrow"
-              style={{ color: theme.primaryColor }}
-            >
-              {messages.footer.eyebrow}
-            </span>
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
+              className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
               style={{
                 color: "#111827",
                 fontFamily: theme.headingFontFamily,
-                letterSpacing: isSerif ? "0.06em" : undefined,
               }}
             >
               {theme.brandName}
@@ -50,7 +38,7 @@ export default async function Footer() {
             <Text
               className="text-base-regular"
               style={{
-                maxWidth: 520,
+                maxWidth: 420,
                 color: "#4b5563",
                 fontFamily: theme.bodyFontFamily,
               }}
@@ -58,122 +46,65 @@ export default async function Footer() {
               {theme.footerNote ||
                 messages.footer.fallbackNote}
             </Text>
-            <div className="flex flex-wrap gap-3">
-              <LocalizedClientLink href="/store" className="theme-solid-button">
-                {messages.common.exploreCatalog}
-              </LocalizedClientLink>
-              <LocalizedClientLink
-                href="/account"
-                className="theme-outline-button"
-              >
-                {messages.common.account}
-              </LocalizedClientLink>
-            </div>
+            <MedusaCTA />
           </div>
-          <div className="grid gap-8 text-small-regular sm:grid-cols-3">
-            {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  <span style={{ fontFamily: theme.headingFontFamily }}>
-                    {messages.common.categories}
-                  </span>
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {productCategories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return null
-                    }
-
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                          style={{ color: "#4b5563" }}
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                    style={{ color: "#6b7280" }}
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  <span style={{ fontFamily: theme.headingFontFamily }}>
-                    {messages.common.collections}
-                  </span>
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
-                >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
+          <div className="grid gap-8 text-small-regular small:col-span-3 small:grid-cols-3">
+            <div className="flex flex-col gap-y-3">
+              <span
+                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                style={{ fontFamily: theme.headingFontFamily }}
+              >
+                {messages.common.categories}
+              </span>
+              <ul className="grid grid-cols-1 gap-2" data-testid="footer-categories">
+                {productCategories
+                  ?.filter((category) => !category.parent_category)
+                  .slice(0, 5)
+                  .map((category) => (
+                    <li key={category.id}>
                       <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                        style={{ color: "#4b5563" }}
+                        className="text-sm text-grey-60 transition-colors hover:text-grey-90"
+                        href={`/categories/${category.handle}`}
+                        data-testid="category-link"
                       >
-                        {c.title}
+                        {category.name}
                       </LocalizedClientLink>
                     </li>
                   ))}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">
-                <span style={{ fontFamily: theme.headingFontFamily }}>
-                  {messages.common.storefront}
-                </span>
+              </ul>
+            </div>
+            <div className="flex flex-col gap-y-3">
+              <span
+                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                style={{ fontFamily: theme.headingFontFamily }}
+              >
+                {messages.common.collections}
               </span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
+              <ul className="grid grid-cols-1 gap-2">
+                {collections?.slice(0, 5).map((collection) => (
+                  <li key={collection.id}>
+                    <LocalizedClientLink
+                      className="text-sm text-grey-60 transition-colors hover:text-grey-90"
+                      href={`/collections/${collection.handle}`}
+                    >
+                      {collection.title}
+                    </LocalizedClientLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex flex-col gap-y-3">
+              <span
+                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                style={{ fontFamily: theme.headingFontFamily }}
+              >
+                {messages.common.storefront}
+              </span>
+              <ul className="grid grid-cols-1 gap-2 text-sm text-grey-60">
                 <li>
                   <LocalizedClientLink
                     href="/store"
-                    className="hover:text-ui-fg-base"
-                    style={{ color: "#4b5563" }}
+                    className="transition-colors hover:text-grey-90"
                   >
                     {messages.common.allProducts}
                   </LocalizedClientLink>
@@ -181,43 +112,35 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/cart"
-                    className="hover:text-ui-fg-base"
-                    style={{ color: "#4b5563" }}
+                    className="transition-colors hover:text-grey-90"
                   >
                     {messages.common.cart}
                   </LocalizedClientLink>
                 </li>
                 <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                    style={{ color: "#4b5563" }}
+                  <LocalizedClientLink
+                    href="/content/privacy-policy"
+                    className="transition-colors hover:text-grey-90"
                   >
-                    GitHub
-                  </a>
+                    {messages.account.privacyPolicy}
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
+                    href="/content/terms-of-use"
+                    className="transition-colors hover:text-grey-90"
+                  >
+                    {messages.account.termsOfUse}
+                  </LocalizedClientLink>
                 </li>
                 <li>
                   <a
                     href="https://docs.medusajs.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                    style={{ color: "#4b5563" }}
+                    className="transition-colors hover:text-grey-90"
                   >
                     {messages.common.documentation}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/nextjs-starter-medusa"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                    style={{ color: "#4b5563" }}
-                  >
-                    {messages.common.sourceCode}
                   </a>
                 </li>
               </ul>
@@ -225,8 +148,8 @@ export default async function Footer() {
           </div>
         </div>
         <div
-          className="mb-16 flex w-full flex-col gap-4 border-t pt-6 text-ui-fg-muted small:flex-row small:items-center small:justify-between"
-          style={{ borderColor: toRgba(theme.primaryColor, 0.08) }}
+          className="flex w-full flex-col gap-4 border-t py-4 text-ui-fg-muted small:flex-row small:items-center small:justify-between"
+          style={{ borderColor: "#e5e7eb" }}
         >
           <div className="grid gap-2">
             <Text className="txt-compact-small">
@@ -237,7 +160,24 @@ export default async function Footer() {
               {messages.common.builtOnMedusa}
             </Text>
           </div>
-          <MedusaCTA />
+          <div className="flex items-center gap-4 text-sm text-grey-60">
+            <a
+              href="https://github.com/medusajs"
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-grey-90"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://github.com/medusajs/nextjs-starter-medusa"
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors hover:text-grey-90"
+            >
+              {messages.common.sourceCode}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
