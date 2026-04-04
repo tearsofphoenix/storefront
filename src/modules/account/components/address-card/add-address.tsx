@@ -49,7 +49,7 @@ const AddAddress = ({
   return (
     <>
       <button
-        className="border border-ui-border-base rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between"
+        className="flex h-full min-h-[220px] w-full flex-col justify-between rounded-[12px] border border-[#d9dfe8] bg-[#f7f7fa] p-5 text-left transition-colors hover:border-[#111827]"
         onClick={open}
         data-testid="add-address-button"
       >
@@ -150,7 +150,7 @@ const AddAddress = ({
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="h-10 rounded-md border-[#d9dfe8] bg-white"
                 data-testid="cancel-button"
               >
                 Cancel
