@@ -14,7 +14,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
   }
 
   return (
-    <div>
+    <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
       <Text>
         We have sent the order confirmation details to{" "}
         <span
@@ -35,7 +35,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
         Order number: <span data-testid="order-id">{order.display_id}</span>
       </Text>
 
-      <div className="flex items-center text-compact-small gap-x-4 mt-4 flex-wrap">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 text-compact-small">
         {showStatus && (
           <>
             <Text>

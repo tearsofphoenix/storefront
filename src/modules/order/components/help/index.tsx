@@ -4,7 +4,7 @@ import React from "react"
 
 const Help = () => {
   return (
-    <div className="mt-6">
+    <div className="mt-6 rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
       <Heading className="text-base-semi">Need help?</Heading>
       <div className="text-base-regular my-2">
         <ul className="gap-y-2 flex flex-col">

@@ -23,15 +23,15 @@ export default async function OrderCompletedTemplate({
 
   return (
     <div className="py-6 min-h-[calc(100vh-64px)]">
-      <div className="content-container flex flex-col justify-center items-center gap-y-10 max-w-4xl h-full w-full">
+      <div className="content-container flex h-full w-full max-w-4xl flex-col items-center justify-center gap-y-10">
         {isOnboarding && <OnboardingCta orderId={order.id} />}
         <div
-          className="flex flex-col gap-4 max-w-4xl h-full bg-white w-full py-10"
+          className="flex h-full w-full max-w-4xl flex-col gap-4 rounded-[14px] border border-[#e5e7eb] bg-white p-6 small:p-8"
           data-testid="order-complete-container"
         >
           <Heading
             level="h1"
-            className="flex flex-col gap-y-3 text-ui-fg-base text-3xl mb-4"
+            className="mb-4 flex flex-col gap-y-3 text-3xl text-ui-fg-base"
           >
             <span>Thank you!</span>
             <span>Your order was placed successfully.</span>
