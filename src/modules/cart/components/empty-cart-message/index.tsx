@@ -7,20 +7,25 @@ const EmptyCartMessage = async () => {
   const { messages } = await getI18n()
 
   return (
-    <div className="py-48 px-2 flex flex-col justify-center items-start" data-testid="empty-cart-message">
-      <Heading
-        level="h1"
-        className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
-      >
-        {messages.common.cartEmptyTitle}
-      </Heading>
-      <Text className="text-base-regular mt-4 mb-6 max-w-[32rem]">
-        {messages.common.cartEmptyDescription}
-      </Text>
-      <div>
-        <InteractiveLink href="/store">
-          {messages.common.exploreProducts}
-        </InteractiveLink>
+    <div
+      className="flex items-start justify-center px-2 py-24 small:py-36"
+      data-testid="empty-cart-message"
+    >
+      <div className="grid max-w-[38rem] gap-5 rounded-[14px] border border-[#e5e7eb] bg-white p-8 small:p-10">
+        <Heading
+          level="h1"
+          className="flex flex-row items-baseline gap-x-2 text-3xl-regular"
+        >
+          {messages.common.cartEmptyTitle}
+        </Heading>
+        <Text className="mt-4 mb-6 max-w-[32rem] text-base-regular">
+          {messages.common.cartEmptyDescription}
+        </Text>
+        <div>
+          <InteractiveLink href="/store">
+            {messages.common.exploreProducts}
+          </InteractiveLink>
+        </div>
       </div>
     </div>
   )

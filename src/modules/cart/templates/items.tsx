@@ -15,14 +15,14 @@ const ItemsTemplate = async ({ cart }: ItemsTemplateProps) => {
   const items = cart?.items
   return (
     <div>
-      <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">
+      <div className="flex items-center pb-5">
+        <Heading className="text-[1.75rem] leading-[2.2rem] small:text-[2rem] small:leading-[2.75rem]">
           {messages.common.cart}
         </Heading>
       </div>
-      <Table>
+      <Table className="w-full">
         <Table.Header className="border-t-0">
-          <Table.Row className="text-ui-fg-subtle txt-medium-plus">
+          <Table.Row className="border-b border-[#e5e7eb] text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
             <Table.HeaderCell className="!pl-0">
               {messages.common.item}
             </Table.HeaderCell>
