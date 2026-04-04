@@ -32,7 +32,7 @@ const AccountNav = ({
         {route !== `/${countryCode}/account` ? (
           <LocalizedClientLink
             href="/account"
-            className="flex items-center gap-x-2 text-small-regular py-2"
+            className="flex items-center gap-x-2 rounded-md border border-[#d9dfe8] px-4 py-3 text-small-regular"
             data-testid="account-main-link"
             >
               <>
@@ -42,15 +42,15 @@ const AccountNav = ({
             </LocalizedClientLink>
         ) : (
           <>
-            <div className="text-xl-semi mb-4 px-8">
+            <div className="mb-4 text-xl font-semibold px-2">
               {t(messages.account.hello, { name: customer?.first_name ?? "" })}
             </div>
             <div className="text-base-regular">
-              <ul>
+              <ul className="overflow-hidden rounded-[12px] border border-[#e5e7eb]">
                 <li>
                   <LocalizedClientLink
                     href="/account/profile"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
                     data-testid="profile-link"
                   >
                     <>
@@ -65,7 +65,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/addresses"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
                     data-testid="addresses-link"
                   >
                     <>
@@ -80,7 +80,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/orders"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
                     data-testid="orders-link"
                   >
                     <div className="flex items-center gap-x-2">
@@ -93,7 +93,7 @@ const AccountNav = ({
                 <li>
                   <button
                     type="button"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8 w-full"
+                    className="flex w-full items-center justify-between px-5 py-4"
                     onClick={handleLogout}
                     data-testid="logout-button"
                   >
@@ -110,9 +110,11 @@ const AccountNav = ({
         )}
       </div>
       <div className="hidden small:block" data-testid="account-nav">
-        <div>
+        <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
           <div className="pb-4">
-            <h3 className="text-base-semi">{messages.account.title}</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-50">
+              {messages.account.title}
+            </h3>
           </div>
           <div className="text-base-regular">
             <ul className="flex mb-0 justify-start items-start flex-col gap-y-4">
@@ -157,6 +159,7 @@ const AccountNav = ({
                   type="button"
                   onClick={handleLogout}
                   data-testid="logout-button"
+                  className="text-sm font-medium text-grey-60 transition-colors hover:text-grey-90"
                 >
                   {messages.account.logOut}
                 </button>
@@ -188,8 +191,8 @@ const AccountNavLink = ({
   return (
     <LocalizedClientLink
       href={href}
-      className={clx("text-ui-fg-subtle hover:text-ui-fg-base", {
-        "text-ui-fg-base font-semibold": active,
+      className={clx("text-sm text-grey-60 transition-colors hover:text-grey-90", {
+        "font-semibold text-grey-90": active,
       })}
       data-testid={dataTestId}
     >

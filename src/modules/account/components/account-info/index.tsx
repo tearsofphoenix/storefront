@@ -42,10 +42,13 @@ const AccountInfo = ({
   }, [isSuccess, close])
 
   return (
-    <div className="text-small-regular" data-testid={dataTestid}>
-      <div className="flex items-end justify-between">
+    <div
+      className="rounded-[12px] border border-[#e5e7eb] bg-white p-5 text-small-regular"
+      data-testid={dataTestid}
+    >
+      <div className="flex items-end justify-between gap-4">
         <div className="flex flex-col">
-          <span className="uppercase text-ui-fg-base">{label}</span>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">{label}</span>
           <div className="flex items-center flex-1 basis-0 justify-end gap-x-4">
             {typeof currentInfo === "string" ? (
               <span className="font-semibold" data-testid="current-info">{currentInfo}</span>
@@ -57,7 +60,7 @@ const AccountInfo = ({
         <div>
           <Button
             variant="secondary"
-            className="w-[100px] min-h-[25px] py-1"
+            className="min-h-[25px] w-[100px] rounded-md border-[#d9dfe8] bg-white py-1"
             onClick={handleToggle}
             type={state ? "reset" : "button"}
             data-testid="edit-button"
@@ -122,7 +125,7 @@ const AccountInfo = ({
             <div className="flex items-center justify-end mt-2">
               <Button
                 isLoading={pending}
-                className="w-full small:max-w-[140px]"
+                className="w-full rounded-md bg-[#111827] text-white hover:bg-[#1f2937] small:max-w-[140px]"
                 type="submit"
                 data-testid="save-button"
               >

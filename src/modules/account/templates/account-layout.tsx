@@ -15,16 +15,16 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
   children,
 }) => {
   return (
-    <div className="flex-1 small:py-12" data-testid="account-page">
-      <div className="flex-1 content-container h-full max-w-5xl mx-auto bg-white flex flex-col">
-        <div className="grid grid-cols-1  small:grid-cols-[240px_1fr] py-12">
+    <div className="flex-1 py-10 small:py-12" data-testid="account-page">
+      <div className="content-container mx-auto flex h-full max-w-6xl flex-col rounded-[14px] border border-[#e5e7eb] bg-white p-6 small:p-8">
+        <div className="grid grid-cols-1 gap-10 small:grid-cols-[240px_minmax(0,1fr)]">
           <div>{customer && <AccountNav customer={customer} />}</div>
           <div className="flex-1">{children}</div>
         </div>
-        <div className="flex flex-col small:flex-row items-end justify-between small:border-t border-gray-200 py-12 gap-8">
+        <div className="mt-10 flex flex-col gap-8 border-t border-[#e5e7eb] pt-8 small:flex-row small:items-end small:justify-between">
           <div>
-            <h3 className="text-xl-semi mb-4">Got questions?</h3>
-            <span className="txt-medium">
+            <h3 className="mb-4 text-xl font-semibold text-grey-90">Got questions?</h3>
+            <span className="txt-medium text-grey-60">
               You can find frequently asked questions and answers on our
               customer service page.
             </span>

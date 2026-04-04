@@ -37,11 +37,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
   }, [latestFulfillment])
 
   return (
-    <div className="bg-white flex flex-col" data-testid="order-card">
-      <div className="uppercase text-large-semi mb-1">
+    <div className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-white p-5" data-testid="order-card">
+      <div className="mb-1 text-large-semi uppercase">
         #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
-      <div className="flex items-center divide-x divide-gray-200 text-small-regular text-ui-fg-base">
+      <div className="flex items-center divide-x divide-[#e5e7eb] text-small-regular text-ui-fg-base">
         <span className="pr-2" data-testid="order-created-at">
           {new Date(order.created_at).toDateString()}
         </span>
@@ -80,7 +80,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           )}
         </div>
       )}
-      <div className="grid grid-cols-2 small:grid-cols-4 gap-4 my-4">
+      <div className="my-4 grid grid-cols-2 gap-4 small:grid-cols-4">
         {order.items?.slice(0, 3).map((i) => {
           return (
             <div
@@ -113,7 +113,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
       </div>
       <div className="flex justify-end">
         <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
-          <Button data-testid="order-details-link" variant="secondary">
+          <Button
+            data-testid="order-details-link"
+            variant="secondary"
+            className="rounded-md border-[#d9dfe8] bg-white"
+          >
             See details
           </Button>
         </LocalizedClientLink>
