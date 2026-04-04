@@ -139,7 +139,10 @@ export default function ProductActions({
 
   return (
     <>
-      <div className="flex flex-col gap-y-2" ref={actionsRef}>
+      <div
+        className="flex flex-col gap-y-5 rounded-[14px] border border-[#e5e7eb] bg-white p-6"
+        ref={actionsRef}
+      >
         <div>
           {(product.variants?.length ?? 0) > 1 && (
             <div className="flex flex-col gap-y-4">
@@ -174,7 +177,7 @@ export default function ProductActions({
             !isValidVariant
           }
           variant="primary"
-          className="w-full h-10"
+          className="h-11 w-full rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
           isLoading={isAdding}
           data-testid="add-product-button"
         >

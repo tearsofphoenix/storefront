@@ -36,6 +36,10 @@ const nextConfig = {
         hostname: "pub-e1b14e672f574c77b7ba42eff4b909a8.r2.dev",
       },
       {
+        protocol: "https",
+        hostname: "estore-cf.pandacat.ai",
+      },
+      {
         protocol: 'https',
         hostname: 'medusa-public-images.s3.eu-west-1.amazonaws.com'
       },

@@ -1,39 +1,83 @@
+"use client"
+
 import { HttpTypes } from "@medusajs/types"
-import { Container } from "@medusajs/ui"
+import { Container, clx } from "@medusajs/ui"
 import Image from "next/image"
+import { useEffect, useMemo, useState } from "react"
+
+import { normalizeImageUrl } from "@lib/util/normalize-image-url"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
 }
 
 const ImageGallery = ({ images }: ImageGalleryProps) => {
+  const galleryImages = useMemo(
+    () =>
+      images
+        .map((image) => ({
+          id: image.id,
+          url: normalizeImageUrl(image.url),
+        }))
+        .filter(
+          (image): image is { id: string; url: string } => Boolean(image.url)
+        ),
+    [images]
+  )
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  useEffect(() => {
+    if (selectedIndex > galleryImages.length - 1) {
+      setSelectedIndex(0)
+    }
+  }, [galleryImages.length, selectedIndex])
+
+  const selectedImage = galleryImages[selectedIndex]
+
+  if (!selectedImage) {
+    return (
+      <Container className="relative aspect-[4/5] w-full overflow-hidden rounded-[14px] border border-[#e5e7eb] bg-[#f7f7fa]" />
+    )
+  }
+
   return (
-    <div className="flex items-start relative">
-      <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
-        {images.map((image, index) => {
-          return (
-            <Container
-              key={image.id}
-              className="relative aspect-[29/34] w-full overflow-hidden bg-ui-bg-subtle"
-              id={image.id}
-            >
-              {!!image.url && (
-                <Image
-                  src={image.url}
-                  priority={index <= 2 ? true : false}
-                  className="absolute inset-0 rounded-rounded"
-                  alt={`Product image ${index + 1}`}
-                  fill
-                  sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-                  style={{
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </Container>
-          )
-        })}
+    <div className="grid gap-4 small:grid-cols-[88px_minmax(0,1fr)] small:items-start">
+      <div className="order-2 flex gap-3 overflow-x-auto pb-1 small:order-1 small:flex-col small:overflow-visible">
+        {galleryImages.map((image, index) => (
+          <button
+            key={image.id}
+            type="button"
+            onClick={() => setSelectedIndex(index)}
+            className={clx(
+              "shrink-0 rounded-[12px] border bg-white p-1 transition-colors",
+              {
+                "border-[#111827]": index === selectedIndex,
+                "border-[#d9dfe8]": index !== selectedIndex,
+              }
+            )}
+          >
+            <div className="relative aspect-square w-16 overflow-hidden rounded-[10px] bg-[#f7f7fa] small:w-[78px]">
+              <Image
+                src={image.url}
+                alt={`Product thumbnail ${index + 1}`}
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
+            </div>
+          </button>
+        ))}
       </div>
+      <Container className="order-1 relative aspect-[4/5] w-full overflow-hidden rounded-[14px] border border-[#e5e7eb] bg-[#f7f7fa] small:order-2">
+        <Image
+          src={selectedImage.url}
+          alt="Product image"
+          priority
+          fill
+          sizes="(max-width: 1024px) 100vw, 900px"
+          className="object-cover"
+        />
+      </Container>
     </div>
   )
 }
