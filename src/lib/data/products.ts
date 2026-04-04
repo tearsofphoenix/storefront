@@ -26,7 +26,7 @@ export const listProducts = async ({
     throw new Error("Country code or region ID is required")
   }
 
-  const limit = queryParams?.limit || 12
+  console.log("DEBUG: listProducts fetching with regionId:", regionId, "and countryCode:", countryCode); const limit = queryParams?.limit || 12
   const _pageParam = Math.max(pageParam, 1)
   const offset = _pageParam === 1 ? 0 : (_pageParam - 1) * limit
 
@@ -104,7 +104,7 @@ export const listProductsWithSort = async ({
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> => {
-  const limit = queryParams?.limit || 12
+  console.log("DEBUG: listProducts fetching with regionId:", regionId, "and countryCode:", countryCode); const limit = queryParams?.limit || 12
 
   const {
     response: { products, count },

@@ -54,7 +54,7 @@ export const getRegion = async (countryCode: string) => {
       })
     })
 
-    const region = countryCode
+    console.log("DEBUG: countryCode is:", countryCode); console.log("DEBUG: regionMap keys are:", Array.from(regionMap.keys())); const region = countryCode
       ? regionMap.get(countryCode.toLowerCase())
       : regionMap.get("us")
 
