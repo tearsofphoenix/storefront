@@ -40,13 +40,15 @@ export const getCacheOptions = async (
     return {}
   }
 
+  // 同时打全局 tag 和带 cacheId 的 scoped tag，兼容 webhook 全量失效与用户态局部失效。
+  const tags = [tag]
   const cacheTag = await getCacheTag(tag)
 
-  if (!cacheTag) {
-    return {}
+  if (cacheTag) {
+    tags.push(cacheTag)
   }
 
-  return { tags: [`${cacheTag}`] }
+  return { tags }
 }
 
 export const setAuthToken = async (token: string) => {

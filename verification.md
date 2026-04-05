@@ -133,3 +133,32 @@
 ### 残余风险
 
 - 尚未做浏览器级手工点击回归；如果某些商品的 variant 没有关联独立 `variant.images`，页面仍会按既有逻辑回退到 product 级图片，这是当前设计预期而非新缺陷。
+
+## 2026-04-05 Vercel 按需重验证改造验证
+
+- 日期：2026-04-05 16:02:00 +0800
+- 执行者：Codex
+
+### 已完成验证
+
+1. storefront `bun run lint` 通过。
+2. storefront `bun run build` 通过。
+3. backend `pnpm build` 通过。
+4. `src/lib/data/cookies.ts` 的 `getCacheOptions` 已改为同时输出全局 tag 与 scoped tag。
+5. `src/app/api/revalidate/route.ts` 已新增受 `REVALIDATE_SECRET` 保护的 POST webhook，并支持一次重验证一个或多个 tags。
+6. `../store-pandacat-ai/backend/src/subscribers/revalidate-storefront-products.ts` 已监听 `product.created`、`product.updated`、`product.deleted` 并回调 storefront 的 revalidate 接口。
+
+### 功能性结论
+
+- 现有 storefront 数据请求不需要改调用点，只要继续使用 `getCacheOptions(tag)`，就会自动同时带上：
+  - 全局业务 tag，例如 `products`
+  - 既有 scoped tag，例如 `products-${_medusa_cache_id}`
+- 这样可以兼顾两类失效场景：
+  - 前端用户动作继续按 scoped tag 做局部刷新
+  - Railway 后端 webhook 按固定业务 tag 做全站按需重验证
+- backend subscriber 默认会重验证 `products`、`categories`、`collections`，覆盖商品详情、商品列表以及分类/集合挂载关系的典型变动面。
+
+### 残余风险
+
+- 当前仅完成构建级验证，尚未在线上实际触发一次商品更新事件来观察 Vercel 缓存失效链路。
+- 如果后续希望缩小失效范围，可以在 backend 使用 `STOREFRONT_REVALIDATE_TAGS` 调整发送的 tags 集合。
