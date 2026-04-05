@@ -15,6 +15,7 @@ import {
 } from "./cookies"
 import { getRegion } from "./regions"
 import { getLocale } from "@lib/data/locale-actions"
+import { resolveSalesChannelId } from "./sales-channels"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -59,7 +60,12 @@ export async function getOrSetCart(countryCode: string) {
     throw new Error(`Region not found for country code: ${countryCode}`)
   }
 
-  let cart = await retrieveCart(undefined, "id,region_id")
+  const salesChannelId = await resolveSalesChannelId({
+    region,
+    countryCode,
+  })
+
+  let cart = await retrieveCart(undefined, "id,region_id,sales_channel_id")
 
   const headers = {
     ...(await getAuthHeaders()),
@@ -68,7 +74,11 @@ export async function getOrSetCart(countryCode: string) {
   if (!cart) {
     const locale = await getLocale()
     const cartResp = await sdk.store.cart.create(
-      { region_id: region.id, locale: locale || undefined },
+      {
+        region_id: region.id,
+        locale: locale || undefined,
+        sales_channel_id: salesChannelId || undefined,
+      },
       {},
       headers
     )
@@ -80,8 +90,21 @@ export async function getOrSetCart(countryCode: string) {
     revalidateTag(cartCacheTag)
   }
 
-  if (cart && cart?.region_id !== region.id) {
-    await sdk.store.cart.update(cart.id, { region_id: region.id }, {}, headers)
+  if (
+    cart &&
+    (cart.region_id !== region.id ||
+      (salesChannelId && cart.sales_channel_id !== salesChannelId))
+  ) {
+    // region 与 sales channel 需要保持一致，避免后续加购命中不同上下文。
+    await sdk.store.cart.update(
+      cart.id,
+      {
+        region_id: region.id,
+        sales_channel_id: salesChannelId || undefined,
+      },
+      {},
+      headers
+    )
     const cartCacheTag = await getCacheTag("carts")
     revalidateTag(cartCacheTag)
   }

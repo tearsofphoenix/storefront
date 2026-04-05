@@ -6,6 +6,7 @@ import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
+import { resolveSalesChannelId } from "./sales-channels"
 
 export const listProducts = async ({
   pageParam = 1,
@@ -53,6 +54,18 @@ export const listProducts = async ({
     ...(await getCacheOptions("products")),
   }
 
+  const requestedSalesChannelId = Array.isArray(queryParams?.sales_channel_id)
+    ? queryParams.sales_channel_id[0]
+    : queryParams?.sales_channel_id
+
+  // 多 sales channel 的 publishable key 下，库存字段必须带单一 sales_channel_id。
+  const salesChannelId =
+    requestedSalesChannelId ||
+    (await resolveSalesChannelId({
+      region,
+      countryCode,
+    }))
+
   return sdk.client
     .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
       `/store/products`,
@@ -65,6 +78,7 @@ export const listProducts = async ({
           fields:
             "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags,",
           ...queryParams,
+          sales_channel_id: salesChannelId || undefined,
         },
         headers,
         next,
