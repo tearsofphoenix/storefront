@@ -5,7 +5,6 @@ import compareAddresses from "@lib/util/compare-addresses"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Heading, Text, useToggleState } from "@medusajs/ui"
-import Divider from "@modules/common/components/divider"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useActionState } from "react"
@@ -40,7 +39,7 @@ const Addresses = ({
   const [message, formAction] = useActionState(setAddresses, null)
 
   return (
-    <div className="bg-white">
+    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -63,7 +62,7 @@ const Addresses = ({
       </div>
       {isOpen ? (
         <form action={formAction}>
-          <div className="pb-8">
+          <div className="grid gap-6">
             <ShippingAddress
               customer={customer}
               checked={sameAsBilling}
@@ -75,7 +74,7 @@ const Addresses = ({
               <div>
                 <Heading
                   level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
+                  className="text-3xl-regular gap-x-4 pb-2 pt-2"
                 >
                   Billing address
                 </Heading>
@@ -176,8 +175,7 @@ const Addresses = ({
           </div>
         </div>
       )}
-      <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

@@ -9,7 +9,6 @@ import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Button, clx, Heading, Text } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
-import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -180,7 +179,7 @@ const Shipping: React.FC<ShippingProps> = ({
   }, [isOpen])
 
   return (
-    <div className="bg-white">
+    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -213,7 +212,7 @@ const Shipping: React.FC<ShippingProps> = ({
           )}
       </div>
       {isOpen ? (
-        <>
+        <div className="grid gap-6">
           <div className="grid">
             <div className="flex flex-col">
               <span className="font-medium txt-medium text-ui-fg-base">
@@ -224,7 +223,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </span>
             </div>
             <div data-testid="delivery-options-container">
-              <div className="pb-8 md:pt-0 pt-2">
+              <div className="pt-2 md:pt-0">
                 {!hasAnyDeliveryOptions && (
                   <div className="rounded-rounded border border-ui-border-base bg-ui-bg-subtle px-6 py-5">
                     <Text className="txt-medium-plus text-ui-fg-base">
@@ -419,7 +418,7 @@ const Shipping: React.FC<ShippingProps> = ({
               {messages.common.continueToPayment}
             </Button>
           </div>
-        </>
+        </div>
       ) : (
         <div>
           <div className="text-small-regular">
@@ -440,8 +439,7 @@ const Shipping: React.FC<ShippingProps> = ({
           </div>
         </div>
       )}
-      <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

@@ -19,7 +19,7 @@ const Review = ({ cart }: { cart: any }) => {
     (cart.payment_collection || paidByGiftcard)
 
   return (
-    <div className="bg-white">
+    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -48,7 +48,7 @@ const Review = ({ cart }: { cart: any }) => {
           <PaymentButton cart={cart} data-testid="submit-order-button" />
         </>
       )}
-    </div>
+    </section>
   )
 }
 

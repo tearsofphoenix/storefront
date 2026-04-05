@@ -21,7 +21,6 @@ export default async function Nav() {
   ])
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
-  const localeLabel = currentLocale?.toUpperCase() ?? "GLOBAL"
 
   return (
     <div className="sticky top-0 inset-x-0 z-50">
@@ -96,16 +95,6 @@ export default async function Nav() {
           </div>
 
           <div className="flex flex-1 basis-0 items-center justify-end gap-x-3">
-            <div
-              className="hidden items-center rounded-md border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] small:inline-flex"
-              style={{
-                borderColor: "#d9dfe8",
-                background: "#ffffff",
-                color: "#6b7280",
-              }}
-            >
-              {localeLabel}
-            </div>
             <div className="small:hidden">
               <LocalizedClientLink
                 className="inline-flex items-center rounded-md border border-[#d9dfe8] bg-white px-3 py-2 text-[13px] font-medium text-grey-70"

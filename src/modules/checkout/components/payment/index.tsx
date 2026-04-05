@@ -10,7 +10,6 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
-import Divider from "@modules/common/components/divider"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
@@ -107,7 +106,7 @@ const Payment = ({
   }, [isOpen])
 
   return (
-    <div className="bg-white">
+    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -253,8 +252,7 @@ const Payment = ({
           ) : null}
         </div>
       </div>
-      <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

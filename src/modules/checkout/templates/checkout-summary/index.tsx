@@ -10,8 +10,8 @@ const CheckoutSummary = async ({ cart }: { cart: any }) => {
   const { messages } = await getI18n()
 
   return (
-    <div className="sticky top-0 flex flex-col-reverse small:flex-col gap-y-8 py-8 small:py-0 ">
-      <div className="w-full bg-white flex flex-col">
+    <aside className="sticky top-0 flex flex-col-reverse gap-y-8 py-8 small:flex-col small:py-0">
+      <div className="flex w-full flex-col rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
         <Divider className="my-6 small:hidden" />
         <Heading
           level="h2"
@@ -26,7 +26,7 @@ const CheckoutSummary = async ({ cart }: { cart: any }) => {
           <DiscountCode cart={cart} />
         </div>
       </div>
-    </div>
+    </aside>
   )
 }
 
