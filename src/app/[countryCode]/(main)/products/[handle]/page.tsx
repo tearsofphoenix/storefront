@@ -17,6 +17,53 @@ export async function generateStaticParams() {
   return []
 }
 
+type VariantImageMetadata = {
+  images?: Array<{
+    url?: string | null
+  }> | null
+  thumbnail?: string | null
+}
+
+const getVariantMetadataImages = (
+  product: HttpTypes.StoreProduct,
+  variant: HttpTypes.StoreProductVariant
+) => {
+  const metadata = (variant.metadata ?? null) as VariantImageMetadata | null
+  const urls = [
+    typeof metadata?.thumbnail === "string" ? metadata.thumbnail : null,
+    ...(metadata?.images?.map((image) => image?.url ?? null) ?? []),
+  ].filter((url): url is string => Boolean(url))
+
+  if (!urls.length) {
+    return []
+  }
+
+  const seenUrls = new Set<string>()
+  const productImagesByUrl = new Map(
+    (product.images ?? [])
+      .filter((image): image is HttpTypes.StoreProductImage & { url: string } =>
+        Boolean(image.url)
+      )
+      .map((image) => [image.url, image])
+  )
+
+  return urls.flatMap((url, index) => {
+    if (seenUrls.has(url)) {
+      return []
+    }
+
+    seenUrls.add(url)
+
+    return [
+      productImagesByUrl.get(url) ??
+        ({
+          id: `${variant.id}-metadata-image-${index}`,
+          url,
+        } as HttpTypes.StoreProductImage),
+    ]
+  })
+}
+
 function getImagesForVariant(
   product: HttpTypes.StoreProduct,
   selectedVariantId?: string
@@ -30,12 +77,29 @@ function getImagesForVariant(
   const variant = product.variants!.find((v) => v.id === selectedVariantId)
   const variantImages = variant?.images ?? []
 
-  if (!variant || variantImages.length === 0) {
+  if (!variant) {
     return productImages
   }
 
-  const imageIdsMap = new Map(variantImages.map((i) => [i.id, true]))
-  return productImages.filter((i) => imageIdsMap.has(i.id))
+  if (variantImages.length > 0) {
+    const imageIdsMap = new Map(
+      variantImages
+        .filter((image): image is HttpTypes.StoreProductImage & { id: string } =>
+          Boolean(image.id)
+        )
+        .map((image) => [image.id, true])
+    )
+
+    const matchedImages = productImages.filter(
+      (image) => image.id && imageIdsMap.has(image.id)
+    )
+
+    return matchedImages.length > 0 ? matchedImages : variantImages
+  }
+
+  const metadataImages = getVariantMetadataImages(product, variant)
+
+  return metadataImages.length > 0 ? metadataImages : productImages
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

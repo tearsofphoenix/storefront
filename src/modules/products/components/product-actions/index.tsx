@@ -33,6 +33,20 @@ const optionsAsKeymap = (
   }, {})
 }
 
+const getOptionsFromVariantId = (
+  variants: HttpTypes.StoreProductVariant[] | null | undefined,
+  selectedVariantId?: string | null
+) => {
+  const variantFromSearch = selectedVariantId
+    ? variants?.find((variant) => variant.id === selectedVariantId)
+    : undefined
+
+  const fallbackVariant =
+    !variantFromSearch && variants?.length === 1 ? variants[0] : undefined
+
+  return optionsAsKeymap(variantFromSearch?.options ?? fallbackVariant?.options) ?? {}
+}
+
 export default function ProductActions({
   product,
   disabled,
@@ -44,28 +58,22 @@ export default function ProductActions({
   const selectedVariantIdFromSearch = searchParams.get("v_id")
   const searchParamsKey = searchParams.toString()
 
-  const [options, setOptions] = useState<Record<string, string | undefined>>({})
+  const [options, setOptions] = useState<Record<string, string | undefined>>(() =>
+    getOptionsFromVariantId(product.variants, selectedVariantIdFromSearch)
+  )
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
 
   useEffect(() => {
-    const variantFromSearch = selectedVariantIdFromSearch
-      ? product.variants?.find((variant) => variant.id === selectedVariantIdFromSearch)
-      : undefined
-
-    const fallbackVariant =
-      !variantFromSearch && product.variants?.length === 1
-        ? product.variants[0]
-        : undefined
-
-    const nextOptions = optionsAsKeymap(
-      variantFromSearch?.options ?? fallbackVariant?.options
+    const nextOptions = getOptionsFromVariantId(
+      product.variants,
+      selectedVariantIdFromSearch
     )
 
-    if (nextOptions && !isEqual(nextOptions, options)) {
-      setOptions(nextOptions)
-    }
-  }, [options, product.variants, selectedVariantIdFromSearch])
+    setOptions((currentOptions) =>
+      isEqual(currentOptions, nextOptions) ? currentOptions : nextOptions
+    )
+  }, [product.variants, selectedVariantIdFromSearch])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {

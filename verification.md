@@ -188,3 +188,28 @@
 
 - Apple Pay、Google Pay、Link 是否在真实页面展示，仍取决于 Stripe Dashboard 的域名注册、浏览器能力、设备能力以及 HTTPS 环境。
 - backend 的 `automatic_payment_methods` 配置需要在 Medusa 服务重启或重新部署后才会在线上真正生效；本次已完成本地构建验证，但尚未在线上设备环境中逐项回归 Apple Pay、Google Pay、Link 的真实展示条件。
+
+## 2026-04-05 PDP variant 图片抖动修复验证
+
+- 日期：2026-04-05 17:18:00 +0800
+- 执行者：Codex
+
+### 已完成验证
+
+1. `bun run lint` 通过。
+2. `./node_modules/.bin/tsc --noEmit` 通过。
+3. `bun run build` 通过。
+4. storefront 的 `ProductActions` 已修复 `options -> URL -> options` 双向竞争更新，消除 variant 选择状态来回切换。
+5. storefront 的 PDP 图片解析已同时兼容：
+   - Medusa 原生 `variant.images`
+   - `@meduline/medusa-plugin-variant-images` 风格的 `variant.metadata.images` / `variant.metadata.thumbnail`
+6. 直接请求线上 `https://estore-admin.pandacat.ai/store/products` 并带上 `sales_channel_id=sc_01KNA3VMRMV0VXMS4087DNSAAE` 与 `fields=*variants.calculated_price,+variants.inventory_quantity,*variants.images,+variants.metadata,+metadata,+tags,` 返回 200，确认新增 `+variants.metadata` 查询未破坏接口。
+
+### 功能性结论
+
+- 当前 backend `package.json` 为 Medusa `2.13.1`，且未安装 `medusa-variant-images` / `@meduline/medusa-plugin-variant-images`；结合真实接口返回 `variant.images` 非空、`variant.metadata` 为 `null`，可确认现网现在使用的是 Medusa 原生 variant images。
+- 因此本次没有强行安装旧插件，而是让 storefront 兼容原生与插件两种字段结构，既解决当前抖动 bug，也保留未来切换到 metadata 结构的兼容性。
+
+### 残余风险
+
+- 当前线上商品样本返回的 `variant.metadata` 仍为空，说明插件路径尚未被真实数据覆盖；相关兼容逻辑已通过类型和构建验证，但还未在带 metadata 图片的真实商品上做浏览器级回归。
