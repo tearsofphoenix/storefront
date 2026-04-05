@@ -8,11 +8,15 @@ import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
-import { useParams, usePathname, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useRef, useState } from "react"
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation"
+import { startTransition, useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
-import { useRouter } from "next/navigation"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -37,18 +41,31 @@ export default function ProductActions({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const selectedVariantIdFromSearch = searchParams.get("v_id")
+  const searchParamsKey = searchParams.toString()
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
 
-  // If there is only 1 variant, preselect the options
   useEffect(() => {
-    if (product.variants?.length === 1) {
-      const variantOptions = optionsAsKeymap(product.variants[0].options)
-      setOptions(variantOptions ?? {})
+    const variantFromSearch = selectedVariantIdFromSearch
+      ? product.variants?.find((variant) => variant.id === selectedVariantIdFromSearch)
+      : undefined
+
+    const fallbackVariant =
+      !variantFromSearch && product.variants?.length === 1
+        ? product.variants[0]
+        : undefined
+
+    const nextOptions = optionsAsKeymap(
+      variantFromSearch?.options ?? fallbackVariant?.options
+    )
+
+    if (nextOptions && !isEqual(nextOptions, options)) {
+      setOptions(nextOptions)
     }
-  }, [product.variants])
+  }, [options, product.variants, selectedVariantIdFromSearch])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -78,7 +95,7 @@ export default function ProductActions({
   }, [product.variants, options])
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParamsKey)
     const value = isValidVariant ? selectedVariant?.id : null
 
     if (params.get("v_id") === value) {
@@ -91,8 +108,14 @@ export default function ProductActions({
       params.delete("v_id")
     }
 
-    router.replace(pathname + "?" + params.toString())
-  }, [isValidVariant, pathname, router, searchParams, selectedVariant])
+    const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+
+    startTransition(() => {
+      router.replace(nextUrl, {
+        scroll: false,
+      })
+    })
+  }, [isValidVariant, pathname, router, searchParamsKey, selectedVariant?.id])
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {

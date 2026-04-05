@@ -107,3 +107,29 @@
 
 - `../store-pandacat-ai/DEPLOY_RAILWAY_VERCEL.md` 明确要求在 Vercel 设置 `MEDUSA_BACKEND_URL`，但没有清晰列出 `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`。
 - `../store-pandacat-ai/DEPLOY_1PANEL.md` 中又使用了 `MEDUSA_PUBLISHABLE_KEY` 这个不同名字，存在把变量配错到生产环境的实际风险。
+
+## 2026-04-05 PDP variant 图片联动修复验证
+
+- 日期：2026-04-05 15:33:01 +0800
+- 执行者：Codex
+
+### 已完成验证
+
+1. `bun run lint` 通过。
+2. `bun run build` 通过。
+3. `src/modules/products/components/product-actions/index.tsx` 已补齐 URL `v_id` 与前端 option state 的双向同步。
+4. `src/modules/products/components/image-gallery/index.tsx` 已在图片集合变化时自动回到首张主图。
+5. `src/app/[countryCode]/(main)/products/[handle]/page.tsx` 继续复用既有的 `getImagesForVariant` 服务端过滤逻辑，未引入新的数据源或接口。
+
+### 功能性结论
+
+- 当前 PDP 的 variant 图片联动采用“URL 查询参数驱动服务端图片过滤 + gallery 本地索引重置”的方式实现。
+- 该方案保持现有组件职责不变：
+  - `page.tsx` 负责根据 `v_id` 计算当前图片集合。
+  - `product-actions` 负责同步用户选择与 URL。
+  - `image-gallery` 负责在新图片集合到达后展示正确的首图。
+- 本次修改不会影响价格展示、库存判断与加购逻辑。
+
+### 残余风险
+
+- 尚未做浏览器级手工点击回归；如果某些商品的 variant 没有关联独立 `variant.images`，页面仍会按既有逻辑回退到 product 级图片，这是当前设计预期而非新缺陷。
