@@ -13,9 +13,8 @@ export const messages = {
       storefront: "Storefront",
       allProducts: "All products",
       documentation: "Documentation",
-      sourceCode: "Source code",
       rightsReserved: "All rights reserved.",
-      builtOnMedusa: "Built on Medusa with a calmer merchandising layer for product-first browsing.",
+
       exploreCatalog: "Explore catalog",
       browseAllProducts: "Browse all products",
       viewAll: "View all",
@@ -86,6 +85,10 @@ export const messages = {
       cartTransferError: "Something went wrong when we tried to transfer your cart",
       shippingMethod: "Shipping method",
       deliveryPrompt: "How would you like your order delivered",
+      shippingMethodUnavailable:
+        "No shipping methods are available for this cart right now.",
+      shippingMethodUnavailableHint:
+        "Check the delivery address or try again after shipping options are configured for this region.",
       pickupOrder: "Pick up your order",
       storeLabel: "Store",
       chooseStoreNearYou: "Choose a store near you",
@@ -180,10 +183,7 @@ export const messages = {
       storefront: "Vitrine",
       allProducts: "Tous les produits",
       documentation: "Documentation",
-      sourceCode: "Code source",
       rightsReserved: "Tous droits réservés.",
-      builtOnMedusa:
-        "Construit sur Medusa avec une présentation plus calme, pensée pour un merchandising orienté produit.",
       exploreCatalog: "Explorer le catalogue",
       browseAllProducts: "Voir tous les produits",
       viewAll: "Tout voir",
@@ -255,6 +255,10 @@ export const messages = {
         "Un problème est survenu lors du transfert de votre panier",
       shippingMethod: "Mode de livraison",
       deliveryPrompt: "Comment souhaitez-vous recevoir votre commande ?",
+      shippingMethodUnavailable:
+        "Aucun mode de livraison n'est disponible pour ce panier pour le moment.",
+      shippingMethodUnavailableHint:
+        "Vérifiez l'adresse de livraison ou réessayez après la configuration d'options de livraison pour cette région.",
       pickupOrder: "Retirer la commande en magasin",
       storeLabel: "Magasin",
       chooseStoreNearYou: "Choisissez un magasin proche de chez vous",
@@ -351,9 +355,7 @@ export const messages = {
       storefront: "商城",
       allProducts: "所有商品",
       documentation: "文件",
-      sourceCode: "原始碼",
       rightsReserved: "版權所有。",
-      builtOnMedusa: "基於 Medusa 打造，以更沉穩的陳列方式強化商品導向瀏覽。",
       exploreCatalog: "探索目錄",
       browseAllProducts: "瀏覽所有商品",
       viewAll: "查看全部",
@@ -423,6 +425,9 @@ export const messages = {
       cartTransferError: "轉移你的購物車時發生問題",
       shippingMethod: "配送方式",
       deliveryPrompt: "你希望如何收到訂單？",
+      shippingMethodUnavailable: "這個購物車目前沒有可用的配送方式。",
+      shippingMethodUnavailableHint:
+        "請檢查配送地址，或等這個地區的配送選項設定完成後再試一次。",
       pickupOrder: "門市取貨",
       storeLabel: "門市",
       chooseStoreNearYou: "選擇離你最近的門市",

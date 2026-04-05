@@ -108,6 +108,8 @@ const Shipping: React.FC<ShippingProps> = ({
   )
 
   const hasPickupOptions = !!_pickupMethods?.length
+  const hasShippingOptions = !!_shippingMethods?.length
+  const hasAnyDeliveryOptions = hasPickupOptions || hasShippingOptions
 
   useEffect(() => {
     setIsLoadingPrices(true)
@@ -223,6 +225,16 @@ const Shipping: React.FC<ShippingProps> = ({
             </div>
             <div data-testid="delivery-options-container">
               <div className="pb-8 md:pt-0 pt-2">
+                {!hasAnyDeliveryOptions && (
+                  <div className="rounded-rounded border border-ui-border-base bg-ui-bg-subtle px-6 py-5">
+                    <Text className="txt-medium-plus text-ui-fg-base">
+                      {messages.common.shippingMethodUnavailable}
+                    </Text>
+                    <Text className="mt-2 txt-medium text-ui-fg-muted">
+                      {messages.common.shippingMethodUnavailableHint}
+                    </Text>
+                  </div>
+                )}
                 {hasPickupOptions && (
                   <RadioGroup
                     value={showPickupOptions}

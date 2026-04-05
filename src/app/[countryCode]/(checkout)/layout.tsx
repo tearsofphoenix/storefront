@@ -43,9 +43,6 @@ export default async function CheckoutLayout({
         </nav>
       </div>
       <div className="relative" data-testid="checkout-container">{children}</div>
-      <div className="flex w-full items-center justify-center border-t border-[#e5e7eb] bg-white py-4">
-        <MedusaCTA />
-      </div>
     </div>
   )
 }

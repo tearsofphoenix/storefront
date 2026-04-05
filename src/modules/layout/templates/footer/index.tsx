@@ -46,7 +46,6 @@ export default async function Footer() {
               {theme.footerNote ||
                 messages.footer.fallbackNote}
             </Text>
-            <MedusaCTA />
           </div>
           <div className="grid gap-8 text-small-regular small:col-span-3 small:grid-cols-3">
             <div className="flex flex-col gap-y-3">
@@ -156,28 +155,7 @@ export default async function Footer() {
               © {new Date().getFullYear()} {theme.brandName}.{" "}
               {messages.common.rightsReserved}
             </Text>
-            <Text className="txt-compact-small" style={{ maxWidth: 560 }}>
-              {messages.common.builtOnMedusa}
-            </Text>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-grey-60">
-            <a
-              href="https://github.com/medusajs"
-              target="_blank"
-              rel="noreferrer"
-              className="transition-colors hover:text-grey-90"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://github.com/medusajs/nextjs-starter-medusa"
-              target="_blank"
-              rel="noreferrer"
-              className="transition-colors hover:text-grey-90"
-            >
-              {messages.common.sourceCode}
-            </a>
-          </div>
+          </div>          
         </div>
       </div>
     </footer>
