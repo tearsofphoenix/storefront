@@ -17,6 +17,45 @@ import { getRegion } from "./regions"
 import { getLocale } from "@lib/data/locale-actions"
 import { resolveSalesChannelId } from "./sales-channels"
 
+const isRecoverablePaymentSessionError = (error: unknown) => {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string"
+      ? error
+      : ""
+
+  return (
+    message.includes("Could not delete all payment sessions") ||
+    message.includes("No such payment_intent")
+  )
+}
+
+const resetStaleCartState = async () => {
+  await removeCartId()
+
+  const cartCacheTag = await getCacheTag("carts")
+  revalidateTag(cartCacheTag)
+
+  const fulfillmentCacheTag = await getCacheTag("fulfillment")
+  revalidateTag(fulfillmentCacheTag)
+}
+
+const withCartRecovery = async <T>(operation: () => Promise<T>) => {
+  try {
+    return await operation()
+  } catch (error) {
+    if (isRecoverablePaymentSessionError(error)) {
+      await resetStaleCartState()
+      throw new Error(
+        "Your cart payment session expired after the Stripe configuration changed. The cart has been reset. Please add your items again."
+      )
+    }
+
+    throw error
+  }
+}
+
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
  * @param cartId - optional - The ID of the cart to retrieve.
@@ -123,18 +162,20 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     ...(await getAuthHeaders()),
   }
 
-  return sdk.store.cart
-    .update(cartId, data, {}, headers)
-    .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  return withCartRecovery(async () => {
+    return sdk.store.cart
+      .update(cartId, data, {}, headers)
+      .then(async ({ cart }: { cart: HttpTypes.StoreCart }) => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
 
-      return cart
-    })
-    .catch(medusaError)
+        return cart
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function addToCart({
@@ -160,24 +201,26 @@ export async function addToCart({
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .createLineItem(
-      cart.id,
-      {
-        variant_id: variantId,
-        quantity,
-      },
-      {},
-      headers
-    )
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  await withCartRecovery(async () => {
+    await sdk.store.cart
+      .createLineItem(
+        cart.id,
+        {
+          variant_id: variantId,
+          quantity,
+        },
+        {},
+        headers
+      )
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function updateLineItem({
@@ -201,16 +244,18 @@ export async function updateLineItem({
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .updateLineItem(cartId, lineId, { quantity }, {}, headers)
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  await withCartRecovery(async () => {
+    await sdk.store.cart
+      .updateLineItem(cartId, lineId, { quantity }, {}, headers)
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function deleteLineItem(lineId: string) {
@@ -228,16 +273,18 @@ export async function deleteLineItem(lineId: string) {
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .deleteLineItem(cartId, lineId, {}, headers)
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  await withCartRecovery(async () => {
+    await sdk.store.cart
+      .deleteLineItem(cartId, lineId, {}, headers)
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function setShippingMethod({
@@ -251,13 +298,15 @@ export async function setShippingMethod({
     ...(await getAuthHeaders()),
   }
 
-  return sdk.store.cart
-    .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
-    })
-    .catch(medusaError)
+  return withCartRecovery(async () => {
+    return sdk.store.cart
+      .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, headers)
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function initiatePaymentSession(
@@ -268,14 +317,16 @@ export async function initiatePaymentSession(
     ...(await getAuthHeaders()),
   }
 
-  return sdk.store.payment
-    .initiatePaymentSession(cart, data, {}, headers)
-    .then(async (resp) => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
-      return resp
-    })
-    .catch(medusaError)
+  return withCartRecovery(async () => {
+    return sdk.store.payment
+      .initiatePaymentSession(cart, data, {}, headers)
+      .then(async (resp) => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
+        return resp
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function applyPromotions(codes: string[]) {
@@ -289,16 +340,18 @@ export async function applyPromotions(codes: string[]) {
     ...(await getAuthHeaders()),
   }
 
-  return sdk.store.cart
-    .update(cartId, { promo_codes: codes }, {}, headers)
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  return withCartRecovery(async () => {
+    return sdk.store.cart
+      .update(cartId, { promo_codes: codes }, {}, headers)
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
+      })
+      .catch(medusaError)
+  })
 }
 
 export async function applyGiftCard(code: string) {

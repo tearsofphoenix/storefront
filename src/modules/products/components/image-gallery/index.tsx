@@ -6,6 +6,7 @@ import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 
 import { normalizeImageUrl } from "@lib/util/normalize-image-url"
+import { shouldUnoptimizeImage } from "@lib/util/should-unoptimize-image"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
@@ -62,6 +63,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                 alt={`Product thumbnail ${index + 1}`}
                 fill
                 sizes="80px"
+                unoptimized={shouldUnoptimizeImage(image.url)}
                 className="object-cover"
               />
             </div>
@@ -75,6 +77,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           priority
           fill
           sizes="(max-width: 1024px) 100vw, 900px"
+          unoptimized={shouldUnoptimizeImage(selectedImage.url)}
           className="object-cover"
         />
       </Container>

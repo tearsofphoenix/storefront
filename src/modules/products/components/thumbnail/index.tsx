@@ -5,6 +5,7 @@ import type { CSSProperties } from "react"
 
 import PlaceholderImage from "@modules/common/icons/placeholder-image"
 import { normalizeImageUrl } from "@lib/util/normalize-image-url"
+import { shouldUnoptimizeImage } from "@lib/util/should-unoptimize-image"
 
 type ThumbnailProps = {
   thumbnail?: string | null
@@ -55,6 +56,8 @@ const ImageOrPlaceholder = ({
   image,
   size,
 }: Pick<ThumbnailProps, "size"> & { image?: string | null }) => {
+  const unoptimized = shouldUnoptimizeImage(image)
+
   return image ? (
     <Image
       src={image}
@@ -63,6 +66,7 @@ const ImageOrPlaceholder = ({
       draggable={false}
       quality={50}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+      unoptimized={unoptimized}
       fill
     />
   ) : (
