@@ -162,3 +162,29 @@
 
 - 当前仅完成构建级验证，尚未在线上实际触发一次商品更新事件来观察 Vercel 缓存失效链路。
 - 如果后续希望缩小失效范围，可以在 backend 使用 `STOREFRONT_REVALIDATE_TAGS` 调整发送的 tags 集合。
+
+## 2026-04-05 Stripe Apple Pay / Google Pay / Link 支持验证
+
+- 日期：2026-04-05 16:27:00 +0800
+- 执行者：Codex
+
+### 已完成验证
+
+1. `bun run lint` 通过。
+2. `./node_modules/.bin/tsc --noEmit` 通过。
+3. `bun run build` 通过。
+4. backend `pnpm build` 通过，确认 `automatic_payment_methods` 配置未破坏 Medusa 构建。
+5. `src/modules/checkout/components/payment-container/index.tsx` 已修复 JSX 结构，并切换为 `LinkAuthenticationElement` + `PaymentElement`。
+6. `src/modules/checkout/components/payment/index.tsx` 已恢复 Stripe 支付方式列表渲染，并正确传递 `paymentComplete` 与 `paymentType` 状态。
+7. `src/modules/checkout/components/payment-button/index.tsx` 已使用 `elements.submit()` + `stripe.confirmPayment()` 完成最终确认流程。
+
+### 功能性结论
+
+- 当前 storefront 的 Stripe 卡支付入口已经升级为 `PaymentElement`，因此可在同一支付区块内承载 Card、Apple Pay、Google Pay 与 Link。
+- checkout 仍保持原有的 `payment -> review -> place order` 流程，未引入 `ExpressCheckoutElement` 或额外的快捷跳转分支。
+- 支付详情摘要会优先展示用户在 Stripe Element 中选择的支付类型，无法识别时回退为通用的 `Card, Apple Pay, Google Pay, or Link` 文案。
+
+### 残余风险
+
+- Apple Pay、Google Pay、Link 是否在真实页面展示，仍取决于 Stripe Dashboard 的域名注册、浏览器能力、设备能力以及 HTTPS 环境。
+- backend 的 `automatic_payment_methods` 配置需要在 Medusa 服务重启或重新部署后才会在线上真正生效；本次已完成本地构建验证，但尚未在线上设备环境中逐项回归 Apple Pay、Google Pay、Link 的真实展示条件。

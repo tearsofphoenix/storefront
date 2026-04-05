@@ -7,8 +7,14 @@ import Radio from "@modules/common/components/radio"
 
 import { isManual } from "@lib/constants"
 import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
-import { CardElement } from "@stripe/react-stripe-js"
-import { StripeCardElementOptions } from "@stripe/stripe-js"
+import {
+  LinkAuthenticationElement,
+  PaymentElement,
+} from "@stripe/react-stripe-js"
+import {
+  StripeLinkAuthenticationElementOptions,
+  StripePaymentElementOptions,
+} from "@stripe/stripe-js"
 import PaymentTest from "../payment-test"
 import { StripeContext } from "../payment-wrapper/stripe-wrapper"
 
@@ -72,33 +78,58 @@ export const StripeCardContainer = ({
   selectedPaymentOptionId,
   paymentInfoMap,
   disabled = false,
-  setCardBrand,
+  defaultEmail,
   setError,
-  setCardComplete,
+  setPaymentComplete,
+  setPaymentType,
 }: Omit<PaymentContainerProps, "children"> & {
-  setCardBrand: (brand: string) => void
+  defaultEmail?: string | null
   setError: (error: string | null) => void
-  setCardComplete: (complete: boolean) => void
+  setPaymentComplete: (complete: boolean) => void
+  setPaymentType: (type: string | null) => void
 }) => {
   const stripeReady = useContext(StripeContext)
   const { messages } = useI18n()
 
-  const useOptions: StripeCardElementOptions = useMemo(() => {
-    return {
-      style: {
-        base: {
-          fontFamily: "Inter, sans-serif",
-          color: "#111827",
-          "::placeholder": {
-            color: "rgb(107 114 128)",
+  const linkOptions: StripeLinkAuthenticationElementOptions = useMemo(() => {
+    return defaultEmail
+      ? {
+          defaultValues: {
+            email: defaultEmail,
           },
+        }
+      : {}
+  }, [defaultEmail])
+
+  const paymentOptions: StripePaymentElementOptions = useMemo(() => {
+    return {
+      defaultValues: {
+        billingDetails: {
+          email: defaultEmail ?? undefined,
         },
       },
-      classes: {
-        base: "mt-0 block h-11 w-full appearance-none rounded-md border border-[#d9dfe8] bg-white px-4 pb-1 pt-3 transition-all duration-300 ease-in-out focus:outline-none focus:ring-0",
+      fields: {
+        billingDetails: {
+          address: "if_required",
+        },
+      },
+      layout: {
+        type: "accordion",
+        defaultCollapsed: false,
+        radios: true,
+      },
+      terms: {
+        applePay: "auto",
+        card: "auto",
+        googlePay: "auto",
+      },
+      wallets: {
+        applePay: "auto",
+        googlePay: "auto",
+        link: "auto",
       },
     }
-  }, [])
+  }, [defaultEmail])
 
   return (
     <PaymentContainer
@@ -109,20 +140,30 @@ export const StripeCardContainer = ({
     >
       {selectedPaymentOptionId === paymentProviderId &&
         (stripeReady ? (
-          <div className="my-4 transition-all duration-150 ease-in-out">
-            <Text className="txt-medium-plus text-ui-fg-base mb-1">
-              {messages.common.enterYourCardDetails}
-            </Text>
-            <CardElement
-              options={useOptions as StripeCardElementOptions}
-              onChange={(e) => {
-                setCardBrand(
-                  e.brand && e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
-                )
-                setError(e.error?.message || null)
-                setCardComplete(e.complete)
-              }}
-            />
+          <div className="my-4 space-y-4 transition-all duration-150 ease-in-out">
+            <div>
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                {messages.common.email}
+              </Text>
+              <div className="rounded-md border border-[#d9dfe8] bg-white px-4 py-3">
+                <LinkAuthenticationElement options={linkOptions} />
+              </div>
+            </div>
+            <div>
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                {messages.common.enterYourPaymentDetails}
+              </Text>
+              <div className="rounded-md border border-[#d9dfe8] bg-white px-4 py-3">
+                <PaymentElement
+                  options={paymentOptions}
+                  onChange={(event) => {
+                    setPaymentType(event.value.type || null)
+                    setError(null)
+                    setPaymentComplete(event.complete)
+                  }}
+                />
+              </div>
+            </div>
           </div>
         ) : (
           <SkeletonCardDetails />

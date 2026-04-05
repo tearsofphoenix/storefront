@@ -13,6 +13,27 @@ import PaymentContainer, {
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
+const stripePaymentTypeLabels: Record<string, string> = {
+  apple_pay: "Apple Pay",
+  card: "Card",
+  google_pay: "Google Pay",
+  link: "Link",
+}
+
+const formatStripePaymentType = (type?: string | null) => {
+  if (!type) {
+    return null
+  }
+
+  return (
+    stripePaymentTypeLabels[type] ||
+    type
+      .split("_")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  )
+}
+
 const Payment = ({
   cart,
   availablePaymentMethods,
@@ -27,8 +48,10 @@ const Payment = ({
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [cardBrand, setCardBrand] = useState<string | null>(null)
-  const [cardComplete, setCardComplete] = useState(false)
+  const [paymentComplete, setPaymentComplete] = useState(false)
+  const [stripePaymentType, setStripePaymentType] = useState<string | null>(
+    null
+  )
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
@@ -41,11 +64,15 @@ const Payment = ({
 
   const setPaymentMethod = async (method: string) => {
     setError(null)
+    setPaymentComplete(false)
+    setStripePaymentType(null)
     setSelectedPaymentMethod(method)
     if (isStripeLike(method)) {
       await initiatePaymentSession(cart, {
         provider_id: method,
       })
+
+      router.refresh()
     }
   }
 
@@ -74,26 +101,22 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const shouldInputCard =
-        isStripeLike(selectedPaymentMethod) && !activeSession
-
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
-      if (!checkActiveSession) {
+      if (!selectedPaymentMethod && !paidByGiftcard) {
+        return
+      }
+
+      if (!checkActiveSession && selectedPaymentMethod) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
         })
       }
 
-      if (!shouldInputCard) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
-      }
+      return router.push(pathname + "?" + createQueryString("step", "review"), {
+        scroll: false,
+      })
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -148,9 +171,10 @@ const Payment = ({
                         paymentProviderId={paymentMethod.id}
                         selectedPaymentOptionId={selectedPaymentMethod}
                         paymentInfoMap={paymentInfoMap}
-                        setCardBrand={setCardBrand}
+                        defaultEmail={cart?.email}
                         setError={setError}
-                        setCardComplete={setCardComplete}
+                        setPaymentComplete={setPaymentComplete}
+                        setPaymentType={setStripePaymentType}
                       />
                     ) : (
                       <PaymentContainer
@@ -190,14 +214,12 @@ const Payment = ({
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
-              (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
+              (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
               (!selectedPaymentMethod && !paidByGiftcard)
             }
             data-testid="submit-payment-button"
           >
-            {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? messages.common.enterCardDetails
-              : messages.common.continueToReview}
+            {messages.common.continueToReview}
           </Button>
         </div>
 
@@ -230,8 +252,9 @@ const Payment = ({
                     )}
                   </Container>
                   <Text>
-                    {isStripeLike(selectedPaymentMethod) && cardBrand
-                      ? cardBrand
+                    {isStripeLike(selectedPaymentMethod)
+                      ? formatStripePaymentType(stripePaymentType) ||
+                        messages.common.cardWalletLink
                       : messages.common.anotherStepWillAppear}
                   </Text>
                 </div>
