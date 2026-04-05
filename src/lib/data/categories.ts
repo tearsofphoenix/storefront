@@ -1,6 +1,7 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
+import { logMedusaRequestError } from "@lib/util/log-medusa-request-error"
 
 export const listCategories = async (query?: Record<string, any>) => {
   const next = {
@@ -24,7 +25,10 @@ export const listCategories = async (query?: Record<string, any>) => {
       }
     )
     .then(({ product_categories }) => product_categories)
-    .catch(() => [])
+    .catch((error) => {
+      logMedusaRequestError("listCategories", error)
+      return []
+    })
 }
 
 export const getCategoryByHandle = async (categoryHandle: string[]) => {

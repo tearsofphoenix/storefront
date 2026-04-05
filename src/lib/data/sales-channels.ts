@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
+import { logMedusaRequestError } from "@lib/util/log-medusa-request-error"
 
 type StoreSalesChannel = {
   id: string
@@ -136,7 +137,29 @@ export const resolveSalesChannelId = async ({
   const configuredSalesChannelId = readConfiguredSalesChannelId()
 
   if (configuredSalesChannelId) {
-    return configuredSalesChannelId
+    const salesChannels = await listAvailableSalesChannels()
+
+    if (!salesChannels.length) {
+      return configuredSalesChannelId
+    }
+
+    const configuredChannelExists = salesChannels.some(
+      (salesChannel) => salesChannel.id === configuredSalesChannelId
+    )
+
+    if (configuredChannelExists) {
+      return configuredSalesChannelId
+    }
+
+    console.warn(
+      `[sales-channels] 配置的 MEDUSA_STOREFRONT_SALES_CHANNEL_ID="${configuredSalesChannelId}" 不在当前 publishable key 可见的 sales channels 中，将自动回退。`
+    )
+
+    return pickBestSalesChannelId({
+      salesChannels,
+      region,
+      countryCode,
+    })
   }
 
   const salesChannels = await listAvailableSalesChannels()

@@ -3,6 +3,7 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
+import { logMedusaRequestError } from "@lib/util/log-medusa-request-error"
 
 export const retrieveCollection = async (id: string) => {
   const next = {
@@ -40,7 +41,10 @@ export const listCollections = async (
       }
     )
     .then(({ collections }) => ({ collections, count: collections.length }))
-    .catch(() => ({ collections: [], count: 0 }))
+    .catch((error) => {
+      logMedusaRequestError("listCollections", error)
+      return { collections: [], count: 0 }
+    })
 }
 
 export const getCollectionByHandle = async (

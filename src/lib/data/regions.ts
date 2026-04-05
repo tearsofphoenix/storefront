@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
+import { logMedusaRequestError } from "@lib/util/log-medusa-request-error"
 
 export const listRegions = async () => {
   return sdk.client
@@ -10,7 +11,10 @@ export const listRegions = async () => {
       cache: "no-store",
     })
     .then(({ regions }) => regions)
-    .catch(() => null)
+    .catch((error) => {
+      logMedusaRequestError("listRegions", error)
+      return null
+    })
 }
 
 export const retrieveRegion = async (id: string) => {
@@ -20,7 +24,10 @@ export const retrieveRegion = async (id: string) => {
       cache: "no-store",
     })
     .then(({ region }) => region)
-    .catch(() => null)
+    .catch((error) => {
+      logMedusaRequestError("retrieveRegion", error, { regionId: id })
+      return null
+    })
 }
 
 const regionMap = new Map<string, HttpTypes.StoreRegion>()
