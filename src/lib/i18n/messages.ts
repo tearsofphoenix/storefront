@@ -118,7 +118,7 @@ export const messages = {
     },
     store: {
       catalogDescription:
-        "Browse the full catalog in a simpler product grid inspired by the Nuxt storefront theme.",
+        "",
       sortBy: "Sort by",
       latestArrivals: "Latest Arrivals",
       priceLowHigh: "Price: Low -> High",
@@ -307,7 +307,7 @@ export const messages = {
     },
     store: {
       catalogDescription:
-        "Parcourez l'ensemble du catalogue dans une grille produit plus simple inspirée du thème storefront Nuxt.",
+        "",
       sortBy: "Trier par",
       latestArrivals: "Dernières nouveautés",
       priceLowHigh: "Prix : croissant",
@@ -492,7 +492,7 @@ export const messages = {
       browseCatalog: "瀏覽目錄",
     },
     store: {
-      catalogDescription: "以更簡潔的商品網格瀏覽完整目錄，靈感來自 Nuxt storefront 主題。",
+      catalogDescription: "",
       sortBy: "排序方式",
       latestArrivals: "最新上架",
       priceLowHigh: "價格：低到高",
