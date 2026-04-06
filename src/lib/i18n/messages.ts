@@ -170,6 +170,10 @@ export const messages = {
       termsOfUse: "Terms of Use",
       join: "Join",
       alreadyMember: "Already a member?",
+      continueWithGoogle: "Continue with Google",
+      googleAuthRedirecting: "Redirecting to Google...",
+      googleAuthUnavailable: "Google sign-in isn't available right now.",
+      googleAuthError: "We couldn't complete Google sign-in. Please try again.",
       hello: "Hello {name}",
       digitalProducts: "Digital products",
       digitalProductsDescription:
@@ -347,6 +351,12 @@ export const messages = {
       termsOfUse: "Conditions d'utilisation",
       join: "Rejoindre",
       alreadyMember: "Déjà membre ?",
+      continueWithGoogle: "Continuer avec Google",
+      googleAuthRedirecting: "Redirection vers Google...",
+      googleAuthUnavailable:
+        "La connexion Google n'est pas disponible pour le moment.",
+      googleAuthError:
+        "La connexion Google n'a pas pu être finalisée. Veuillez réessayer.",
       hello: "Bonjour {name}",
       digitalProducts: "Produits numériques",
       digitalProductsDescription:
@@ -513,6 +523,10 @@ export const messages = {
       termsOfUse: "使用條款",
       join: "加入會員",
       alreadyMember: "已經是會員？",
+      continueWithGoogle: "使用 Google 繼續",
+      googleAuthRedirecting: "正在前往 Google...",
+      googleAuthUnavailable: "目前無法使用 Google 登入。",
+      googleAuthError: "無法完成 Google 登入，請稍後再試。",
       hello: "你好，{name}",
       digitalProducts: "數位商品",
       digitalProductsDescription: "查看你已購買的數位商品並下載。",

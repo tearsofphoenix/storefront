@@ -8,6 +8,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { signup } from "@lib/data/customer"
+import GoogleAuthButton from "../google-auth-button"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
@@ -89,6 +90,7 @@ const Register = ({ setCurrentView }: Props) => {
         <SubmitButton className="w-full mt-6" data-testid="register-button">
           {messages.account.join}
         </SubmitButton>
+        <GoogleAuthButton />
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
         {messages.account.alreadyMember}{" "}

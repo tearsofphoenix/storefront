@@ -5,6 +5,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
 import { useActionState } from "react"
+import GoogleAuthButton from "../google-auth-button"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
@@ -49,6 +50,7 @@ const Login = ({ setCurrentView }: Props) => {
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
           {messages.account.signIn}
         </SubmitButton>
+        <GoogleAuthButton />
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
         {messages.account.notMember}{" "}
