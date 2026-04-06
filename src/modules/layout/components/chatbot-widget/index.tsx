@@ -72,7 +72,7 @@ const ChatbotIcon = () => {
 }
 
 const ChatbotWidget = () => {
-  const { messages } = useI18n()
+  const { messages, locale } = useI18n()
   const pathname = usePathname()
   const params = useParams()
   const { productContext } = useChatbotProductContext()
@@ -217,6 +217,7 @@ const ChatbotWidget = () => {
           session_id: sessionId,
           page_path: pathname,
           country_code: countryCode,
+          language: typeof navigator !== "undefined" ? navigator.language : locale,
           product_handle: productHandle,
           product_context: activeProductContext ?? undefined,
           messages: requestMessages.map((message) => ({
