@@ -1,25 +1,19 @@
 import { getLocaleHeader } from "@lib/util/get-locale-header"
 import Medusa, { FetchArgs, FetchInput } from "@medusajs/js-sdk"
 
-function readRuntimeEnv(name: string) {
-  return process.env[name]
-}
+const MEDUSA_BACKEND_URL =
+  process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+  process.env.MEDUSA_BACKEND_URL ||
+  "http://localhost:9000"
 
-// Defaults to standard port for Medusa server
-let MEDUSA_BACKEND_URL = "http://localhost:9000"
-
-if (readRuntimeEnv("NEXT_PUBLIC_MEDUSA_BACKEND_URL")) {
-  MEDUSA_BACKEND_URL = readRuntimeEnv("NEXT_PUBLIC_MEDUSA_BACKEND_URL") as string
-} else if (readRuntimeEnv("MEDUSA_BACKEND_URL")) {
-  MEDUSA_BACKEND_URL = readRuntimeEnv("MEDUSA_BACKEND_URL") as string
-}
+const MEDUSA_PUBLISHABLE_KEY =
+  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ||
+  process.env.MEDUSA_STOREFRONT_PUBLISHABLE_KEY
 
 export const sdk = new Medusa({
   baseUrl: MEDUSA_BACKEND_URL,
   debug: process.env.NODE_ENV === "development",
-  publishableKey:
-    readRuntimeEnv("MEDUSA_STOREFRONT_PUBLISHABLE_KEY") ||
-    readRuntimeEnv("NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY"),
+  publishableKey: MEDUSA_PUBLISHABLE_KEY,
 })
 
 const originalFetch = sdk.client.fetch.bind(sdk.client)
