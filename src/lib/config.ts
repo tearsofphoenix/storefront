@@ -8,7 +8,9 @@ function readRuntimeEnv(name: string) {
 // Defaults to standard port for Medusa server
 let MEDUSA_BACKEND_URL = "http://localhost:9000"
 
-if (readRuntimeEnv("MEDUSA_BACKEND_URL")) {
+if (readRuntimeEnv("NEXT_PUBLIC_MEDUSA_BACKEND_URL")) {
+  MEDUSA_BACKEND_URL = readRuntimeEnv("NEXT_PUBLIC_MEDUSA_BACKEND_URL") as string
+} else if (readRuntimeEnv("MEDUSA_BACKEND_URL")) {
   MEDUSA_BACKEND_URL = readRuntimeEnv("MEDUSA_BACKEND_URL") as string
 }
 
