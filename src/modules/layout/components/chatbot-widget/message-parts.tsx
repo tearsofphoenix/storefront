@@ -4,6 +4,7 @@ import { useI18n } from "@lib/i18n/use-i18n"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
 import ChatbotMessageContent from "./message-content"
+import ChatbotInteractiveProductActions from "./interactive-product-actions"
 import {
   ChatbotCatalogItem,
   ChatbotCatalogProductDetail,
@@ -216,6 +217,8 @@ const ChatbotProductDetailCard = ({
           </div>
         </div>
       )}
+
+      <ChatbotInteractiveProductActions productHandle={product.handle} />
 
       <LocalizedClientLink
         href={`/products/${product.handle}`}

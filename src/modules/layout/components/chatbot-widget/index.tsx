@@ -375,7 +375,7 @@ const ChatbotWidget = () => {
             ? {
                 ...message,
                 content: settings.fallback_message || messages.chatbot.unavailable,
-                sources: [{ type: "fallback", label: "stream-error" }],
+                sources: [{ type: "fallback", label: messages.chatbot.streamError }],
                 handoffMessage: settings.handoff_message,
                 isStreaming: false,
                 statusText: undefined,
