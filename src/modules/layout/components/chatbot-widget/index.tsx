@@ -6,6 +6,7 @@ import { trackChatbotEvent } from "@lib/util/chatbot-analytics"
 import { Button } from "@medusajs/ui"
 import { useParams, usePathname } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import ChatbotMessageContent from "./message-content"
 import { useChatbotProductContext } from "./context"
 import { getProductHandleFromPath } from "./shared"
 import { ChatbotProductContext } from "./types"
@@ -357,7 +358,11 @@ const ChatbotWidget = () => {
                         : "bg-[#111827] text-white"
                     }`}
                   >
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    {isAssistant ? (
+                      <ChatbotMessageContent content={message.content} />
+                    ) : (
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    )}
                     {isAssistant && message.sources && message.sources.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {message.sources.map((source) => (
