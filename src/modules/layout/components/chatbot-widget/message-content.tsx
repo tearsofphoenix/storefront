@@ -296,9 +296,9 @@ const renderInlineNodes = (content: string, keyPrefix: string): ReactNode[] => {
   let tokenIndex = 0
   let match: RegExpExecArray | null
 
-  INLINE_TOKEN_PATTERN.lastIndex = 0
+  const pattern = new RegExp(INLINE_TOKEN_PATTERN.source, "g")
 
-  while ((match = INLINE_TOKEN_PATTERN.exec(content)) !== null) {
+  while ((match = pattern.exec(content)) !== null) {
     if (match.index > currentIndex) {
       nodes.push(content.slice(currentIndex, match.index))
     }
