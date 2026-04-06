@@ -101,6 +101,7 @@ export const messages = {
     chatbot: {
       open: "Ask AI",
       close: "Close",
+      reset: "New chat",
       send: "Send",
       thinking: "Thinking...",
       placeholder: "Ask about products, shipping, or returns...",
@@ -109,6 +110,12 @@ export const messages = {
       suggested: "Suggested questions",
       productContext: "Product-aware support",
       generalContext: "FAQ and customer support",
+      currentProduct: "Current product",
+      selectedVariant: "Variant",
+      price: "Price",
+      availability: "Availability",
+      inStock: "In stock",
+      outOfStock: "Out of stock",
     },
     home: {
       metadataTitle: "Panda AI Store",
@@ -301,6 +308,7 @@ export const messages = {
     chatbot: {
       open: "Demander à l’IA",
       close: "Fermer",
+      reset: "Nouvelle discussion",
       send: "Envoyer",
       thinking: "Réflexion en cours...",
       placeholder: "Posez une question sur les produits, la livraison ou les retours...",
@@ -309,6 +317,12 @@ export const messages = {
       suggested: "Questions suggérées",
       productContext: "Assistant lié au produit",
       generalContext: "FAQ et support client",
+      currentProduct: "Produit actuel",
+      selectedVariant: "Variante",
+      price: "Prix",
+      availability: "Disponibilité",
+      inStock: "En stock",
+      outOfStock: "Rupture de stock",
     },
     home: {
       metadataTitle: "Panda AI Store",
@@ -502,6 +516,7 @@ export const messages = {
     chatbot: {
       open: "詢問 AI",
       close: "關閉",
+      reset: "新對話",
       send: "送出",
       thinking: "正在思考中...",
       placeholder: "詢問商品、配送或退貨相關問題...",
@@ -510,6 +525,12 @@ export const messages = {
       suggested: "建議問題",
       productContext: "商品頁專屬支援",
       generalContext: "FAQ 與客服協助",
+      currentProduct: "目前商品",
+      selectedVariant: "規格",
+      price: "價格",
+      availability: "庫存狀態",
+      inStock: "有現貨",
+      outOfStock: "缺貨",
     },
     home: {
       metadataTitle: "Panda AI Store",

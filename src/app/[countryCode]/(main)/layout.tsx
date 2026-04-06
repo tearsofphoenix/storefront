@@ -8,6 +8,7 @@ import { StoreCartShippingOption } from "@medusajs/types"
 import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import Footer from "@modules/layout/templates/footer"
 import ChatbotWidget from "@modules/layout/components/chatbot-widget"
+import { ChatbotProductContextProvider } from "@modules/layout/components/chatbot-widget/context"
 import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
 
@@ -30,32 +31,34 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: theme.shellBackground,
-        backgroundImage:
-          theme.headingStyle === "serif"
-            ? `linear-gradient(180deg, ${theme.shellBackground} 0%, ${theme.navBackground} 55%, ${theme.footerBackground} 100%)`
-            : undefined,
-        color: "#111827",
-      }}
-    >
-      <Nav />
-      {customer && cart && (
-        <CartMismatchBanner customer={customer} cart={cart} />
-      )}
+    <ChatbotProductContextProvider>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: theme.shellBackground,
+          backgroundImage:
+            theme.headingStyle === "serif"
+              ? `linear-gradient(180deg, ${theme.shellBackground} 0%, ${theme.navBackground} 55%, ${theme.footerBackground} 100%)`
+              : undefined,
+          color: "#111827",
+        }}
+      >
+        <Nav />
+        {customer && cart && (
+          <CartMismatchBanner customer={customer} cart={cart} />
+        )}
 
-      {cart && (
-        <FreeShippingPriceNudge
-          variant="popup"
-          cart={cart}
-          shippingOptions={shippingOptions}
-        />
-      )}
-      {props.children}
-      <Footer />
-      <ChatbotWidget />
-    </div>
+        {cart && (
+          <FreeShippingPriceNudge
+            variant="popup"
+            cart={cart}
+            shippingOptions={shippingOptions}
+          />
+        )}
+        {props.children}
+        <Footer />
+        <ChatbotWidget />
+      </div>
+    </ChatbotProductContextProvider>
   )
 }

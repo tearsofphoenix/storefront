@@ -10,8 +10,10 @@ import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { isStorefrontPluginEnabled } from "@lib/util/plugin-manifest"
+import { buildChatbotProductContext } from "@lib/util/chatbot-product-context"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
+import ChatbotContextSync from "../components/chatbot-context-sync"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
 
@@ -20,6 +22,7 @@ type ProductTemplateProps = {
   region: HttpTypes.StoreRegion
   countryCode: string
   images: HttpTypes.StoreProductImage[]
+  selectedVariantId?: string
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
@@ -27,13 +30,20 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   region,
   countryCode,
   images,
+  selectedVariantId,
 }) => {
   if (!product || !product.id) {
     return notFound()
   }
 
+  const chatbotProductContext = buildChatbotProductContext({
+    product,
+    selectedVariantId,
+  })
+
   return (
     <>
+      <ChatbotContextSync productContext={chatbotProductContext} />
       <div
         className="content-container py-10 small:py-12"
         data-testid="product-container"

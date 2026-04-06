@@ -2,9 +2,13 @@
 
 import { sdk } from "@lib/config"
 import { useI18n } from "@lib/i18n/use-i18n"
+import { trackChatbotEvent } from "@lib/util/chatbot-analytics"
 import { Button } from "@medusajs/ui"
 import { useParams, usePathname } from "next/navigation"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useChatbotProductContext } from "./context"
+import { getProductHandleFromPath } from "./shared"
+import { ChatbotProductContext } from "./types"
 
 type ChatbotSettings = {
   is_enabled: boolean
@@ -33,6 +37,16 @@ const createMessageId = () => {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`
 }
 
+const createWelcomeMessage = (content: string): ChatbotMessage[] => {
+  return [
+    {
+      id: createMessageId(),
+      role: "assistant",
+      content,
+    },
+  ]
+}
+
 const ChatbotIcon = () => {
   return (
     <svg
@@ -53,20 +67,11 @@ const ChatbotIcon = () => {
   )
 }
 
-const getProductHandleFromPath = (pathname: string) => {
-  const segments = pathname.split("/").filter(Boolean)
-
-  if (segments.length >= 3 && segments[1] === "products") {
-    return segments[2]
-  }
-
-  return undefined
-}
-
 const ChatbotWidget = () => {
   const { messages } = useI18n()
   const pathname = usePathname()
   const params = useParams()
+  const { productContext } = useChatbotProductContext()
   const [isOpen, setIsOpen] = useState(false)
   const [settings, setSettings] = useState<ChatbotSettings | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatbotMessage[]>([])
@@ -74,10 +79,36 @@ const ChatbotWidget = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [sessionId] = useState(() => crypto.randomUUID())
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const conversationScopeRef = useRef<string | null>(null)
   const countryCode = params.countryCode as string
   const productHandle = useMemo(() => getProductHandleFromPath(pathname), [pathname])
+  const activeProductContext = useMemo<ChatbotProductContext | null>(() => {
+    if (!productHandle || !productContext || productContext.handle !== productHandle) {
+      return null
+    }
+
+    return productContext
+  }, [productContext, productHandle])
+  const conversationScope = activeProductContext?.handle
+    ? `product:${activeProductContext.handle}`
+    : "general"
+
+  const resetConversation = useCallback(
+    (nextSettings: ChatbotSettings | null = settings) => {
+      if (!nextSettings) {
+        return
+      }
+
+      setChatMessages(createWelcomeMessage(nextSettings.welcome_message))
+      setInput("")
+      setError(null)
+      setIsLoading(false)
+      setSessionId(crypto.randomUUID())
+    },
+    [settings]
+  )
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -90,13 +121,7 @@ const ChatbotWidget = () => {
         )
 
         setSettings(response.settings)
-        setChatMessages([
-          {
-            id: createMessageId(),
-            role: "assistant",
-            content: response.settings.welcome_message,
-          },
-        ])
+        setChatMessages(createWelcomeMessage(response.settings.welcome_message))
       } catch {
         setError(messages.chatbot.unavailable)
       } finally {
@@ -114,6 +139,20 @@ const ChatbotWidget = () => {
 
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [chatMessages, isOpen])
+
+  useEffect(() => {
+    if (!settings || !hasLoaded) {
+      return
+    }
+
+    const previousScope = conversationScopeRef.current
+
+    if (previousScope && previousScope !== conversationScope) {
+      resetConversation(settings)
+    }
+
+    conversationScopeRef.current = conversationScope
+  }, [conversationScope, hasLoaded, resetConversation, settings])
 
   const sendMessage = async (rawValue: string) => {
     const trimmedValue = rawValue.trim()
@@ -135,6 +174,13 @@ const ChatbotWidget = () => {
     setInput("")
     setError(null)
     setIsLoading(true)
+    trackChatbotEvent("chatbot_message_sent", {
+      country_code: countryCode,
+      page_path: pathname,
+      product_handle: activeProductContext?.handle,
+      question: trimmedValue,
+      scope: activeProductContext ? "product" : "general",
+    })
 
     try {
       const response = await sdk.client.fetch<{
@@ -147,6 +193,7 @@ const ChatbotWidget = () => {
           session_id: sessionId,
           page_path: pathname,
           product_handle: productHandle,
+          product_context: activeProductContext ?? undefined,
           messages: nextMessages.map((message) => ({
             role: message.role,
             content: message.content,
@@ -164,7 +211,21 @@ const ChatbotWidget = () => {
           handoffMessage: response.handoff_message,
         },
       ])
+      trackChatbotEvent("chatbot_message_received", {
+        country_code: countryCode,
+        page_path: pathname,
+        product_handle: activeProductContext?.handle,
+        source_count: response.sources?.length ?? 0,
+        scope: activeProductContext ? "product" : "general",
+      })
     } catch {
+      trackChatbotEvent("chatbot_error", {
+        country_code: countryCode,
+        page_path: pathname,
+        product_handle: activeProductContext?.handle,
+        scope: activeProductContext ? "product" : "general",
+        error: "request_failed",
+      })
       setError(settings.fallback_message || messages.chatbot.unavailable)
     } finally {
       setIsLoading(false)
@@ -176,6 +237,31 @@ const ChatbotWidget = () => {
     await sendMessage(input)
   }
 
+  const handleToggle = () => {
+    setIsOpen((currentValue) => {
+      const nextValue = !currentValue
+
+      trackChatbotEvent(nextValue ? "chatbot_opened" : "chatbot_closed", {
+        country_code: countryCode,
+        page_path: pathname,
+        product_handle: activeProductContext?.handle,
+        scope: activeProductContext ? "product" : "general",
+      })
+
+      return nextValue
+    })
+  }
+
+  const handleReset = () => {
+    resetConversation()
+    trackChatbotEvent("chatbot_reset", {
+      country_code: countryCode,
+      page_path: pathname,
+      product_handle: activeProductContext?.handle,
+      scope: activeProductContext ? "product" : "general",
+    })
+  }
+
   if (!hasLoaded || !settings?.is_enabled) {
     return null
   }
@@ -183,28 +269,78 @@ const ChatbotWidget = () => {
   return (
     <>
       {isOpen && (
-        <div className="fixed bottom-24 right-4 z-50 w-[calc(100vw-2rem)] max-w-[380px] rounded-[18px] border border-[#d9dfe8] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.16)] small:right-6">
+        <div
+          className="fixed right-4 z-50 w-[calc(100vw-2rem)] max-w-[396px] overflow-hidden rounded-[20px] border border-[#d9dfe8] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.16)] small:right-6"
+          style={{
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.75rem)",
+          }}
+        >
           <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-[#111827]">
                 {settings.title || messages.chatbot.title}
               </p>
               <p className="text-xs text-[#6b7280]">
-                {productHandle
+                {activeProductContext
                   ? messages.chatbot.productContext
                   : messages.chatbot.generalContext}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="text-sm text-[#6b7280] transition-colors hover:text-[#111827]"
-            >
-              {messages.chatbot.close}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="text-xs font-medium text-[#6b7280] transition-colors hover:text-[#111827]"
+              >
+                {messages.chatbot.reset}
+              </button>
+              <button
+                type="button"
+                onClick={handleToggle}
+                className="text-sm text-[#6b7280] transition-colors hover:text-[#111827]"
+              >
+                {messages.chatbot.close}
+              </button>
+            </div>
           </div>
 
-          <div className="max-h-[420px] space-y-4 overflow-y-auto px-4 py-4">
+          {activeProductContext && (
+            <div className="border-b border-[#eef2f7] bg-[#f8fafc] px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
+                {messages.chatbot.currentProduct}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-[#111827]">
+                {activeProductContext.title}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {activeProductContext.selected_variant_title && (
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                    {messages.chatbot.selectedVariant}:{" "}
+                    {activeProductContext.selected_variant_title}
+                  </span>
+                )}
+                {activeProductContext.price_label && (
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                    {messages.chatbot.price}: {activeProductContext.price_label}
+                  </span>
+                )}
+                {typeof activeProductContext.selected_variant_in_stock ===
+                  "boolean" && (
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                    {messages.chatbot.availability}:{" "}
+                    {activeProductContext.selected_variant_in_stock
+                      ? messages.chatbot.inStock
+                      : messages.chatbot.outOfStock}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div
+            className="no-scrollbar max-h-[420px] space-y-4 overflow-y-auto px-4 py-4"
+            aria-live="polite"
+          >
             {chatMessages.map((message) => {
               const isAssistant = message.role === "assistant"
 
@@ -214,7 +350,7 @@ const ChatbotWidget = () => {
                   className={`flex ${isAssistant ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                    className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${
                       isAssistant
                         ? "bg-[#f3f4f6] text-[#111827]"
                         : "bg-[#111827] text-white"
@@ -258,17 +394,26 @@ const ChatbotWidget = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
-            <div className="border-t border-[#f3f4f6] px-4 py-3">
-              <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
-                {messages.chatbot.suggested}
-              </p>
+            {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
+              <div className="border-t border-[#f3f4f6] px-4 py-3">
+                <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
+                  {messages.chatbot.suggested}
+                </p>
               <div className="flex flex-wrap gap-2">
                 {settings.suggested_questions.map((question) => (
                   <button
                     key={question}
                     type="button"
-                    onClick={() => void sendMessage(question)}
+                    onClick={() => {
+                      trackChatbotEvent("chatbot_suggested_question_clicked", {
+                        country_code: countryCode,
+                        page_path: pathname,
+                        product_handle: activeProductContext?.handle,
+                        question,
+                        scope: activeProductContext ? "product" : "general",
+                      })
+                      void sendMessage(question)
+                    }}
                     className="rounded-full border border-[#d9dfe8] px-3 py-1.5 text-xs text-[#111827] transition-colors hover:bg-[#f8fafc]"
                   >
                     {question}
@@ -282,8 +427,15 @@ const ChatbotWidget = () => {
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault()
+                  void sendMessage(input)
+                }
+              }}
               placeholder={settings.placeholder_text || messages.chatbot.placeholder}
               className="min-h-[92px] w-full rounded-xl border border-[#d9dfe8] px-3 py-3 text-sm outline-none transition-colors focus:border-[#111827]"
+              disabled={isLoading}
             />
             <div className="mt-3 flex items-center justify-between">
               <span className="text-xs text-[#6b7280]">
@@ -304,9 +456,13 @@ const ChatbotWidget = () => {
 
       <button
         type="button"
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={handleToggle}
         className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-[#111827] px-4 py-3 text-sm font-medium text-white shadow-[0_18px_40px_rgba(15,23,42,0.24)] transition-transform hover:-translate-y-0.5 small:right-6"
+        style={{
+          bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
+        }}
         data-testid="chatbot-toggle"
+        aria-expanded={isOpen}
       >
         <ChatbotIcon />
         <span>{messages.chatbot.open}</span>
