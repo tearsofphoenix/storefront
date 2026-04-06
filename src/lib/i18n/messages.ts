@@ -123,6 +123,9 @@ export const messages = {
     product: {
       pluginExtensions: "Storefront extensions",
       activePluginCapabilities: "Additional plugin capabilities active on this storefront",
+      relatedProductsHeading: "Related products",
+      relatedProductsDescription:
+        "You might also want to check out these products.",
       reviewsHeading: "Feedback aligned with {name}",
       reviewsDescription:
         "The reviews plugin is active for this storefront. Connect your live review source to surface verified ratings, customer notes, and purchase confidence directly on the product page.",
@@ -297,6 +300,9 @@ export const messages = {
       pluginExtensions: "Extensions de la vitrine",
       activePluginCapabilities:
         "Fonctionnalités de plugins supplémentaires actives sur cette vitrine",
+      relatedProductsHeading: "Produits associés",
+      relatedProductsDescription:
+        "Vous pourriez aussi avoir envie de découvrir ces produits.",
       reviewsHeading: "Avis associés à {name}",
       reviewsDescription:
         "Le plugin d'avis est actif sur cette vitrine. Connectez votre source d'avis en direct pour afficher des notes vérifiées, des retours clients et davantage de confiance directement sur la fiche produit.",
@@ -464,6 +470,8 @@ export const messages = {
     product: {
       pluginExtensions: "商城擴充",
       activePluginCapabilities: "此商城已啟用的額外插件能力",
+      relatedProductsHeading: "相關商品",
+      relatedProductsDescription: "你也可以順便看看這些商品。",
       reviewsHeading: "與 {name} 相符的評論體驗",
       reviewsDescription:
         "此 storefront 已啟用評論插件。連接你的即時評論來源後，即可在商品頁直接展示已驗證評分、顧客心得與購買信心。",
