@@ -12,6 +12,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import ECPayMapSelector from "../ecpay-map"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
@@ -146,7 +147,8 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const handleSetShippingMethod = async (
     id: string,
-    variant: "shipping" | "pickup"
+    variant: "shipping" | "pickup",
+    data?: Record<string, any>
   ) => {
     setError(null)
 
@@ -163,7 +165,7 @@ const Shipping: React.FC<ShippingProps> = ({
       return id
     })
 
-    await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+    await setShippingMethod({ cartId: cart.id, shippingMethodId: id, data })
       .catch((err) => {
         setShippingMethodId(currentId)
 
@@ -175,8 +177,43 @@ const Shipping: React.FC<ShippingProps> = ({
   }
 
   useEffect(() => {
+    const cvsStoreId = searchParams.get("cvsStoreId")
+    if (cvsStoreId && shippingMethodId) {
+      const cvsStoreName = searchParams.get("cvsStoreName")
+      const cvsAddress = searchParams.get("cvsAddress")
+      const cvsTelephone = searchParams.get("cvsTelephone")
+      const logisticsSubType = searchParams.get("logisticsSubType")
+      
+      const variant = _pickupMethods?.some(m => m.id === shippingMethodId) ? "pickup" : "shipping"
+      
+      handleSetShippingMethod(shippingMethodId, variant, {
+        CVSStoreID: cvsStoreId,
+        CVSStoreName: cvsStoreName,
+        CVSAddress: cvsAddress,
+        CVSTelephone: cvsTelephone,
+        LogisticsSubType: logisticsSubType
+      }).then(() => {
+        const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete("cvsStoreId")
+        newParams.delete("cvsStoreName")
+        newParams.delete("cvsAddress")
+        newParams.delete("cvsTelephone")
+        newParams.delete("logisticsSubType")
+        router.replace(`${pathname}?${newParams.toString()}`, { scroll: false })
+      })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, shippingMethodId])
+
+  useEffect(() => {
     setError(null)
   }, [isOpen])
+
+  const selectedOption = [...(_shippingMethods || []), ...(_pickupMethods || [])].find(
+    (o) => o.id === shippingMethodId
+  )
+  const isECPaySelected = selectedOption?.provider_id === "ecpay-logistics"
+  const hasSelectedStore = Boolean(cart.shipping_methods?.[0]?.data?.CVSStoreID)
 
   return (
     <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
@@ -287,47 +324,77 @@ const Shipping: React.FC<ShippingProps> = ({
                       typeof calculatedPricesMap[option.id] !== "number"
 
                     return (
-                      <Radio
-                        key={option.id}
-                        value={option.id}
-                        data-testid="delivery-option-radio"
-                        disabled={isDisabled}
-                        className={clx(
-                          "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-                          {
-                            "border-ui-border-interactive":
-                              option.id === shippingMethodId,
-                            "hover:shadow-brders-none cursor-not-allowed":
-                              isDisabled,
-                          }
-                        )}
-                      >
-                        <div className="flex items-center gap-x-4">
-                          <MedusaRadio
-                            checked={option.id === shippingMethodId}
-                          />
-                          <span className="text-base-regular">
-                            {option.name}
-                          </span>
-                        </div>
-                        <span className="justify-self-end text-ui-fg-base">
-                          {option.price_type === "flat" ? (
-                            convertToLocale({
-                              amount: option.amount!,
-                              currency_code: cart?.currency_code,
-                            })
-                          ) : calculatedPricesMap[option.id] ? (
-                            convertToLocale({
-                              amount: calculatedPricesMap[option.id],
-                              currency_code: cart?.currency_code,
-                            })
-                          ) : isLoadingPrices ? (
-                            <Loader />
-                          ) : (
-                            "-"
+                      <div key={option.id} className="flex flex-col mb-2">
+                        <Radio
+                          value={option.id}
+                          data-testid="delivery-option-radio"
+                          disabled={isDisabled}
+                          className={clx(
+                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 hover:shadow-borders-interactive-with-active",
+                            {
+                              "border-ui-border-interactive":
+                                option.id === shippingMethodId,
+                              "hover:shadow-brders-none cursor-not-allowed":
+                                isDisabled,
+                            }
                           )}
-                        </span>
-                      </Radio>
+                        >
+                          <div className="flex items-center gap-x-4">
+                            <MedusaRadio
+                              checked={option.id === shippingMethodId}
+                            />
+                            <span className="text-base-regular">
+                              {option.name}
+                            </span>
+                          </div>
+                          <span className="justify-self-end text-ui-fg-base">
+                            {option.price_type === "flat" ? (
+                              convertToLocale({
+                                amount: option.amount!,
+                                currency_code: cart?.currency_code,
+                              })
+                            ) : calculatedPricesMap[option.id] ? (
+                              convertToLocale({
+                                amount: calculatedPricesMap[option.id],
+                                currency_code: cart?.currency_code,
+                              })
+                            ) : isLoadingPrices ? (
+                              <Loader />
+                            ) : (
+                              "-"
+                            )}
+                          </span>
+                        </Radio>
+                        {option.id === shippingMethodId && option.provider_id === "ecpay-logistics" && (
+                          <div className="w-full mt-2 pl-8 pr-4 mb-2">
+                            {cart.shipping_methods?.[0]?.data?.CVSStoreID ? (
+                              <div className="mb-4 p-4 border border-[#e5e7eb] rounded-md bg-[#f8fafc]">
+                                <Text className="font-semibold text-ui-fg-base mb-1">
+                                  {String(cart.shipping_methods[0].data.CVSStoreName)} ({String(cart.shipping_methods[0].data.CVSStoreID)})
+                                </Text>
+                                <Text className="text-ui-fg-subtle text-sm mb-3">
+                                  {String(cart.shipping_methods[0].data.CVSAddress)}
+                                </Text>
+                                <ECPayMapSelector
+                                  merchantId={process.env.NEXT_PUBLIC_ECPAY_MERCHANT_ID}
+                                  isTest={process.env.NEXT_PUBLIC_ECPAY_IS_TEST !== "false"}
+                                  logisticsSubType={option.name?.toUpperCase().includes("FAMI") || option.name?.includes("全家") ? "FAMI" : (option.name?.toUpperCase().includes("HILIFE") || option.name?.includes("萊爾富") ? "HILIFE" : (option.name?.toUpperCase().includes("OK") ? "OKMART" : "UNIMARTC2C"))}
+                                  serverReplyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/api/ecpay/map-reply`}
+                                  disabled={isLoading}
+                                />
+                              </div>
+                            ) : (
+                              <ECPayMapSelector
+                                merchantId={process.env.NEXT_PUBLIC_ECPAY_MERCHANT_ID}
+                                isTest={process.env.NEXT_PUBLIC_ECPAY_IS_TEST !== "false"}
+                                logisticsSubType={option.name?.toUpperCase().includes("FAMI") || option.name?.includes("全家") ? "FAMI" : (option.name?.toUpperCase().includes("HILIFE") || option.name?.includes("萊爾富") ? "HILIFE" : (option.name?.toUpperCase().includes("OK") ? "OKMART" : "UNIMARTC2C"))}
+                                serverReplyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/api/ecpay/map-reply`}
+                                disabled={isLoading}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
                     )
                   })}
                 </RadioGroup>
@@ -407,12 +474,20 @@ const Shipping: React.FC<ShippingProps> = ({
               error={error}
               data-testid="delivery-option-error-message"
             />
+            {isECPaySelected && !hasSelectedStore && (
+              <Text className="text-rose-500 txt-medium mb-4">
+                {"Please select a store using the map selector before continuing."}
+              </Text>
+            )}
             <Button
               size="large"
               className="mt"
               onClick={handleSubmit}
               isLoading={isLoading}
-              disabled={!cart.shipping_methods?.[0]}
+              disabled={
+                !cart.shipping_methods?.[0] || 
+                (isECPaySelected && !hasSelectedStore)
+              }
               data-testid="submit-delivery-option-button"
             >
               {messages.common.continueToPayment}
