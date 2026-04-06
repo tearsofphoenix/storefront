@@ -32,6 +32,8 @@ type ChatbotMessage = {
   content: string
   sources?: ChatbotSource[]
   handoffMessage?: string
+  isStreaming?: boolean
+  statusText?: string
 }
 
 const createMessageId = () => {
@@ -83,6 +85,7 @@ const ChatbotWidget = () => {
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const conversationScopeRef = useRef<string | null>(null)
+  const activeStreamAbortRef = useRef<(() => void) | null>(null)
   const countryCode = params.countryCode as string
   const productHandle = useMemo(() => getProductHandleFromPath(pathname), [pathname])
   const activeProductContext = useMemo<ChatbotProductContext | null>(() => {
@@ -102,6 +105,8 @@ const ChatbotWidget = () => {
         return
       }
 
+      activeStreamAbortRef.current?.()
+      activeStreamAbortRef.current = null
       setChatMessages(createWelcomeMessage(nextSettings.welcome_message))
       setInput("")
       setError(null)
@@ -110,6 +115,13 @@ const ChatbotWidget = () => {
     },
     [settings]
   )
+
+  useEffect(() => {
+    return () => {
+      activeStreamAbortRef.current?.()
+      activeStreamAbortRef.current = null
+    }
+  }, [])
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -162,12 +174,20 @@ const ChatbotWidget = () => {
       return
     }
 
+    const assistantMessageId = createMessageId()
     const nextMessages = [
       ...chatMessages,
       {
         id: createMessageId(),
         role: "user" as const,
         content: trimmedValue,
+      },
+      {
+        id: assistantMessageId,
+        role: "assistant" as const,
+        content: "",
+        isStreaming: true,
+        statusText: messages.chatbot.thinking,
       },
     ]
 
@@ -184,11 +204,7 @@ const ChatbotWidget = () => {
     })
 
     try {
-      const response = await sdk.client.fetch<{
-        message: string
-        sources?: ChatbotSource[]
-        handoff_message?: string
-      }>("/store/chatbot/message", {
+      const { stream, abort } = await sdk.client.fetchStream("/store/chatbot/message", {
         method: "POST",
         body: {
           session_id: sessionId,
@@ -203,24 +219,113 @@ const ChatbotWidget = () => {
         },
       })
 
-      setChatMessages((currentMessages) => [
-        ...currentMessages,
-        {
-          id: createMessageId(),
-          role: "assistant",
-          content: response.message,
-          sources: response.sources,
-          handoffMessage: response.handoff_message,
-        },
-      ])
+      activeStreamAbortRef.current = abort
+
+      if (!stream) {
+        throw new Error("Chatbot stream was not established")
+      }
+
+      let finalResponse:
+        | {
+            message: string
+            sources?: ChatbotSource[]
+            handoff_message?: string
+          }
+        | null = null
+
+      for await (const event of stream) {
+        if (!event.data) {
+          continue
+        }
+
+        const payload = JSON.parse(event.data) as {
+          delta?: string
+          state?: string
+          label?: string
+          message?: string
+          sources?: ChatbotSource[]
+          handoff_message?: string
+        }
+
+        if (event.event === "chunk" && payload.delta) {
+          setChatMessages((currentMessages) =>
+            currentMessages.map((message) =>
+              message.id === assistantMessageId
+                ? {
+                    ...message,
+                    content: `${message.content}${payload.delta ?? ""}`,
+                    isStreaming: true,
+                    statusText: undefined,
+                  }
+                : message
+            )
+          )
+          continue
+        }
+
+        if (event.event === "status") {
+          setChatMessages((currentMessages) =>
+            currentMessages.map((message) =>
+              message.id === assistantMessageId
+                ? {
+                    ...message,
+                    statusText: payload.label || messages.chatbot.thinking,
+                  }
+                : message
+            )
+          )
+          continue
+        }
+
+        if (event.event === "done") {
+          finalResponse = {
+            message: payload.message || "",
+            sources: payload.sources,
+            handoff_message: payload.handoff_message,
+          }
+          break
+        }
+
+        if (event.event === "error") {
+          finalResponse = {
+            message: payload.message || settings.fallback_message,
+            sources: payload.sources,
+            handoff_message: payload.handoff_message,
+          }
+          break
+        }
+      }
+
+      if (!finalResponse) {
+        throw new Error("Chatbot stream ended without a final payload")
+      }
+
+      setChatMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content: finalResponse?.message || message.content,
+                sources: finalResponse?.sources,
+                handoffMessage: finalResponse?.handoff_message,
+                isStreaming: false,
+                statusText: undefined,
+              }
+            : message
+        )
+      )
       trackChatbotEvent("chatbot_message_received", {
         country_code: countryCode,
         page_path: pathname,
         product_handle: activeProductContext?.handle,
-        source_count: response.sources?.length ?? 0,
+        source_count: finalResponse.sources?.length ?? 0,
         scope: activeProductContext ? "product" : "general",
       })
-    } catch {
+    } catch (streamError) {
+      if (streamError instanceof Error && streamError.name === "AbortError") {
+        return
+      }
+
       trackChatbotEvent("chatbot_error", {
         country_code: countryCode,
         page_path: pathname,
@@ -229,7 +334,22 @@ const ChatbotWidget = () => {
         error: "request_failed",
       })
       setError(settings.fallback_message || messages.chatbot.unavailable)
+      setChatMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content: settings.fallback_message || messages.chatbot.unavailable,
+                sources: [{ type: "fallback", label: "stream-error" }],
+                handoffMessage: settings.handoff_message,
+                isStreaming: false,
+                statusText: undefined,
+              }
+            : message
+        )
+      )
     } finally {
+      activeStreamAbortRef.current = null
       setIsLoading(false)
     }
   }
@@ -358,7 +478,14 @@ const ChatbotWidget = () => {
                         : "bg-[#111827] text-white"
                     }`}
                   >
-                    {isAssistant ? (
+                    {isAssistant && message.isStreaming ? (
+                      <p className="whitespace-pre-wrap text-sm leading-6">
+                        {message.content || message.statusText || messages.chatbot.thinking}
+                        <span className="ml-1 inline-block animate-pulse text-[#6b7280]">
+                          |
+                        </span>
+                      </p>
+                    ) : isAssistant ? (
                       <ChatbotMessageContent content={message.content} />
                     ) : (
                       <p className="whitespace-pre-wrap">{message.content}</p>
@@ -385,7 +512,7 @@ const ChatbotWidget = () => {
               )
             })}
 
-            {isLoading && (
+            {isLoading && !chatMessages.some((message) => message.isStreaming) && (
               <div className="flex justify-start">
                 <div className="rounded-2xl bg-[#f3f4f6] px-4 py-3 text-sm text-[#6b7280]">
                   {messages.chatbot.thinking}

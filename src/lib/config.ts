@@ -1,5 +1,9 @@
 import { getLocaleHeader } from "@lib/util/get-locale-header"
-import Medusa, { FetchArgs, FetchInput } from "@medusajs/js-sdk"
+import Medusa, {
+  FetchArgs,
+  FetchInput,
+  FetchStreamResponse,
+} from "@medusajs/js-sdk"
 
 const MEDUSA_BACKEND_URL =
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
@@ -17,11 +21,9 @@ export const sdk = new Medusa({
 })
 
 const originalFetch = sdk.client.fetch.bind(sdk.client)
+const originalFetchStream = sdk.client.fetchStream.bind(sdk.client)
 
-sdk.client.fetch = async <T>(
-  input: FetchInput,
-  init?: FetchArgs
-): Promise<T> => {
+const withLocaleHeaders = async (init?: FetchArgs) => {
   const headers = init?.headers ?? {}
   let localeHeader: Record<string, string | null> | undefined
   try {
@@ -29,13 +31,25 @@ sdk.client.fetch = async <T>(
     headers["x-medusa-locale"] ??= localeHeader["x-medusa-locale"]
   } catch {}
 
-  const newHeaders = {
-    ...localeHeader,
-    ...headers,
-  }
-  init = {
+  return {
     ...init,
-    headers: newHeaders,
-  }
-  return originalFetch(input, init)
+    headers: {
+      ...localeHeader,
+      ...headers,
+    },
+  } satisfies FetchArgs
+}
+
+sdk.client.fetch = async <T>(
+  input: FetchInput,
+  init?: FetchArgs
+): Promise<T> => {
+  return originalFetch(input, await withLocaleHeaders(init))
+}
+
+sdk.client.fetchStream = async (
+  input: FetchInput,
+  init?: FetchArgs
+): Promise<FetchStreamResponse> => {
+  return originalFetchStream(input, await withLocaleHeaders(init))
 }
