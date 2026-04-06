@@ -8,15 +8,11 @@ import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation"
-import { startTransition, useEffect, useMemo, useRef, useState } from "react"
+import { useParams, usePathname, useSearchParams } from "next/navigation"
+import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
+import { useRouter } from "next/navigation"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -25,26 +21,12 @@ type ProductActionsProps = {
 }
 
 const optionsAsKeymap = (
-  variantOptions: HttpTypes.StoreProductVariant["options"] | undefined
+  variantOptions: HttpTypes.StoreProductVariant["options"]
 ) => {
   return variantOptions?.reduce((acc: Record<string, string>, varopt: any) => {
     acc[varopt.option_id] = varopt.value
     return acc
   }, {})
-}
-
-const getOptionsFromVariantId = (
-  variants: HttpTypes.StoreProductVariant[] | null | undefined,
-  selectedVariantId?: string | null
-) => {
-  const variantFromSearch = selectedVariantId
-    ? variants?.find((variant) => variant.id === selectedVariantId)
-    : undefined
-
-  const fallbackVariant =
-    !variantFromSearch && variants?.length === 1 ? variants[0] : undefined
-
-  return optionsAsKeymap(variantFromSearch?.options ?? fallbackVariant?.options) ?? {}
 }
 
 export default function ProductActions({
@@ -55,25 +37,17 @@ export default function ProductActions({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const selectedVariantIdFromSearch = searchParams.get("v_id")
-  const searchParamsKey = searchParams.toString()
 
-  const [options, setOptions] = useState<Record<string, string | undefined>>(() =>
-    getOptionsFromVariantId(product.variants, selectedVariantIdFromSearch)
-  )
+  const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
 
   useEffect(() => {
-    const nextOptions = getOptionsFromVariantId(
-      product.variants,
-      selectedVariantIdFromSearch
-    )
-
-    setOptions((currentOptions) =>
-      isEqual(currentOptions, nextOptions) ? currentOptions : nextOptions
-    )
-  }, [product.variants, selectedVariantIdFromSearch])
+    if (product.variants?.length === 1) {
+      const variantOptions = optionsAsKeymap(product.variants[0].options)
+      setOptions(variantOptions ?? {})
+    }
+  }, [product.variants])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -103,7 +77,7 @@ export default function ProductActions({
   }, [product.variants, options])
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParamsKey)
+    const params = new URLSearchParams(searchParams.toString())
     const value = isValidVariant ? selectedVariant?.id : null
 
     if (params.get("v_id") === value) {
@@ -116,14 +90,8 @@ export default function ProductActions({
       params.delete("v_id")
     }
 
-    const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
-
-    startTransition(() => {
-      router.replace(nextUrl, {
-        scroll: false,
-      })
-    })
-  }, [isValidVariant, pathname, router, searchParamsKey, selectedVariant?.id])
+    router.replace(pathname + "?" + params.toString())
+  }, [isValidVariant, pathname, router, searchParams, selectedVariant])
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {

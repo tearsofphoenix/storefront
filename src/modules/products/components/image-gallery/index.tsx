@@ -26,14 +26,6 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
     [images]
   )
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const galleryImageKey = useMemo(
-    () => galleryImages.map((image) => image.id).join(","),
-    [galleryImages]
-  )
-
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [galleryImageKey])
 
   useEffect(() => {
     if (selectedIndex > galleryImages.length - 1) {
