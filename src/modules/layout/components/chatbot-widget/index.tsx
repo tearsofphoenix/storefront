@@ -80,7 +80,8 @@ const ChatbotWidget = () => {
   const [settings, setSettings] = useState<ChatbotSettings | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatbotMessage[]>([])
   const [input, setInput] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isStreamingResponse, setIsStreamingResponse] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
@@ -111,7 +112,8 @@ const ChatbotWidget = () => {
       setChatMessages(createWelcomeMessage(nextSettings.welcome_message))
       setInput("")
       setError(null)
-      setIsLoading(false)
+      setIsSubmitting(false)
+      setIsStreamingResponse(false)
       setSessionId(crypto.randomUUID())
     },
     [settings]
@@ -171,7 +173,7 @@ const ChatbotWidget = () => {
   const sendMessage = async (rawValue: string) => {
     const trimmedValue = rawValue.trim()
 
-    if (!trimmedValue || !settings || isLoading) {
+    if (!trimmedValue || !settings || isSubmitting || isStreamingResponse) {
       return
     }
 
@@ -198,7 +200,8 @@ const ChatbotWidget = () => {
     setChatMessages(nextMessages)
     setInput("")
     setError(null)
-    setIsLoading(true)
+    setIsSubmitting(true)
+    setIsStreamingResponse(true)
     trackChatbotEvent("chatbot_message_sent", {
       country_code: countryCode,
       page_path: pathname,
@@ -229,6 +232,8 @@ const ChatbotWidget = () => {
         throw new Error("Chatbot stream was not established")
       }
 
+      setIsSubmitting(false)
+
       let finalResponse:
         | {
             message: string
@@ -237,6 +242,7 @@ const ChatbotWidget = () => {
             handoff_message?: string
           }
         | null = null
+      let streamedMessage = ""
 
       for await (const event of stream) {
         if (!event.data) {
@@ -254,6 +260,7 @@ const ChatbotWidget = () => {
         }
 
         if (event.event === "chunk" && payload.delta) {
+          streamedMessage = `${streamedMessage}${payload.delta}`
           setChatMessages((currentMessages) =>
             currentMessages.map((message) =>
               message.id === assistantMessageId
@@ -285,29 +292,39 @@ const ChatbotWidget = () => {
 
         if (event.event === "done") {
           finalResponse = {
-            message: payload.message || "",
+            message: payload.message || streamedMessage,
             parts: payload.parts,
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
-          setIsLoading(false)
           break
         }
 
         if (event.event === "error") {
           finalResponse = {
-            message: payload.message || settings.fallback_message,
+            message: payload.message || streamedMessage || settings.fallback_message,
             parts: payload.parts,
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
-          setIsLoading(false)
           break
         }
       }
 
       if (!finalResponse) {
-        throw new Error("Chatbot stream ended without a final payload")
+        if (streamedMessage.trim()) {
+          finalResponse = {
+            message: streamedMessage,
+            parts: [
+              {
+                type: "text",
+                text: streamedMessage,
+              },
+            ],
+          }
+        } else {
+          throw new Error("Chatbot stream ended without a final payload")
+        }
       }
 
       setChatMessages((currentMessages) =>
@@ -361,7 +378,8 @@ const ChatbotWidget = () => {
       )
     } finally {
       activeStreamAbortRef.current = null
-      setIsLoading(false)
+      setIsSubmitting(false)
+      setIsStreamingResponse(false)
     }
   }
 
@@ -529,7 +547,7 @@ const ChatbotWidget = () => {
               )
             })}
 
-            {isLoading && !chatMessages.some((message) => message.isStreaming) && (
+            {isSubmitting && !chatMessages.some((message) => message.isStreaming) && (
               <div className="flex justify-start">
                 <div className="rounded-2xl bg-[#f3f4f6] px-4 py-3 text-sm text-[#6b7280]">
                   {messages.chatbot.thinking}
@@ -585,7 +603,7 @@ const ChatbotWidget = () => {
               }}
               placeholder={settings.placeholder_text || messages.chatbot.placeholder}
               className="min-h-[92px] w-full rounded-xl border border-[#d9dfe8] px-3 py-3 text-sm outline-none transition-colors focus:border-[#111827]"
-              disabled={isLoading}
+              disabled={isSubmitting || isStreamingResponse}
             />
             <div className="mt-3 flex items-center justify-between">
               <span className="text-xs text-[#6b7280]">
@@ -594,8 +612,8 @@ const ChatbotWidget = () => {
               <Button
                 type="submit"
                 className="rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
-                isLoading={isLoading}
-                disabled={isLoading || !input.trim()}
+                isLoading={isSubmitting}
+                disabled={isSubmitting || isStreamingResponse || !input.trim()}
               >
                 {messages.chatbot.send}
               </Button>
