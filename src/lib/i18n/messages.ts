@@ -17,6 +17,7 @@ export const messages = {
 
       exploreCatalog: "Explore catalog",
       browseAllProducts: "Browse all products",
+      selectPlaceholder: "Select...",
       viewAll: "View all",
       quantity: "Quantity",
       price: "Price",
@@ -115,6 +116,14 @@ export const messages = {
       shopCollection: "Shop {name}",
       browseCatalog: "Browse catalog",
     },
+    store: {
+      catalogDescription:
+        "Browse the full catalog in a simpler product grid inspired by the Nuxt storefront theme.",
+      sortBy: "Sort by",
+      latestArrivals: "Latest Arrivals",
+      priceLowHigh: "Price: Low -> High",
+      priceHighLow: "Price: High -> Low",
+    },
     footer: {
       eyebrow: "Thoughtful storefront theme",
       fallbackNote:
@@ -195,6 +204,7 @@ export const messages = {
       rightsReserved: "Tous droits réservés.",
       exploreCatalog: "Explorer le catalogue",
       browseAllProducts: "Voir tous les produits",
+      selectPlaceholder: "Sélectionner...",
       viewAll: "Tout voir",
       quantity: "Quantité",
       price: "Prix",
@@ -295,6 +305,14 @@ export const messages = {
       shopCollection: "Acheter {name}",
       browseCatalog: "Parcourir le catalogue",
     },
+    store: {
+      catalogDescription:
+        "Parcourez l'ensemble du catalogue dans une grille produit plus simple inspirée du thème storefront Nuxt.",
+      sortBy: "Trier par",
+      latestArrivals: "Dernières nouveautés",
+      priceLowHigh: "Prix : croissant",
+      priceHighLow: "Prix : décroissant",
+    },
     footer: {
       eyebrow: "Thème de vitrine réfléchi",
       fallbackNote:
@@ -378,6 +396,7 @@ export const messages = {
       rightsReserved: "版權所有。",
       exploreCatalog: "探索目錄",
       browseAllProducts: "瀏覽所有商品",
+      selectPlaceholder: "請選擇...",
       viewAll: "查看全部",
       quantity: "數量",
       price: "價格",
@@ -471,6 +490,13 @@ export const messages = {
         "以商品為核心的版面，搭配更柔和的面板、更清楚的層級，讓目錄保有呼吸感。",
       shopCollection: "選購 {name}",
       browseCatalog: "瀏覽目錄",
+    },
+    store: {
+      catalogDescription: "以更簡潔的商品網格瀏覽完整目錄，靈感來自 Nuxt storefront 主題。",
+      sortBy: "排序方式",
+      latestArrivals: "最新上架",
+      priceLowHigh: "價格：低到高",
+      priceHighLow: "價格：高到低",
     },
     footer: {
       eyebrow: "細緻設計的商城主題",

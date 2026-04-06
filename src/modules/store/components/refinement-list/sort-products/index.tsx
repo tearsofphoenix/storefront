@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@lib/i18n/use-i18n"
 import NativeSelect from "@modules/common/components/native-select"
 
 export type SortOptions = "price_asc" | "price_desc" | "created_at"
@@ -10,26 +11,27 @@ type SortProductsProps = {
   "data-testid"?: string
 }
 
-const sortOptions = [
-  {
-    value: "created_at",
-    label: "Latest Arrivals",
-  },
-  {
-    value: "price_asc",
-    label: "Price: Low -> High",
-  },
-  {
-    value: "price_desc",
-    label: "Price: High -> Low",
-  },
-]
-
 const SortProducts = ({
   "data-testid": dataTestId,
   sortBy,
   setQueryParams,
 }: SortProductsProps) => {
+  const { messages } = useI18n()
+  const sortOptions = [
+    {
+      value: "created_at",
+      label: messages.store.latestArrivals,
+    },
+    {
+      value: "price_asc",
+      label: messages.store.priceLowHigh,
+    },
+    {
+      value: "price_desc",
+      label: messages.store.priceHighLow,
+    },
+  ]
+
   const handleChange = (value: string) => {
     setQueryParams("sortBy", value as SortOptions)
   }
@@ -37,7 +39,7 @@ const SortProducts = ({
   return (
     <label className="grid gap-2">
       <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
-        Sort by
+        {messages.store.sortBy}
       </span>
       <NativeSelect
         data-testid={dataTestId}
