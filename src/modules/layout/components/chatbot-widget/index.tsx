@@ -21,7 +21,7 @@ type ChatbotSettings = {
 }
 
 type ChatbotSource = {
-  type: "faq" | "policy" | "product" | "fallback"
+  type: "faq" | "policy" | "product" | "catalog" | "fallback"
   label: string
 }
 
@@ -192,6 +192,7 @@ const ChatbotWidget = () => {
         body: {
           session_id: sessionId,
           page_path: pathname,
+          country_code: countryCode,
           product_handle: productHandle,
           product_context: activeProductContext ?? undefined,
           messages: nextMessages.map((message) => ({
