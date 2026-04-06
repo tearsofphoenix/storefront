@@ -38,3 +38,43 @@ export type ChatbotProductContext = {
   selected_variant_inventory_quantity?: number | null
   variants: ChatbotProductContextVariant[]
 }
+
+export type ChatbotSource = {
+  type: "faq" | "policy" | "product" | "catalog" | "fallback"
+  label: string
+}
+
+export type ChatbotCatalogItem = {
+  id: string
+  title: string
+  handle: string
+  subtitle?: string | null
+  thumbnail?: string | null
+  collection_title?: string | null
+  product_type?: string | null
+  price?: string | null
+  original_price?: string | null
+  currency_code?: string | null
+  on_sale: boolean
+  variant_titles: string[]
+  tags: string[]
+}
+
+export type ChatbotCatalogProductDetail = ChatbotCatalogItem & {
+  description?: string | null
+  option_titles: string[]
+}
+
+export type ChatbotMessagePart =
+  | {
+      type: "text"
+      text: string
+    }
+  | {
+      type: "product-list"
+      products: ChatbotCatalogItem[]
+    }
+  | {
+      type: "product-detail"
+      product: ChatbotCatalogProductDetail
+    }

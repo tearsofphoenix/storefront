@@ -7,9 +7,14 @@ import { Button } from "@medusajs/ui"
 import { useParams, usePathname } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import ChatbotMessageContent from "./message-content"
+import ChatbotMessageParts from "./message-parts"
 import { useChatbotProductContext } from "./context"
 import { getProductHandleFromPath } from "./shared"
-import { ChatbotProductContext } from "./types"
+import {
+  ChatbotMessagePart,
+  ChatbotProductContext,
+  ChatbotSource,
+} from "./types"
 
 type ChatbotSettings = {
   is_enabled: boolean
@@ -21,15 +26,11 @@ type ChatbotSettings = {
   handoff_message: string
 }
 
-type ChatbotSource = {
-  type: "faq" | "policy" | "product" | "catalog" | "fallback"
-  label: string
-}
-
 type ChatbotMessage = {
   id: string
   role: "user" | "assistant"
   content: string
+  parts?: ChatbotMessagePart[]
   sources?: ChatbotSource[]
   handoffMessage?: string
   isStreaming?: boolean
@@ -182,7 +183,7 @@ const ChatbotWidget = () => {
         role: "user" as const,
         content: trimmedValue,
       },
-    ]
+    ].filter((message) => message.content.trim().length > 0)
     const nextMessages = [
       ...requestMessages,
       {
@@ -231,6 +232,7 @@ const ChatbotWidget = () => {
       let finalResponse:
         | {
             message: string
+            parts?: ChatbotMessagePart[]
             sources?: ChatbotSource[]
             handoff_message?: string
           }
@@ -246,6 +248,7 @@ const ChatbotWidget = () => {
           state?: string
           label?: string
           message?: string
+          parts?: ChatbotMessagePart[]
           sources?: ChatbotSource[]
           handoff_message?: string
         }
@@ -283,18 +286,22 @@ const ChatbotWidget = () => {
         if (event.event === "done") {
           finalResponse = {
             message: payload.message || "",
+            parts: payload.parts,
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
+          setIsLoading(false)
           break
         }
 
         if (event.event === "error") {
           finalResponse = {
             message: payload.message || settings.fallback_message,
+            parts: payload.parts,
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
+          setIsLoading(false)
           break
         }
       }
@@ -309,6 +316,7 @@ const ChatbotWidget = () => {
             ? {
                 ...message,
                 content: finalResponse?.message || message.content,
+                parts: finalResponse?.parts,
                 sources: finalResponse?.sources,
                 handoffMessage: finalResponse?.handoff_message,
                 isStreaming: false,
@@ -483,13 +491,19 @@ const ChatbotWidget = () => {
                   >
                     {isAssistant && message.isStreaming ? (
                       <p className="whitespace-pre-wrap text-sm leading-6">
-                        {message.content || message.statusText || messages.chatbot.thinking}
+                        {message.content ||
+                          message.statusText ||
+                          messages.chatbot.thinking}
                         <span className="ml-1 inline-block animate-pulse text-[#6b7280]">
                           |
                         </span>
                       </p>
                     ) : isAssistant ? (
-                      <ChatbotMessageContent content={message.content} />
+                      message.parts && message.parts.length > 0 ? (
+                        <ChatbotMessageParts parts={message.parts} />
+                      ) : (
+                        <ChatbotMessageContent content={message.content} />
+                      )
                     ) : (
                       <p className="whitespace-pre-wrap">{message.content}</p>
                     )}
@@ -530,11 +544,11 @@ const ChatbotWidget = () => {
             <div ref={messagesEndRef} />
           </div>
 
-            {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
-              <div className="border-t border-[#f3f4f6] px-4 py-3">
-                <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
-                  {messages.chatbot.suggested}
-                </p>
+          {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
+            <div className="border-t border-[#f3f4f6] px-4 py-3">
+              <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
+                {messages.chatbot.suggested}
+              </p>
               <div className="flex flex-wrap gap-2">
                 {settings.suggested_questions.map((question) => (
                   <button
@@ -581,7 +595,7 @@ const ChatbotWidget = () => {
                 type="submit"
                 className="rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
                 isLoading={isLoading}
-                disabled={!input.trim()}
+                disabled={isLoading || !input.trim()}
               >
                 {messages.chatbot.send}
               </Button>
