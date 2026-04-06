@@ -175,13 +175,16 @@ const ChatbotWidget = () => {
     }
 
     const assistantMessageId = createMessageId()
-    const nextMessages = [
+    const requestMessages = [
       ...chatMessages,
       {
         id: createMessageId(),
         role: "user" as const,
         content: trimmedValue,
       },
+    ]
+    const nextMessages = [
+      ...requestMessages,
       {
         id: assistantMessageId,
         role: "assistant" as const,
@@ -212,7 +215,7 @@ const ChatbotWidget = () => {
           country_code: countryCode,
           product_handle: productHandle,
           product_context: activeProductContext ?? undefined,
-          messages: nextMessages.map((message) => ({
+          messages: requestMessages.map((message) => ({
             role: message.role,
             content: message.content,
           })),
