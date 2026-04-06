@@ -85,10 +85,10 @@ const SideMenu = ({
                 leaveFrom="translate-x-0 opacity-100"
                 leaveTo="-translate-x-4 opacity-0"
               >
-                <PopoverPanel className="fixed inset-y-0 left-0 z-[51] flex h-screen w-[min(88vw,24rem)] max-w-full text-sm sm:absolute sm:inset-y-auto sm:top-full sm:mt-3 sm:h-auto sm:w-[23rem]">
+                <PopoverPanel className="fixed inset-y-0 left-0 z-[51] flex h-screen w-[min(88vw,24rem)] max-w-full text-sm sm:absolute sm:inset-y-auto sm:top-full sm:mt-3 sm:h-[calc(100vh-6rem)] sm:w-[23rem]">
                   <div
                     data-testid="nav-menu-popup"
-                    className="flex h-full w-full flex-col overflow-hidden rounded-none border-r px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-h-[min(80vh,42rem)] sm:rounded-[18px] sm:border"
+                    className="flex h-full w-full flex-col overflow-hidden rounded-none border-r px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-h-none sm:rounded-[18px] sm:border"
                     style={{
                       background: `${navBackground}`,
                       borderColor: "#d9dfe8",
