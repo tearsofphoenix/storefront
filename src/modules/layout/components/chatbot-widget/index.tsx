@@ -297,6 +297,9 @@ const ChatbotWidget = () => {
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
+          activeStreamAbortRef.current = null
+          setIsSubmitting(false)
+          setIsStreamingResponse(false)
           break
         }
 
@@ -307,6 +310,9 @@ const ChatbotWidget = () => {
             sources: payload.sources,
             handoff_message: payload.handoff_message,
           }
+          activeStreamAbortRef.current = null
+          setIsSubmitting(false)
+          setIsStreamingResponse(false)
           break
         }
       }
