@@ -389,11 +389,6 @@ const ChatbotWidget = () => {
     }
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    await sendMessage(input)
-  }
-
   const handleToggle = () => {
     setIsOpen((currentValue) => {
       const nextValue = !currentValue
@@ -597,7 +592,7 @@ const ChatbotWidget = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="border-t border-[#e5e7eb] p-4">
+          <div className="border-t border-[#e5e7eb] p-4">
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -616,7 +611,10 @@ const ChatbotWidget = () => {
                 {countryCode?.toUpperCase()}
               </span>
               <Button
-                type="submit"
+                type="button"
+                onClick={() => {
+                  void sendMessage(input)
+                }}
                 className="rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
                 isLoading={isSubmitting}
                 disabled={isSubmitting || isStreamingResponse || !input.trim()}
@@ -624,7 +622,7 @@ const ChatbotWidget = () => {
                 {messages.chatbot.send}
               </Button>
             </div>
-          </form>
+          </div>
         </div>
       )}
 
