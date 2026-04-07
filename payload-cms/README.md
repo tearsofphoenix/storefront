@@ -85,3 +85,5 @@ pnpm migrate:create <name>
 ```
 
 For Vercel deployments, use the production `DATABASE_URL` and `PAYLOAD_SECRET` from the project settings or run the command from a shell that has the same values exported.
+
+This repo also includes `vercel.json`, which runs `pnpm run build:vercel` so Vercel deploys execute migrations before building the app.
