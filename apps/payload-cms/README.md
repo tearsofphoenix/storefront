@@ -73,7 +73,7 @@ This project uses PostgreSQL and keeps migrations in `src/migrations`.
 Before opening `/admin` on a new environment, run the initial migration against the same database used by the deployed app:
 
 ```bash
-cd payload-cms
+cd apps/payload-cms
 DATABASE_URL="postgres://..." PAYLOAD_SECRET="your-secret" pnpm migrate
 ```
 
