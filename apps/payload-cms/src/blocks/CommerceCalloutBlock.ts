@@ -2,11 +2,11 @@ import type { Block } from 'payload'
 
 import { anchorIdField } from './shared'
 
-export const MediaStoryBlock: Block = {
-  slug: 'media-story',
+export const CommerceCalloutBlock: Block = {
+  slug: 'commerce-callout',
   labels: {
-    singular: 'Media Story',
-    plural: 'Media Stories',
+    singular: 'Commerce Callout',
+    plural: 'Commerce Callouts',
   },
   fields: [
     anchorIdField,
@@ -15,17 +15,11 @@ export const MediaStoryBlock: Block = {
       type: 'text',
     },
     {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'body',
+      name: 'supportingText',
       type: 'textarea',
-      required: true,
     },
     {
-      name: 'mediaPosition',
+      name: 'imagePosition',
       type: 'select',
       defaultValue: 'right',
       options: [
@@ -40,10 +34,9 @@ export const MediaStoryBlock: Block = {
       ],
     },
     {
-      name: 'media',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
+      name: 'showImage',
+      type: 'checkbox',
+      defaultValue: true,
     },
   ],
 }

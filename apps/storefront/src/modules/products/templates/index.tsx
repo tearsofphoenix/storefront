@@ -44,42 +44,52 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     product,
     selectedVariantId,
   })
+  const hasInlineCommerceCallout = Boolean(
+    contentBlocks?.some((block) => block.blockType === "commerce-callout")
+  )
 
   return (
     <>
       <ChatbotContextSync productContext={chatbotProductContext} />
-      <div
-        className="content-container py-10 small:py-12"
-        data-testid="product-container"
-      >
-        <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">
-          <div className="min-w-0">
-            <ImageGallery images={images} />
-          </div>
-          <div className="grid gap-8 small:sticky small:top-24">
-            <ProductInfo product={product} />
-            <Suspense
-              fallback={
-                <ProductActions
-                  disabled={true}
-                  product={product}
-                  region={region}
-                />
-              }
-            >
-              <ProductActionsWrapper id={product.id} region={region} />
-            </Suspense>
-            <ProductOnboardingCta />
+      {!hasInlineCommerceCallout ? (
+        <div
+          className="content-container py-10 small:py-12"
+          data-testid="product-container"
+        >
+          <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">
+            <div className="min-w-0">
+              <ImageGallery images={images} />
+            </div>
+            <div className="grid gap-8 small:sticky small:top-24">
+              <ProductInfo product={product} />
+              <Suspense
+                fallback={
+                  <ProductActions
+                    disabled={true}
+                    product={product}
+                    region={region}
+                  />
+                }
+              >
+                <ProductActionsWrapper id={product.id} region={region} />
+              </Suspense>
+              <ProductOnboardingCta />
+            </div>
           </div>
         </div>
-        {contentBlocks?.length ? (
-          <div className="mt-14 border-t border-[#e5e7eb] pt-10">
-            <BlockRenderer blocks={contentBlocks} />
-          </div>
-        ) : null}
-        <div className="mt-12 border-t border-[#e5e7eb] pt-8">
-          <ProductTabs product={product} />
+      ) : null}
+      {contentBlocks?.length ? (
+        <div className={hasInlineCommerceCallout ? "pt-0" : "mt-14 border-t border-[#e5e7eb] pt-10"}>
+          <BlockRenderer
+            blocks={contentBlocks}
+            images={images}
+            product={product}
+            region={region}
+          />
         </div>
+      ) : null}
+      <div className="content-container mt-12 border-t border-[#e5e7eb] pt-8">
+        <ProductTabs product={product} />
       </div>
       {isStorefrontPluginEnabled("reviews") ? (
         <div

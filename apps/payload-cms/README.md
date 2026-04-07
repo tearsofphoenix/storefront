@@ -82,8 +82,61 @@ Useful commands:
 ```bash
 pnpm migrate:status
 pnpm migrate:create <name>
+pnpm sync:products
 ```
 
 For Vercel deployments, use the production `DATABASE_URL` and `PAYLOAD_SECRET` from the project settings or run the command from a shell that has the same values exported.
 
 This repo also includes `vercel.json`, which runs `pnpm run build:vercel` so Vercel deploys execute migrations before building the app.
+
+## Medusa product sync
+
+Payload product pages can be created from Medusa in two ways:
+
+1. Push from Medusa backend to `/api/integrations/medusa/products`
+2. Pull from Payload CMS by running:
+
+```bash
+cd apps/payload-cms
+MEDUSA_BACKEND_URL="https://your-medusa" \
+MEDUSA_STOREFRONT_PUBLISHABLE_KEY="pk_..." \
+pnpm sync:products
+```
+
+同步行为说明：
+
+- 首次同步会自动为每个 Medusa 商品创建一个 `product-pages` 文档。
+- 新创建的文档默认就是 `published`，这样 storefront 能立即读取到它。
+- 如果某个商品后来在 Medusa 中不存在了，下一次全量同步会把对应页面标记为 `syncStatus = deleted`，storefront 会自动忽略它。
+- 在这个 monorepo 里，`pnpm sync:products` 会优先读取 `apps/payload-cms/.env`，如果缺少 Medusa 变量，会自动回退读取 `apps/storefront/.env`。
+
+You can also trigger a protected manual sync over HTTP:
+
+```bash
+curl -X POST https://your-payload-domain/api/integrations/medusa/products/sync \
+  -H "x-payload-sync-secret: your-secret" \
+  -H "content-type: application/json" \
+  --data '{"limit":100}'
+```
+
+## Building a marketing-style product page
+
+`product-pages` 现在支持一套适合长页叙事型 PDP 的区块：
+
+- `section-nav`
+- `hero`
+- `commerce-callout`
+- `feature-grid`
+- `media-story`
+- `comparison-table`
+- `quote-showcase`
+- `spec-table`
+- `faq`
+- `cta`
+
+推荐的编辑顺序：
+
+1. 先运行 `pnpm sync:products` 导入 Medusa 商品
+2. 在 Payload Admin 打开对应的 `product-pages`
+3. 按顺序添加 `hero -> section-nav -> media-story / feature-grid -> comparison-table -> quote-showcase -> commerce-callout -> faq -> cta`
+4. 如果页面中放了 `commerce-callout`，storefront 会自动切换到 CMS-first 的营销型产品页布局，并把购买区插入到你指定的位置

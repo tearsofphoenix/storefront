@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { anchorIdField } from './shared'
+
 export const HeroBlock: Block = {
   slug: 'hero',
   labels: {
@@ -7,6 +9,7 @@ export const HeroBlock: Block = {
     plural: 'Hero Blocks',
   },
   fields: [
+    anchorIdField,
     {
       name: 'eyebrow',
       type: 'text',

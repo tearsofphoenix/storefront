@@ -230,6 +230,23 @@ export interface ProductPage {
   sections?:
     | (
         | {
+            title?: string | null;
+            items?:
+              | {
+                  label: string;
+                  anchorId: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'section-nav';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             eyebrow?: string | null;
             headline: string;
             subheadline?: string | null;
@@ -249,6 +266,23 @@ export interface ProductPage {
             blockType: 'hero';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            supportingText?: string | null;
+            imagePosition?: ('left' | 'right') | null;
+            showImage?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'commerce-callout';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             description?: string | null;
             items?:
@@ -264,6 +298,10 @@ export interface ProductPage {
             blockType: 'feature-grid';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             eyebrow?: string | null;
             title: string;
             body: string;
@@ -274,6 +312,48 @@ export interface ProductPage {
             blockType: 'media-story';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            title: string;
+            description?: string | null;
+            leftColumnLabel: string;
+            rightColumnLabel: string;
+            rows?:
+              | {
+                  feature: string;
+                  leftValue: string;
+                  rightValue: string;
+                  emphasis?: ('none' | 'left' | 'right') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'comparison-table';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            quote: string;
+            author: string;
+            role?: string | null;
+            avatar?: (number | null) | Media;
+            highlight?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'quote-showcase';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             rows?:
               | {
@@ -287,6 +367,10 @@ export interface ProductPage {
             blockType: 'spec-table';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             items?:
               | {
@@ -300,6 +384,10 @@ export interface ProductPage {
             blockType: 'faq';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title: string;
             description?: string | null;
             primaryCTA?: {
@@ -336,6 +424,10 @@ export interface LandingPage {
   sections?:
     | (
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             eyebrow?: string | null;
             headline: string;
             subheadline?: string | null;
@@ -355,6 +447,10 @@ export interface LandingPage {
             blockType: 'hero';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             description?: string | null;
             items?:
@@ -370,6 +466,10 @@ export interface LandingPage {
             blockType: 'feature-grid';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             eyebrow?: string | null;
             title: string;
             body: string;
@@ -380,6 +480,10 @@ export interface LandingPage {
             blockType: 'media-story';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             rows?:
               | {
@@ -393,6 +497,10 @@ export interface LandingPage {
             blockType: 'spec-table';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title?: string | null;
             items?:
               | {
@@ -406,6 +514,10 @@ export interface LandingPage {
             blockType: 'faq';
           }
         | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             title: string;
             description?: string | null;
             primaryCTA?: {
@@ -622,9 +734,24 @@ export interface ProductPagesSelect<T extends boolean = true> {
   sections?:
     | T
     | {
+        'section-nav'?:
+          | T
+          | {
+              title?: T;
+              items?:
+                | T
+                | {
+                    label?: T;
+                    anchorId?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
         hero?:
           | T
           | {
+              anchorId?: T;
               eyebrow?: T;
               headline?: T;
               subheadline?: T;
@@ -646,9 +773,21 @@ export interface ProductPagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'commerce-callout'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              supportingText?: T;
+              imagePosition?: T;
+              showImage?: T;
+              id?: T;
+              blockName?: T;
+            };
         'feature-grid'?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               description?: T;
               items?:
@@ -665,6 +804,7 @@ export interface ProductPagesSelect<T extends boolean = true> {
         'media-story'?:
           | T
           | {
+              anchorId?: T;
               eyebrow?: T;
               title?: T;
               body?: T;
@@ -673,9 +813,44 @@ export interface ProductPagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'comparison-table'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              leftColumnLabel?: T;
+              rightColumnLabel?: T;
+              rows?:
+                | T
+                | {
+                    feature?: T;
+                    leftValue?: T;
+                    rightValue?: T;
+                    emphasis?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'quote-showcase'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              quote?: T;
+              author?: T;
+              role?: T;
+              avatar?: T;
+              highlight?: T;
+              id?: T;
+              blockName?: T;
+            };
         'spec-table'?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               rows?:
                 | T
@@ -690,6 +865,7 @@ export interface ProductPagesSelect<T extends boolean = true> {
         faq?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               items?:
                 | T
@@ -704,6 +880,7 @@ export interface ProductPagesSelect<T extends boolean = true> {
         cta?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               description?: T;
               primaryCTA?:
@@ -746,6 +923,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         hero?:
           | T
           | {
+              anchorId?: T;
               eyebrow?: T;
               headline?: T;
               subheadline?: T;
@@ -770,6 +948,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         'feature-grid'?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               description?: T;
               items?:
@@ -786,6 +965,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         'media-story'?:
           | T
           | {
+              anchorId?: T;
               eyebrow?: T;
               title?: T;
               body?: T;
@@ -797,6 +977,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         'spec-table'?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               rows?:
                 | T
@@ -811,6 +992,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         faq?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               items?:
                 | T
@@ -825,6 +1007,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         cta?:
           | T
           | {
+              anchorId?: T;
               title?: T;
               description?: T;
               primaryCTA?:

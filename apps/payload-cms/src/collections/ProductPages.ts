@@ -1,10 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
 import { CTAButtonBlock } from '@/blocks/CTAButtonBlock'
+import { CommerceCalloutBlock } from '@/blocks/CommerceCalloutBlock'
+import { ComparisonTableBlock } from '@/blocks/ComparisonTableBlock'
 import { FAQBlock } from '@/blocks/FAQBlock'
 import { FeatureGridBlock } from '@/blocks/FeatureGridBlock'
 import { HeroBlock } from '@/blocks/HeroBlock'
 import { MediaStoryBlock } from '@/blocks/MediaStoryBlock'
+import { QuoteShowcaseBlock } from '@/blocks/QuoteShowcaseBlock'
+import { SectionNavBlock } from '@/blocks/SectionNavBlock'
 import { SpecTableBlock } from '@/blocks/SpecTableBlock'
 import {
   revalidateProductPageAfterChange,
@@ -143,9 +147,13 @@ export const ProductPages: CollectionConfig = {
       name: 'sections',
       type: 'blocks',
       blocks: [
+        SectionNavBlock,
         HeroBlock,
+        CommerceCalloutBlock,
         FeatureGridBlock,
         MediaStoryBlock,
+        ComparisonTableBlock,
+        QuoteShowcaseBlock,
         SpecTableBlock,
         FAQBlock,
         CTAButtonBlock,

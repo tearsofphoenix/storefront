@@ -1,6 +1,8 @@
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 
+import { validatePayloadSyncSecret } from '@/lib/medusa-product-sync'
+
 type SyncAction = 'upsert' | 'delete'
 
 type ProductSyncInput = {
@@ -20,16 +22,6 @@ type SyncRequestBody = {
 }
 
 const normalizeValue = (value?: string | null) => value?.trim() || null
-
-const validateSecret = (request: Request) => {
-  const expected = process.env.PAYLOAD_SYNC_SECRET
-
-  if (!expected) {
-    return false
-  }
-
-  return request.headers.get('x-payload-sync-secret') === expected
-}
 
 const buildProductPageData = (
   product: ProductSyncInput,
@@ -51,7 +43,7 @@ const buildProductPageData = (
 })
 
 export const POST = async (request: Request) => {
-  if (!validateSecret(request)) {
+  if (!validatePayloadSyncSecret(request)) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -106,7 +98,7 @@ export const POST = async (request: Request) => {
     collection: 'product-pages',
     data: {
       ...buildProductPageData(body.product, 'active'),
-      status: 'draft',
+      status: 'published',
       sections: [],
     },
   })

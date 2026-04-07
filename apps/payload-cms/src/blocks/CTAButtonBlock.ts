@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { anchorIdField } from './shared'
+
 export const CTAButtonBlock: Block = {
   slug: 'cta',
   labels: {
@@ -7,6 +9,7 @@ export const CTAButtonBlock: Block = {
     plural: 'CTA Blocks',
   },
   fields: [
+    anchorIdField,
     {
       name: 'title',
       type: 'text',

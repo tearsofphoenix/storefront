@@ -1,21 +1,18 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
-
-export const SpecTableBlock: Block = {
-  slug: 'spec-table',
+export const SectionNavBlock: Block = {
+  slug: 'section-nav',
   labels: {
-    singular: 'Spec Table',
-    plural: 'Spec Tables',
+    singular: 'Section Nav',
+    plural: 'Section Nav Blocks',
   },
   fields: [
-    anchorIdField,
     {
       name: 'title',
       type: 'text',
     },
     {
-      name: 'rows',
+      name: 'items',
       type: 'array',
       minRows: 1,
       fields: [
@@ -25,7 +22,7 @@ export const SpecTableBlock: Block = {
           required: true,
         },
         {
-          name: 'value',
+          name: 'anchorId',
           type: 'text',
           required: true,
         },

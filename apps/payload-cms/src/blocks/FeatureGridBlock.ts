@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { anchorIdField } from './shared'
+
 export const FeatureGridBlock: Block = {
   slug: 'feature-grid',
   labels: {
@@ -7,6 +9,7 @@ export const FeatureGridBlock: Block = {
     plural: 'Feature Grids',
   },
   fields: [
+    anchorIdField,
     {
       name: 'title',
       type: 'text',

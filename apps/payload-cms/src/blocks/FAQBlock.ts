@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { anchorIdField } from './shared'
+
 export const FAQBlock: Block = {
   slug: 'faq',
   labels: {
@@ -7,6 +9,7 @@ export const FAQBlock: Block = {
     plural: 'FAQ Blocks',
   },
   fields: [
+    anchorIdField,
     {
       name: 'title',
       type: 'text',

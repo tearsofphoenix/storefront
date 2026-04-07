@@ -17,6 +17,9 @@ export const getProductPageByHandle = async (handle: string) => {
           status: {
             equals: "published",
           },
+          syncStatus: {
+            equals: "active",
+          },
         },
       },
       tags: [`payload:product-page:${handle}`],
