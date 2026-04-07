@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import React from "react"
 import StripeWrapper from "./stripe-wrapper"
 import { HttpTypes } from "@medusajs/types"
-import { isStripeLike } from "@lib/constants"
+import { isStripeLike, isZeroTotalCart } from "@lib/constants"
 
 type PaymentWrapperProps = {
   cart: HttpTypes.StoreCart
@@ -22,6 +22,7 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
   const paymentSession = cart.payment_collection?.payment_sessions?.find(
     (s) => s.status === "pending"
   )
+  const isFreeOrder = isZeroTotalCart(cart)
   const resolvedStripeKey = stripeKey ?? undefined
   const stripePromise = stripeKey
     ? loadStripe(
@@ -31,6 +32,7 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
     : null
 
   if (
+    !isFreeOrder &&
     isStripeLike(paymentSession?.provider_id) &&
     paymentSession &&
     stripePromise

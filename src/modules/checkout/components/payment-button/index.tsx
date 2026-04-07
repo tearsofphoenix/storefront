@@ -1,6 +1,6 @@
 "use client"
 
-import { isManual, isStripeLike } from "@lib/constants"
+import { isManual, isStripeLike, isZeroTotalCart } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
@@ -41,10 +41,15 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     !cart.billing_address ||
     !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
+  const isFreeOrder = isZeroTotalCart(cart)
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
 
   switch (true) {
+    case isFreeOrder:
+      return (
+        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+      )
     case isStripeLike(paymentSession?.provider_id):
       return (
         <StripePaymentButton

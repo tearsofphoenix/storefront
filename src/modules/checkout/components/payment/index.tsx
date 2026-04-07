@@ -1,7 +1,7 @@
 "use client"
 
 import { RadioGroup } from "@headlessui/react"
-import { isStripeLike, paymentInfoMap } from "@lib/constants"
+import { isStripeLike, isZeroTotalCart, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
@@ -55,6 +55,7 @@ const Payment = ({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
+  const isFreeOrder = isZeroTotalCart(cart)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -67,6 +68,11 @@ const Payment = ({
     setPaymentComplete(false)
     setStripePaymentType(null)
     setSelectedPaymentMethod(method)
+
+    if (isFreeOrder) {
+      return
+    }
+
     if (isStripeLike(method)) {
       await initiatePaymentSession(cart, {
         provider_id: method,
@@ -76,11 +82,8 @@ const Payment = ({
     }
   }
 
-  const paidByGiftcard =
-    cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
-
   const paymentReady =
-    (activeSession && cart?.shipping_methods.length !== 0) || paidByGiftcard
+    (activeSession && cart?.shipping_methods.length !== 0) || isFreeOrder
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -104,11 +107,11 @@ const Payment = ({
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
-      if (!selectedPaymentMethod && !paidByGiftcard) {
+      if (!selectedPaymentMethod && !isFreeOrder) {
         return
       }
 
-      if (!checkActiveSession && selectedPaymentMethod) {
+      if (!isFreeOrder && !checkActiveSession && selectedPaymentMethod) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
         })
@@ -158,7 +161,7 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
-          {!paidByGiftcard && availablePaymentMethods?.length && (
+          {!isFreeOrder && availablePaymentMethods?.length && (
             <>
               <RadioGroup
                 value={selectedPaymentMethod}
@@ -189,7 +192,7 @@ const Payment = ({
             </>
           )}
 
-          {paidByGiftcard && (
+          {isFreeOrder && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 {messages.common.paymentMethod}
@@ -198,7 +201,7 @@ const Payment = ({
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                {messages.common.giftCard}
+                {messages.common.noPaymentRequired}
               </Text>
             </div>
           )}
@@ -214,8 +217,10 @@ const Payment = ({
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
-              (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
+              (!isFreeOrder &&
+                isStripeLike(selectedPaymentMethod) &&
+                !paymentComplete) ||
+              (!selectedPaymentMethod && !isFreeOrder)
             }
             data-testid="submit-payment-button"
           >
@@ -224,7 +229,7 @@ const Payment = ({
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
-          {cart && paymentReady && activeSession ? (
+          {cart && paymentReady && !isFreeOrder && activeSession ? (
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -260,7 +265,7 @@ const Payment = ({
                 </div>
               </div>
             </div>
-          ) : paidByGiftcard ? (
+          ) : isFreeOrder ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 {messages.common.paymentMethod}
@@ -269,7 +274,7 @@ const Payment = ({
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                {messages.common.giftCard}
+                {messages.common.noPaymentRequired}
               </Text>
             </div>
           ) : null}
