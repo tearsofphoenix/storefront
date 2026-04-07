@@ -92,20 +92,25 @@ function getPickupAddress(option: HttpTypes.StoreCartShippingOption) {
 
 function getEcpayLogisticsSubType(name?: string | null) {
   const normalizedName = name?.toUpperCase() ?? ""
+  const isC2C =
+    normalizedName.includes("C2C") ||
+    normalizedName.includes("STORE TO STORE") ||
+    Boolean(name?.includes("店到店")) ||
+    Boolean(name?.includes("取貨付款"))
 
   if (normalizedName.includes("FAMI") || name?.includes("全家")) {
-    return "FAMI"
+    return isC2C ? "FAMIC2C" : "FAMI"
   }
 
   if (normalizedName.includes("HILIFE") || name?.includes("萊爾富")) {
-    return "HILIFE"
+    return isC2C ? "HILIFEC2C" : "HILIFE"
   }
 
   if (normalizedName.includes("OK")) {
-    return "OKMART"
+    return "OKMARTC2C"
   }
 
-  return "UNIMARTC2C"
+  return isC2C ? "UNIMARTC2C" : "UNIMART"
 }
 
 const Shipping: React.FC<ShippingProps> = ({
