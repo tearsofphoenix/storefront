@@ -501,6 +501,7 @@ const Shipping: React.FC<ShippingProps> = ({
                                 isTest={ecpaySettings.is_test}
                                 logisticsSubType={getEcpayLogisticsSubType(option.name)}
                                 serverReplyUrl={mapReplyUrl}
+                                cartId={cart.id}
                                 returnPath={mapReturnPath}
                                 disabled={isLoading}
                               />

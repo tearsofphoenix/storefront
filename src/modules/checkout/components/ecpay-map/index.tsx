@@ -7,6 +7,7 @@ type ECPayMapProps = {
   isTest: boolean
   logisticsSubType: string
   serverReplyUrl: string
+  cartId?: string
   returnPath?: string
   disabled?: boolean
 }
@@ -16,10 +17,15 @@ export default function ECPayMapSelector({
   isTest,
   logisticsSubType = "FAMI",
   serverReplyUrl,
+  cartId,
   returnPath,
   disabled = false,
 }: ECPayMapProps) {
   const isDisabled = disabled || !merchantId || !serverReplyUrl
+  const extraData = new URLSearchParams({
+    ...(cartId ? { cartId } : {}),
+    ...(returnPath ? { returnPath } : {}),
+  }).toString()
   const endpoint = isTest
     ? "https://logistics-stage.ecpay.com.tw/Express/map"
     : "https://logistics.ecpay.com.tw/Express/map"
@@ -38,7 +44,7 @@ export default function ECPayMapSelector({
       <input type="hidden" name="LogisticsSubType" value={logisticsSubType} />
       <input type="hidden" name="IsCollection" value="N" />
       <input type="hidden" name="ServerReplyURL" value={serverReplyUrl} />
-      <input type="hidden" name="ExtraData" value={returnPath || ""} />
+      <input type="hidden" name="ExtraData" value={extraData} />
       
       <Button
         type="submit"
