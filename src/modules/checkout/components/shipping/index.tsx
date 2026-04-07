@@ -1,6 +1,7 @@
 "use client"
 
 import { Radio, RadioGroup } from "@headlessui/react"
+import { sdk } from "@lib/config"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { useI18n } from "@lib/i18n/use-i18n"
@@ -45,6 +46,16 @@ type PickupCapableShippingOption = HttpTypes.StoreCartShippingOption & {
   } | null
 }
 
+type EcpayPublicSettings = {
+  merchant_id: string
+  is_test: boolean
+  is_configured: boolean
+}
+
+type EcpayPublicSettingsResponse = {
+  settings: EcpayPublicSettings
+}
+
 function formatAddress(address: HttpTypes.StoreCartAddress) {
   if (!address) {
     return ""
@@ -79,6 +90,24 @@ function getPickupAddress(option: HttpTypes.StoreCartShippingOption) {
   return (option as PickupCapableShippingOption).service_zone?.fulfillment_set?.location?.address
 }
 
+function getEcpayLogisticsSubType(name?: string | null) {
+  const normalizedName = name?.toUpperCase() ?? ""
+
+  if (normalizedName.includes("FAMI") || name?.includes("全家")) {
+    return "FAMI"
+  }
+
+  if (normalizedName.includes("HILIFE") || name?.includes("萊爾富")) {
+    return "HILIFE"
+  }
+
+  if (normalizedName.includes("OK")) {
+    return "OKMART"
+  }
+
+  return "UNIMARTC2C"
+}
+
 const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
@@ -92,6 +121,11 @@ const Shipping: React.FC<ShippingProps> = ({
   const [calculatedPricesMap, setCalculatedPricesMap] = useState<
     Record<string, number>
   >({})
+  const [ecpaySettings, setEcpaySettings] = useState<EcpayPublicSettings | null>(
+    null
+  )
+  const [isLoadingEcpaySettings, setIsLoadingEcpaySettings] = useState(false)
+  const [ecpaySettingsError, setEcpaySettingsError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
@@ -114,6 +148,9 @@ const Shipping: React.FC<ShippingProps> = ({
   const hasPickupOptions = !!_pickupMethods?.length
   const hasShippingOptions = !!_shippingMethods?.length
   const hasAnyDeliveryOptions = hasPickupOptions || hasShippingOptions
+  const hasEcpayOption = [...(_shippingMethods || []), ...(_pickupMethods || [])].some(
+    (option) => ECPAY_PROVIDER_IDS.has(option.provider_id ?? "")
+  )
 
   useEffect(() => {
     setIsLoadingPrices(true)
@@ -140,6 +177,58 @@ const Shipping: React.FC<ShippingProps> = ({
       setShowPickupOptions(PICKUP_OPTION_ON)
     }
   }, [_pickupMethods, _shippingMethods, cart.id, shippingMethodId])
+
+  useEffect(() => {
+    let isActive = true
+
+    if (!hasEcpayOption) {
+      setEcpaySettings(null)
+      setEcpaySettingsError(null)
+      setIsLoadingEcpaySettings(false)
+      return () => {
+        isActive = false
+      }
+    }
+
+    const loadEcpaySettings = async () => {
+      setIsLoadingEcpaySettings(true)
+      setEcpaySettingsError(null)
+
+      try {
+        const response = await sdk.client.fetch<EcpayPublicSettingsResponse>(
+          "/store/ecpay/settings",
+          {
+            method: "GET",
+          }
+        )
+
+        if (!isActive) {
+          return
+        }
+
+        setEcpaySettings(response.settings)
+      } catch (err) {
+        if (!isActive) {
+          return
+        }
+
+        setEcpaySettings(null)
+        setEcpaySettingsError(
+          err instanceof Error ? err.message : "Failed to load ECPay settings"
+        )
+      } finally {
+        if (isActive) {
+          setIsLoadingEcpaySettings(false)
+        }
+      }
+    }
+
+    void loadEcpaySettings()
+
+    return () => {
+      isActive = false
+    }
+  }, [hasEcpayOption])
 
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })
@@ -217,7 +306,15 @@ const Shipping: React.FC<ShippingProps> = ({
     (o) => o.id === shippingMethodId
   )
   const isECPaySelected = ECPAY_PROVIDER_IDS.has(selectedOption?.provider_id ?? "")
-  const hasSelectedStore = Boolean(cart.shipping_methods?.[0]?.data?.CVSStoreID)
+  const selectedShippingMethodData = cart.shipping_methods?.[0]?.data
+  const hasSelectedStore = Boolean(selectedShippingMethodData?.CVSStoreID)
+  const hasConfiguredEcpaySettings = Boolean(
+    ecpaySettings?.is_configured && ecpaySettings.merchant_id
+  )
+  const mapReplyUrl = `${
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "")
+  }/api/ecpay/map-reply`
 
   return (
     <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
@@ -372,30 +469,38 @@ const Shipping: React.FC<ShippingProps> = ({
                         {option.id === shippingMethodId &&
                           ECPAY_PROVIDER_IDS.has(option.provider_id ?? "") && (
                           <div className="w-full mt-2 pl-8 pr-4 mb-2">
-                            {cart.shipping_methods?.[0]?.data?.CVSStoreID ? (
-                              <div className="mb-4 p-4 border border-[#e5e7eb] rounded-md bg-[#f8fafc]">
-                                <Text className="font-semibold text-ui-fg-base mb-1">
-                                  {String(cart.shipping_methods[0].data.CVSStoreName)} ({String(cart.shipping_methods[0].data.CVSStoreID)})
+                            {selectedShippingMethodData?.CVSStoreID && (
+                              <div className="mb-4 rounded-md border border-[#e5e7eb] bg-[#f8fafc] p-4">
+                                <Text className="mb-1 font-semibold text-ui-fg-base">
+                                  {String(selectedShippingMethodData.CVSStoreName)} (
+                                  {String(selectedShippingMethodData.CVSStoreID)})
                                 </Text>
-                                <Text className="text-ui-fg-subtle text-sm mb-3">
-                                  {String(cart.shipping_methods[0].data.CVSAddress)}
+                                <Text className="mb-3 text-sm text-ui-fg-subtle">
+                                  {String(selectedShippingMethodData.CVSAddress)}
                                 </Text>
-                                <ECPayMapSelector
-                                  merchantId={process.env.NEXT_PUBLIC_ECPAY_MERCHANT_ID}
-                                  isTest={process.env.NEXT_PUBLIC_ECPAY_IS_TEST !== "false"}
-                                  logisticsSubType={option.name?.toUpperCase().includes("FAMI") || option.name?.includes("全家") ? "FAMI" : (option.name?.toUpperCase().includes("HILIFE") || option.name?.includes("萊爾富") ? "HILIFE" : (option.name?.toUpperCase().includes("OK") ? "OKMART" : "UNIMARTC2C"))}
-                                  serverReplyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/api/ecpay/map-reply`}
-                                  disabled={isLoading}
-                                />
                               </div>
-                            ) : (
+                            )}
+
+                            {isLoadingEcpaySettings ? (
+                              <Text className="text-sm text-ui-fg-subtle">
+                                Loading ECPay pickup settings...
+                              </Text>
+                            ) : ecpaySettingsError ? (
+                              <Text className="text-sm text-rose-600">
+                                {ecpaySettingsError}
+                              </Text>
+                            ) : hasConfiguredEcpaySettings && ecpaySettings ? (
                               <ECPayMapSelector
-                                merchantId={process.env.NEXT_PUBLIC_ECPAY_MERCHANT_ID}
-                                isTest={process.env.NEXT_PUBLIC_ECPAY_IS_TEST !== "false"}
-                                logisticsSubType={option.name?.toUpperCase().includes("FAMI") || option.name?.includes("全家") ? "FAMI" : (option.name?.toUpperCase().includes("HILIFE") || option.name?.includes("萊爾富") ? "HILIFE" : (option.name?.toUpperCase().includes("OK") ? "OKMART" : "UNIMARTC2C"))}
-                                serverReplyUrl={`${process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/api/ecpay/map-reply`}
+                                merchantId={ecpaySettings.merchant_id}
+                                isTest={ecpaySettings.is_test}
+                                logisticsSubType={getEcpayLogisticsSubType(option.name)}
+                                serverReplyUrl={mapReplyUrl}
                                 disabled={isLoading}
                               />
+                            ) : (
+                              <Text className="text-sm text-rose-600">
+                                ECPay pickup is not configured yet.
+                              </Text>
                             )}
                           </div>
                         )}
