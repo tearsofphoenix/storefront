@@ -16,6 +16,10 @@ import ECPayMapSelector from "../ecpay-map"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
+const ECPAY_PROVIDER_IDS = new Set([
+  "ecpay-logistics",
+  "ecpay-logistics_ecpay-logistics",
+])
 
 type ShippingProps = {
   cart: HttpTypes.StoreCart
@@ -212,7 +216,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const selectedOption = [...(_shippingMethods || []), ...(_pickupMethods || [])].find(
     (o) => o.id === shippingMethodId
   )
-  const isECPaySelected = selectedOption?.provider_id === "ecpay-logistics"
+  const isECPaySelected = ECPAY_PROVIDER_IDS.has(selectedOption?.provider_id ?? "")
   const hasSelectedStore = Boolean(cart.shipping_methods?.[0]?.data?.CVSStoreID)
 
   return (
@@ -365,7 +369,8 @@ const Shipping: React.FC<ShippingProps> = ({
                             )}
                           </span>
                         </Radio>
-                        {option.id === shippingMethodId && option.provider_id === "ecpay-logistics" && (
+                        {option.id === shippingMethodId &&
+                          ECPAY_PROVIDER_IDS.has(option.provider_id ?? "") && (
                           <div className="w-full mt-2 pl-8 pr-4 mb-2">
                             {cart.shipping_methods?.[0]?.data?.CVSStoreID ? (
                               <div className="mb-4 p-4 border border-[#e5e7eb] rounded-md bg-[#f8fafc]">
