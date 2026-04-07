@@ -320,6 +320,7 @@ const Shipping: React.FC<ShippingProps> = ({
     process.env.NEXT_PUBLIC_BASE_URL ||
     (typeof window !== "undefined" ? window.location.origin : "")
   }/api/ecpay/map-reply`
+  const mapReturnPath = `${pathname}?step=delivery`
 
   return (
     <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
@@ -500,6 +501,7 @@ const Shipping: React.FC<ShippingProps> = ({
                                 isTest={ecpaySettings.is_test}
                                 logisticsSubType={getEcpayLogisticsSubType(option.name)}
                                 serverReplyUrl={mapReplyUrl}
+                                returnPath={mapReturnPath}
                                 disabled={isLoading}
                               />
                             ) : (

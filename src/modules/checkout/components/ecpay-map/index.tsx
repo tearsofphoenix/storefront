@@ -7,6 +7,7 @@ type ECPayMapProps = {
   isTest: boolean
   logisticsSubType: string
   serverReplyUrl: string
+  returnPath?: string
   disabled?: boolean
 }
 
@@ -15,6 +16,7 @@ export default function ECPayMapSelector({
   isTest,
   logisticsSubType = "FAMI",
   serverReplyUrl,
+  returnPath,
   disabled = false,
 }: ECPayMapProps) {
   const isDisabled = disabled || !merchantId || !serverReplyUrl
@@ -36,6 +38,7 @@ export default function ECPayMapSelector({
       <input type="hidden" name="LogisticsSubType" value={logisticsSubType} />
       <input type="hidden" name="IsCollection" value="N" />
       <input type="hidden" name="ServerReplyURL" value={serverReplyUrl} />
+      <input type="hidden" name="ExtraData" value={returnPath || ""} />
       
       <Button
         type="submit"

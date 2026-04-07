@@ -1,5 +1,23 @@
 import { NextRequest, NextResponse } from "next/server"
 
+const resolveReturnPath = (extraData?: string | null) => {
+  if (!extraData) {
+    return "/checkout?step=delivery"
+  }
+
+  if (extraData.startsWith("/") && !extraData.startsWith("//")) {
+    return extraData
+  }
+
+  const normalizedCountryCode = extraData.replace(/[^a-zA-Z-]/g, "").toLowerCase()
+
+  if (normalizedCountryCode) {
+    return `/${normalizedCountryCode}/checkout?step=delivery`
+  }
+
+  return "/checkout?step=delivery"
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
   
@@ -8,9 +26,9 @@ export async function POST(req: NextRequest) {
   const cvsAddress = formData.get("CVSAddress")?.toString()
   const cvsTelephone = formData.get("CVSTelephone")?.toString()
   const logisticsSubType = formData.get("LogisticsSubType")?.toString()
-  const extraData = formData.get("ExtraData")?.toString() // We can pass countryCode here
+  const extraData = formData.get("ExtraData")?.toString()
   
-  const redirectUrl = new URL("/checkout", req.url)
+  const redirectUrl = new URL(resolveReturnPath(extraData), req.url)
   
   if (cvsStoreId) {
     redirectUrl.searchParams.set("cvsStoreId", cvsStoreId)
