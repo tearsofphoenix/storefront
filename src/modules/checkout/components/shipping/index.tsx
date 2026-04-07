@@ -56,6 +56,38 @@ type EcpayPublicSettingsResponse = {
   settings: EcpayPublicSettings
 }
 
+type SelectedStoreData = {
+  CVSStoreID?: string | null
+  CVSStoreName?: string | null
+  CVSAddress?: string | null
+  CVSTelephone?: string | null
+  LogisticsSubType?: string | null
+}
+
+const getSelectedShippingMethodData = (
+  shippingMethods: HttpTypes.StoreCart["shipping_methods"],
+  shippingMethodId: string | null
+): SelectedStoreData | null => {
+  if (!shippingMethods?.length) {
+    return null
+  }
+
+  const matchedShippingMethod =
+    [...shippingMethods]
+      .reverse()
+      .find((shippingMethod) => {
+        return shippingMethod.shipping_option_id === shippingMethodId
+      }) ?? shippingMethods.at(-1)
+
+  const data = matchedShippingMethod?.data
+
+  if (!data || typeof data !== "object") {
+    return null
+  }
+
+  return data as SelectedStoreData
+}
+
 function formatAddress(address: HttpTypes.StoreCartAddress) {
   if (!address) {
     return ""
@@ -135,6 +167,13 @@ const Shipping: React.FC<ShippingProps> = ({
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
   )
+  const [selectedStoreData, setSelectedStoreData] = useState<SelectedStoreData | null>(
+    () =>
+      getSelectedShippingMethodData(
+        cart.shipping_methods,
+        cart.shipping_methods?.at(-1)?.shipping_option_id || null
+      )
+  )
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -182,6 +221,12 @@ const Shipping: React.FC<ShippingProps> = ({
       setShowPickupOptions(PICKUP_OPTION_ON)
     }
   }, [_pickupMethods, _shippingMethods, cart.id, shippingMethodId])
+
+  useEffect(() => {
+    setSelectedStoreData(
+      getSelectedShippingMethodData(cart.shipping_methods, shippingMethodId)
+    )
+  }, [cart.shipping_methods, shippingMethodId])
 
   useEffect(() => {
     let isActive = true
@@ -257,6 +302,7 @@ const Shipping: React.FC<ShippingProps> = ({
     }
 
     let currentId: string | null = null
+    let isSuccessful = false
     setIsLoading(true)
     setShippingMethodId((prev) => {
       currentId = prev
@@ -264,6 +310,9 @@ const Shipping: React.FC<ShippingProps> = ({
     })
 
     await setShippingMethod({ cartId: cart.id, shippingMethodId: id, data })
+      .then(() => {
+        isSuccessful = true
+      })
       .catch((err) => {
         setShippingMethodId(currentId)
 
@@ -272,6 +321,18 @@ const Shipping: React.FC<ShippingProps> = ({
       .finally(() => {
         setIsLoading(false)
       })
+
+    if (isSuccessful) {
+      if (data?.CVSStoreID) {
+        setSelectedStoreData(data as SelectedStoreData)
+      } else if (variant !== "shipping") {
+        setSelectedStoreData(null)
+      }
+
+      router.refresh()
+    }
+
+    return isSuccessful
   }
 
   useEffect(() => {
@@ -290,7 +351,11 @@ const Shipping: React.FC<ShippingProps> = ({
         CVSAddress: cvsAddress,
         CVSTelephone: cvsTelephone,
         LogisticsSubType: logisticsSubType
-      }).then(() => {
+      }).then((isSuccessful) => {
+        if (!isSuccessful) {
+          return
+        }
+
         const newParams = new URLSearchParams(searchParams.toString())
         newParams.delete("cvsStoreId")
         newParams.delete("cvsStoreName")
@@ -311,7 +376,9 @@ const Shipping: React.FC<ShippingProps> = ({
     (o) => o.id === shippingMethodId
   )
   const isECPaySelected = ECPAY_PROVIDER_IDS.has(selectedOption?.provider_id ?? "")
-  const selectedShippingMethodData = cart.shipping_methods?.[0]?.data
+  const selectedShippingMethodData =
+    selectedStoreData ??
+    getSelectedShippingMethodData(cart.shipping_methods, shippingMethodId)
   const hasSelectedStore = Boolean(selectedShippingMethodData?.CVSStoreID)
   const hasConfiguredEcpaySettings = Boolean(
     ecpaySettings?.is_configured && ecpaySettings.merchant_id
@@ -603,7 +670,7 @@ const Shipping: React.FC<ShippingProps> = ({
               onClick={handleSubmit}
               isLoading={isLoading}
               disabled={
-                !cart.shipping_methods?.[0] || 
+                !shippingMethodId || 
                 (isECPaySelected && !hasSelectedStore)
               }
               data-testid="submit-delivery-option-button"
