@@ -1,15 +1,20 @@
 import type { CollectionConfig } from 'payload'
 
+import { BenefitStripBlock } from '@/blocks/BenefitStripBlock'
+import { BundleGridBlock } from '@/blocks/BundleGridBlock'
 import { CTAButtonBlock } from '@/blocks/CTAButtonBlock'
 import { CommerceCalloutBlock } from '@/blocks/CommerceCalloutBlock'
 import { ComparisonTableBlock } from '@/blocks/ComparisonTableBlock'
 import { FAQBlock } from '@/blocks/FAQBlock'
+import { FaqGroupsBlock } from '@/blocks/FaqGroupsBlock'
 import { FeatureGridBlock } from '@/blocks/FeatureGridBlock'
 import { HeroBlock } from '@/blocks/HeroBlock'
 import { MediaStoryBlock } from '@/blocks/MediaStoryBlock'
+import { ProductShelfBlock } from '@/blocks/ProductShelfBlock'
 import { QuoteShowcaseBlock } from '@/blocks/QuoteShowcaseBlock'
 import { SectionNavBlock } from '@/blocks/SectionNavBlock'
 import { SpecTableBlock } from '@/blocks/SpecTableBlock'
+import { StatStripBlock } from '@/blocks/StatStripBlock'
 import {
   revalidateProductPageAfterChange,
   revalidateProductPageAfterDelete,
@@ -149,12 +154,17 @@ export const ProductPages: CollectionConfig = {
       blocks: [
         SectionNavBlock,
         HeroBlock,
+        BenefitStripBlock,
         CommerceCalloutBlock,
+        StatStripBlock,
         FeatureGridBlock,
         MediaStoryBlock,
         ComparisonTableBlock,
+        ProductShelfBlock,
+        BundleGridBlock,
         QuoteShowcaseBlock,
         SpecTableBlock,
+        FaqGroupsBlock,
         FAQBlock,
         CTAButtonBlock,
       ],

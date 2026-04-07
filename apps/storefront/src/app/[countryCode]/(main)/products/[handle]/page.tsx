@@ -8,6 +8,7 @@ import { getPayloadMediaUrl } from "@lib/payload/client"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 import { getSeoToolkitSiteName } from "@lib/util/plugin-manifest"
+import { PayloadContentBlock } from "types/payload"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
@@ -105,6 +106,65 @@ function getImagesForVariant(
   return metadataImages.length > 0 ? metadataImages : productImages
 }
 
+const collectBlockProductHandles = (blocks?: PayloadContentBlock[] | null) => {
+  const handles = new Set<string>()
+
+  blocks?.forEach((block) => {
+    if (block.blockType === "product-shelf") {
+      block.items?.forEach((item) => {
+        if (item.productHandle) {
+          handles.add(item.productHandle)
+        }
+      })
+    }
+
+    if (block.blockType === "bundle-grid") {
+      block.bundles?.forEach((bundle) => {
+        if (bundle.productHandle) {
+          handles.add(bundle.productHandle)
+        }
+      })
+    }
+  })
+
+  return Array.from(handles)
+}
+
+const getBlockProductsByHandle = async ({
+  countryCode,
+  handles,
+}: {
+  countryCode: string
+  handles: string[]
+}) => {
+  if (!handles.length) {
+    return {}
+  }
+
+  const products = await Promise.all(
+    handles.map(async (handle) => {
+      const product = await listProducts({
+        countryCode,
+        queryParams: { handle },
+      }).then(({ response }) => response.products[0])
+
+      if (!product?.handle) {
+        return null
+      }
+
+      return [product.handle, product] as const
+    })
+  )
+
+  return Object.fromEntries(
+    products.filter(
+      (
+        entry
+      ): entry is readonly [string, HttpTypes.StoreProduct] => Boolean(entry)
+    )
+  )
+}
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
   const { handle } = params
@@ -168,14 +228,19 @@ export default async function ProductPage(props: Props) {
     notFound()
   }
 
-  const images = getImagesForVariant(pricedProduct, selectedVariantId)
   const productPage = await getProductPageByHandle(params.handle)
+  const images = getImagesForVariant(pricedProduct, selectedVariantId)
+  const contentProductsByHandle = await getBlockProductsByHandle({
+    countryCode: params.countryCode,
+    handles: collectBlockProductHandles(productPage?.sections),
+  })
 
   return (
     <ProductTemplate
       product={pricedProduct}
       region={region}
       countryCode={params.countryCode}
+      contentProductsByHandle={contentProductsByHandle}
       images={images}
       selectedVariantId={selectedVariantId}
       contentBlocks={productPage?.sections}

@@ -270,6 +270,24 @@ export interface ProductPage {
              * 可选，用于页面内锚点导航，例如 writing-experience。
              */
             anchorId?: string | null;
+            title?: string | null;
+            description?: string | null;
+            items?:
+              | {
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'benefit-strip';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
             eyebrow?: string | null;
             supportingText?: string | null;
             imagePosition?: ('left' | 'right') | null;
@@ -277,6 +295,25 @@ export interface ProductPage {
             id?: string | null;
             blockName?: string | null;
             blockType: 'commerce-callout';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            title?: string | null;
+            items?:
+              | {
+                  value: string;
+                  label: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stat-strip';
           }
         | {
             /**
@@ -340,6 +377,54 @@ export interface ProductPage {
              */
             anchorId?: string | null;
             eyebrow?: string | null;
+            title?: string | null;
+            description?: string | null;
+            items?:
+              | {
+                  /**
+                   * 填写 Medusa 商品 handle，例如 remarkable-paper-pro。
+                   */
+                  productHandle: string;
+                  badge?: string | null;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'product-shelf';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            title?: string | null;
+            description?: string | null;
+            bundles?:
+              | {
+                  /**
+                   * 填写 Medusa 商品 handle，例如 remarkable-paper-pro-bundle。
+                   */
+                  productHandle: string;
+                  badge?: string | null;
+                  highlight?: string | null;
+                  description?: string | null;
+                  ctaLabel?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'bundle-grid';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
             quote: string;
             author: string;
             role?: string | null;
@@ -365,6 +450,31 @@ export interface ProductPage {
             id?: string | null;
             blockName?: string | null;
             blockType: 'spec-table';
+          }
+        | {
+            /**
+             * 可选，用于页面内锚点导航，例如 writing-experience。
+             */
+            anchorId?: string | null;
+            title?: string | null;
+            description?: string | null;
+            groups?:
+              | {
+                  title: string;
+                  description?: string | null;
+                  items?:
+                    | {
+                        question: string;
+                        answer: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq-groups';
           }
         | {
             /**
@@ -773,6 +883,22 @@ export interface ProductPagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'benefit-strip'?:
+          | T
+          | {
+              anchorId?: T;
+              title?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
         'commerce-callout'?:
           | T
           | {
@@ -781,6 +907,23 @@ export interface ProductPagesSelect<T extends boolean = true> {
               supportingText?: T;
               imagePosition?: T;
               showImage?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'stat-strip'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    description?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -834,6 +977,44 @@ export interface ProductPagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'product-shelf'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    productHandle?: T;
+                    badge?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'bundle-grid'?:
+          | T
+          | {
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              bundles?:
+                | T
+                | {
+                    productHandle?: T;
+                    badge?: T;
+                    highlight?: T;
+                    description?: T;
+                    ctaLabel?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
         'quote-showcase'?:
           | T
           | {
@@ -857,6 +1038,29 @@ export interface ProductPagesSelect<T extends boolean = true> {
                 | {
                     label?: T;
                     value?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'faq-groups'?:
+          | T
+          | {
+              anchorId?: T;
+              title?: T;
+              description?: T;
+              groups?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    items?:
+                      | T
+                      | {
+                          question?: T;
+                          answer?: T;
+                          id?: T;
+                        };
                     id?: T;
                   };
               id?: T;

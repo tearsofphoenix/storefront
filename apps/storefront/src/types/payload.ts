@@ -19,6 +19,13 @@ export type PayloadBlockBase = {
   anchorId?: string | null
 }
 
+export type PayloadHandledProductItem = {
+  id?: string
+  productHandle: string
+  badge?: string | null
+  description?: string | null
+}
+
 export type PayloadHeroBlock = {
   id?: string
   blockType: "hero"
@@ -44,6 +51,33 @@ export type PayloadFeatureGridBlock = {
     title: string
     description?: string | null
     image?: PayloadMedia | null
+  }> | null
+}
+
+export type PayloadBenefitStripBlock = {
+  id?: string
+  blockType: "benefit-strip"
+  anchorId?: string | null
+  title?: string | null
+  description?: string | null
+  items?: Array<{
+    id?: string
+    title: string
+    description?: string | null
+  }> | null
+}
+
+export type PayloadStatStripBlock = {
+  id?: string
+  blockType: "stat-strip"
+  anchorId?: string | null
+  eyebrow?: string | null
+  title?: string | null
+  items?: Array<{
+    id?: string
+    value: string
+    label: string
+    description?: string | null
   }> | null
 }
 
@@ -79,6 +113,24 @@ export type PayloadFaqBlock = {
     id?: string
     question: string
     answer: string
+  }> | null
+}
+
+export type PayloadFaqGroupsBlock = {
+  id?: string
+  blockType: "faq-groups"
+  anchorId?: string | null
+  title?: string | null
+  description?: string | null
+  groups?: Array<{
+    id?: string
+    title: string
+    description?: string | null
+    items?: Array<{
+      id?: string
+      question: string
+      answer: string
+    }> | null
   }> | null
 }
 
@@ -143,15 +195,47 @@ export type PayloadCommerceCalloutBlock = {
   showImage?: boolean | null
 }
 
+export type PayloadProductShelfBlock = {
+  id?: string
+  blockType: "product-shelf"
+  anchorId?: string | null
+  eyebrow?: string | null
+  title?: string | null
+  description?: string | null
+  items?: PayloadHandledProductItem[] | null
+}
+
+export type PayloadBundleGridBlock = {
+  id?: string
+  blockType: "bundle-grid"
+  anchorId?: string | null
+  eyebrow?: string | null
+  title?: string | null
+  description?: string | null
+  bundles?: Array<{
+    id?: string
+    productHandle: string
+    badge?: string | null
+    highlight?: string | null
+    description?: string | null
+    ctaLabel?: string | null
+  }> | null
+}
+
 export type PayloadContentBlock =
   | PayloadSectionNavBlock
   | PayloadHeroBlock
+  | PayloadBenefitStripBlock
   | PayloadCommerceCalloutBlock
+  | PayloadStatStripBlock
   | PayloadFeatureGridBlock
   | PayloadMediaStoryBlock
   | PayloadComparisonTableBlock
+  | PayloadProductShelfBlock
+  | PayloadBundleGridBlock
   | PayloadQuoteShowcaseBlock
   | PayloadSpecTableBlock
+  | PayloadFaqGroupsBlock
   | PayloadFaqBlock
   | PayloadCtaBlock
 

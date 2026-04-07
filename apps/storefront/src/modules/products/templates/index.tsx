@@ -23,6 +23,7 @@ type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   countryCode: string
+  contentProductsByHandle?: Record<string, HttpTypes.StoreProduct>
   images: HttpTypes.StoreProductImage[]
   selectedVariantId?: string
   contentBlocks?: PayloadContentBlock[] | null
@@ -33,6 +34,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   product,
   region,
   countryCode,
+  contentProductsByHandle,
   images,
   selectedVariantId,
 }) => {
@@ -84,6 +86,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             blocks={contentBlocks}
             images={images}
             product={product}
+            productsByHandle={contentProductsByHandle}
             region={region}
           />
         </div>
