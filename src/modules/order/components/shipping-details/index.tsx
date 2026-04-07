@@ -78,6 +78,23 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           {fulfillments.map((fulfillment) => {
             const labels = fulfillment.labels ?? []
             const fulfillmentState = getFulfillmentStateLabel(fulfillment)
+            const fulfillmentData = (fulfillment.data ??
+              null) as Record<string, unknown> | null
+            const ecpayStatusMessage =
+              (fulfillmentData?.ecpay_status_message as string | undefined) ||
+              (fulfillmentData?.RtnMsg as string | undefined)
+            const ecpayLogisticsId =
+              (fulfillmentData?.ecpay_logistics_id as string | undefined) ||
+              (fulfillmentData?.AllPayLogisticsID as string | undefined)
+            const ecpayStoreId =
+              (fulfillmentData?.ReceiverStoreID as string | undefined) ||
+              (fulfillmentData?.CVSStoreID as string | undefined)
+            const ecpayPaymentNo = fulfillmentData?.CVSPaymentNo as
+              | string
+              | undefined
+            const ecpayValidationNo = fulfillmentData?.CVSValidationNo as
+              | string
+              | undefined
 
             return (
               <div key={fulfillment.id} className="grid gap-3 rounded-[12px] border border-[#e5e7eb] bg-white p-4">
@@ -105,6 +122,21 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                   )}
                   {fulfillment.canceled_at && (
                     <Text>Canceled at: {new Date(fulfillment.canceled_at).toLocaleString()}</Text>
+                  )}
+                  {ecpayStatusMessage && (
+                    <Text>ECPay status: {ecpayStatusMessage}</Text>
+                  )}
+                  {ecpayLogisticsId && (
+                    <Text>ECPay logistics ID: {ecpayLogisticsId}</Text>
+                  )}
+                  {ecpayStoreId && (
+                    <Text>ECPay store ID: {ecpayStoreId}</Text>
+                  )}
+                  {ecpayPaymentNo && (
+                    <Text>CVS payment no: {ecpayPaymentNo}</Text>
+                  )}
+                  {ecpayValidationNo && (
+                    <Text>CVS validation no: {ecpayValidationNo}</Text>
                   )}
                 </div>
                 {labels.length > 0 && (
