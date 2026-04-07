@@ -89,6 +89,26 @@ For Vercel deployments, use the production `DATABASE_URL` and `PAYLOAD_SECRET` f
 
 This repo also includes `vercel.json`, which runs `pnpm run build:vercel` so Vercel deploys execute migrations before building the app.
 
+## Media uploads with Cloudflare R2
+
+线上部署在 Vercel 时，`media` 不能继续依赖本地 `staticDir` 持久化，所以这个项目现在通过 `@payloadcms/storage-s3` 接 Cloudflare R2。
+
+需要在 `payload-cms` 这个 Vercel 项目中配置：
+
+```bash
+R2_BUCKET=your-bucket
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_PUBLIC_URL=https://media.your-domain.com
+```
+
+说明：
+
+- `R2_ENDPOINT` 是 R2 的 S3 API endpoint，只用于上传
+- `R2_PUBLIC_URL` 是前台与 Payload Admin 实际访问文件的公开域名
+- 如果以上变量没有配齐，Payload 会退回本地存储；这在 Vercel 上通常不可持续，因此线上应视为未配置完成
+
 ## Medusa product sync
 
 Payload product pages can be created from Medusa in two ways:
