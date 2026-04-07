@@ -2,6 +2,9 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { getProductPageByHandle } from "@lib/payload/get-product-page"
+import { getSiteSettings } from "@lib/payload/get-site-settings"
+import { getPayloadMediaUrl } from "@lib/payload/client"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 import { getSeoToolkitSiteName } from "@lib/util/plugin-manifest"
@@ -120,15 +123,27 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
-  const siteName = getSeoToolkitSiteName()
+  const [productPage, siteSettings] = await Promise.all([
+    getProductPageByHandle(handle),
+    getSiteSettings(),
+  ])
+
+  const siteName =
+    siteSettings?.siteName?.trim() || getSeoToolkitSiteName()
+  const seoTitle =
+    productPage?.seo?.metaTitle?.trim() || `${product.title} | ${siteName}`
+  const seoDescription =
+    productPage?.seo?.metaDescription?.trim() || `${product.title}`
+  const seoImage =
+    getPayloadMediaUrl(productPage?.seo?.ogImage?.url) || product.thumbnail || undefined
 
   return {
-    title: `${product.title} | ${siteName}`,
-    description: `${product.title}`,
+    title: seoTitle,
+    description: seoDescription,
     openGraph: {
-      title: `${product.title} | ${siteName}`,
-      description: `${product.title}`,
-      images: product.thumbnail ? [product.thumbnail] : [],
+      title: seoTitle,
+      description: seoDescription,
+      images: seoImage ? [seoImage] : [],
     },
   }
 }
@@ -154,6 +169,7 @@ export default async function ProductPage(props: Props) {
   }
 
   const images = getImagesForVariant(pricedProduct, selectedVariantId)
+  const productPage = await getProductPageByHandle(params.handle)
 
   return (
     <ProductTemplate
@@ -162,6 +178,7 @@ export default async function ProductPage(props: Props) {
       countryCode={params.countryCode}
       images={images}
       selectedVariantId={selectedVariantId}
+      contentBlocks={productPage?.sections}
     />
   )
 }

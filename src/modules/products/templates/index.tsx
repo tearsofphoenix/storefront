@@ -13,7 +13,9 @@ import { isStorefrontPluginEnabled } from "@lib/util/plugin-manifest"
 import { buildChatbotProductContext } from "@lib/util/chatbot-product-context"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
+import { PayloadContentBlock } from "types/payload"
 import ChatbotContextSync from "../components/chatbot-context-sync"
+import { BlockRenderer } from "@modules/content/blocks/block-renderer"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
 
@@ -23,9 +25,11 @@ type ProductTemplateProps = {
   countryCode: string
   images: HttpTypes.StoreProductImage[]
   selectedVariantId?: string
+  contentBlocks?: PayloadContentBlock[] | null
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
+  contentBlocks,
   product,
   region,
   countryCode,
@@ -68,6 +72,11 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             <ProductOnboardingCta />
           </div>
         </div>
+        {contentBlocks?.length ? (
+          <div className="mt-14 border-t border-[#e5e7eb] pt-10">
+            <BlockRenderer blocks={contentBlocks} />
+          </div>
+        ) : null}
         <div className="mt-12 border-t border-[#e5e7eb] pt-8">
           <ProductTabs product={product} />
         </div>
