@@ -7,13 +7,13 @@ export const SpecTableSection = ({ rows, title }: PayloadSpecTableBlock) => {
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="overflow-hidden rounded-[1.75rem] border border-[#e5e7eb] bg-white">
+      <div className="overflow-hidden rounded-[1.75rem] bg-[#f7f2e8]">
         {title ? (
-          <div className="border-b border-[#e5e7eb] px-6 py-5 small:px-8">
+          <div className="border-b border-black/8 px-6 py-5 small:px-8">
             <h2 className="text-2xl font-semibold text-[#111827]">{title}</h2>
           </div>
         ) : null}
-        <div className="divide-y divide-[#e5e7eb]">
+        <div className="divide-y divide-black/8">
           {rows.map((row, index) => (
             <div
               key={row.id || `${row.label}-${index}`}

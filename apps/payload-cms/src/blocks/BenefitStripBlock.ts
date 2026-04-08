@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const BenefitStripBlock: Block = {
   slug: 'benefit-strip',
   labels: {
     singular: 'Benefit Strip',
     plural: 'Benefit Strips',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Benefit',
+      accent: '#B86C52',
+      layout: 'grid',
+    }),
   },
   fields: [
     anchorIdField,

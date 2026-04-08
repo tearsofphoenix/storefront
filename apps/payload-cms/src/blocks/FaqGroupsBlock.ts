@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const FaqGroupsBlock: Block = {
   slug: 'faq-groups',
   labels: {
     singular: 'FAQ Groups',
     plural: 'FAQ Groups',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'FAQ Groups',
+      accent: '#5E7C72',
+      layout: 'grid',
+    }),
   },
   fields: [
     anchorIdField,

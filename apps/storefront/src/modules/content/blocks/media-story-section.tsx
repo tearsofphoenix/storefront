@@ -10,23 +10,24 @@ export const MediaStorySection = ({
 }: PayloadMediaStoryBlock) => {
   const imageUrl = getPayloadMediaUrl(media?.url)
   const isImageFirst = mediaPosition === "left"
+  const bodyText = body?.trim()
 
   return (
     <section className="content-container py-12 small:py-16">
       <div
-        className={`grid gap-8 rounded-[2rem] bg-[#f8fafc] p-6 small:p-10 lg:grid-cols-2 lg:items-center ${
+        className={`grid gap-8 rounded-[2rem] bg-[#f2eadf] p-6 small:p-10 lg:grid-cols-2 lg:items-center ${
           isImageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
-        <div className="overflow-hidden rounded-[1.5rem] bg-white">
+        <div className="overflow-hidden rounded-[1.5rem] bg-[#e6dcc9]">
           {imageUrl ? (
             <img
               alt={media?.alt || title}
-              className="h-full w-full object-cover"
+              className="aspect-[4/3] w-full object-cover"
               src={imageUrl}
             />
           ) : (
-            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#dbeafe,#f8fafc)] text-sm text-[#6b7280]">
+            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
               Payload Story Media
             </div>
           )}
@@ -40,9 +41,11 @@ export const MediaStorySection = ({
           <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
             {title}
           </h2>
-          <p className="whitespace-pre-line text-base leading-7 text-[#4b5563]">
-            {body}
-          </p>
+          {bodyText ? (
+            <p className="whitespace-pre-line text-base leading-7 text-[#4b5563]">
+              {bodyText}
+            </p>
+          ) : null}
         </div>
       </div>
     </section>

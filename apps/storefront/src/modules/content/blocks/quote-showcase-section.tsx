@@ -13,7 +13,7 @@ export const QuoteShowcaseSection = ({
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="rounded-[2rem] bg-[#111827] px-6 py-10 text-white shadow-[0_24px_80px_rgba(15,23,42,0.24)] small:px-10 small:py-14">
+      <div className="rounded-[2rem] bg-[#181818] px-6 py-10 text-white small:px-10 small:py-14">
         <div className="mx-auto flex max-w-4xl flex-col gap-6">
           {eyebrow ? (
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">

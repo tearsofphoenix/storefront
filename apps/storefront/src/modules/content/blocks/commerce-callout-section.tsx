@@ -27,12 +27,12 @@ export const CommerceCalloutSection = ({
   return (
     <section className="content-container py-12 small:py-16">
       <div
-        className={`grid gap-8 rounded-[2rem] border border-[#e5e7eb] bg-[#f8fafc] p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] small:p-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
+        className={`grid gap-8 rounded-[2rem] bg-[#f1e9de] p-6 small:p-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
           imageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
         {showImage !== false ? (
-          <div className="overflow-hidden rounded-[1.5rem] border border-white/70 bg-white">
+          <div className="overflow-hidden rounded-[1.5rem] bg-[#e5dac7]">
             {imageUrl ? (
               <img
                 alt={product.title}
@@ -40,7 +40,7 @@ export const CommerceCalloutSection = ({
                 src={imageUrl}
               />
             ) : (
-              <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#dbeafe,#f8fafc)] text-sm text-[#6b7280]">
+              <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
                 Product media
               </div>
             )}

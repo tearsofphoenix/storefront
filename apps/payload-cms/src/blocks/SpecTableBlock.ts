@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const SpecTableBlock: Block = {
   slug: 'spec-table',
   labels: {
     singular: 'Spec Table',
     plural: 'Spec Tables',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Specs',
+      accent: '#6A867A',
+      layout: 'table',
+    }),
   },
   fields: [
     anchorIdField,

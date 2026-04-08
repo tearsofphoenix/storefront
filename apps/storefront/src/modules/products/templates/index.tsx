@@ -81,7 +81,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       ) : null}
       {contentBlocks?.length ? (
-        <div className={hasInlineCommerceCallout ? "pt-0" : "mt-14 border-t border-[#e5e7eb] pt-10"}>
+        <div
+          className={
+            hasInlineCommerceCallout
+              ? "pt-0"
+              : "mt-14 border-t border-black/8 pt-10"
+          }
+        >
           <BlockRenderer
             blocks={contentBlocks}
             images={images}
@@ -91,7 +97,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           />
         </div>
       ) : null}
-      <div className="content-container mt-12 border-t border-[#e5e7eb] pt-8">
+      <div className="content-container mt-12 border-t border-black/8 pt-8">
         <ProductTabs product={product} />
       </div>
       {isStorefrontPluginEnabled("reviews") ? (

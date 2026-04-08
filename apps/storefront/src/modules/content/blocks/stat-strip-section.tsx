@@ -11,7 +11,7 @@ export const StatStripSection = ({
 
   return (
     <section className="content-container py-10 small:py-12">
-      <div className="rounded-[1.75rem] bg-[#111827] px-6 py-8 text-white shadow-[0_24px_80px_rgba(15,23,42,0.2)] small:px-8">
+      <div className="rounded-[1.75rem] bg-[#1c1b19] px-6 py-8 text-white small:px-8">
         {eyebrow ? (
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
             {eyebrow}

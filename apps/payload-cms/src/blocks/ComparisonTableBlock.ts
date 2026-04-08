@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const ComparisonTableBlock: Block = {
   slug: 'comparison-table',
   labels: {
     singular: 'Comparison Table',
     plural: 'Comparison Tables',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Compare',
+      accent: '#7E8E79',
+      layout: 'table',
+    }),
   },
   fields: [
     anchorIdField,

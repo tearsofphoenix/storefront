@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const StatStripBlock: Block = {
   slug: 'stat-strip',
   labels: {
     singular: 'Stat Strip',
     plural: 'Stat Strips',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Stats',
+      accent: '#C69D58',
+      layout: 'stats',
+    }),
   },
   fields: [
     anchorIdField,

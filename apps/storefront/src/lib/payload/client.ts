@@ -68,12 +68,14 @@ export const payloadFetch = async <T>(
   try {
     const response = await fetch(url, {
       method: "GET",
-      cache: "force-cache",
       next: options?.tags?.length
         ? {
+            revalidate: 60,
             tags: options.tags,
           }
-        : undefined,
+        : {
+            revalidate: 60,
+          },
       headers: {
         accept: "application/json",
       },

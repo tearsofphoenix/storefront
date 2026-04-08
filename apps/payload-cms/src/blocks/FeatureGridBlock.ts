@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const FeatureGridBlock: Block = {
   slug: 'feature-grid',
   labels: {
     singular: 'Feature Grid',
     plural: 'Feature Grids',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Features',
+      accent: '#738BA4',
+      layout: 'grid',
+    }),
   },
   fields: [
     anchorIdField,

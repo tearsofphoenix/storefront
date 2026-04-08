@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const CommerceCalloutBlock: Block = {
   slug: 'commerce-callout',
   labels: {
     singular: 'Commerce Callout',
     plural: 'Commerce Callouts',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Commerce',
+      accent: '#9B7C57',
+      layout: 'story',
+    }),
   },
   fields: [
     anchorIdField,

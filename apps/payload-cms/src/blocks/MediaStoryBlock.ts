@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const MediaStoryBlock: Block = {
   slug: 'media-story',
   labels: {
     singular: 'Media Story',
     plural: 'Media Stories',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Story',
+      accent: '#8E6E55',
+      layout: 'story',
+    }),
   },
   fields: [
     anchorIdField,

@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const CTAButtonBlock: Block = {
   slug: 'cta',
   labels: {
     singular: 'CTA',
     plural: 'CTA Blocks',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'CTA',
+      accent: '#9F6A3B',
+      layout: 'cta',
+    }),
   },
   fields: [
     anchorIdField,

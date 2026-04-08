@@ -28,10 +28,8 @@ export const CmsProductCard = ({
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group block">
       <article
-        className={`overflow-hidden rounded-[1.75rem] border border-[#e5e7eb] bg-white transition-transform duration-200 group-hover:-translate-y-1 ${
-          isBundle
-            ? "shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
-            : "shadow-[0_12px_40px_rgba(15,23,42,0.05)]"
+        className={`overflow-hidden rounded-[1.75rem] bg-[#f8f3ea] transition-transform duration-200 group-hover:-translate-y-1 ${
+          isBundle ? "lg:group-hover:-translate-y-1.5" : ""
         }`}
       >
         <div className="p-4">
@@ -39,9 +37,9 @@ export const CmsProductCard = ({
             thumbnail={product.thumbnail}
             images={product.images}
             size="full"
-            className="border-none bg-[#f7f7fa] p-0 shadow-none"
+            className="border-none bg-[#ebe2d2] p-0 shadow-none"
             style={{
-              background: "#f7f7fa",
+              background: "#ebe2d2",
               borderRadius: 20,
             }}
           />
@@ -54,7 +52,7 @@ export const CmsProductCard = ({
               </span>
             ) : null}
             {highlight ? (
-              <span className="rounded-full border border-[#d1d5db] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#111827]">
+              <span className="rounded-full bg-[#efe6d7] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#111827]">
                 {highlight}
               </span>
             ) : null}

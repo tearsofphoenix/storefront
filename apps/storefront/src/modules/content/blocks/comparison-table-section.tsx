@@ -14,8 +14,8 @@ export const ComparisonTableSection = ({
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="overflow-hidden rounded-[1.75rem] border border-[#e5e7eb] bg-white shadow-[0_18px_60px_rgba(15,23,42,0.06)]">
-        <div className="border-b border-[#e5e7eb] px-6 py-6 small:px-8">
+      <div className="overflow-hidden rounded-[1.75rem] bg-[#f7f2e8]">
+        <div className="border-b border-black/8 px-6 py-6 small:px-8">
           {eyebrow ? (
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
               {eyebrow}
@@ -30,12 +30,12 @@ export const ComparisonTableSection = ({
             </p>
           ) : null}
         </div>
-        <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] border-b border-[#e5e7eb] bg-[#f8fafc] px-6 py-4 text-sm font-semibold text-[#111827] small:px-8">
+        <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] border-b border-black/8 bg-[#efe7d8] px-6 py-4 text-sm font-semibold text-[#111827] small:px-8">
           <div>Feature</div>
           <div>{leftColumnLabel}</div>
           <div>{rightColumnLabel}</div>
         </div>
-        <div className="divide-y divide-[#e5e7eb]">
+        <div className="divide-y divide-black/8">
           {rows.map((row, index) => (
             <div
               key={row.id || `${row.feature}-${index}`}

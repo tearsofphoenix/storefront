@@ -11,7 +11,7 @@ export const BenefitStripSection = ({
 
   return (
     <section className="content-container py-10 small:py-12">
-      <div className="rounded-[1.75rem] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_16px_52px_rgba(15,23,42,0.05)] small:px-8">
+      <div className="rounded-[1.75rem] bg-[#efe7d8] px-6 py-6 small:px-8">
         {title ? (
           <h2 className="text-2xl font-semibold leading-tight text-[#111827] small:text-3xl">
             {title}
@@ -26,7 +26,7 @@ export const BenefitStripSection = ({
           {items.map((item, index) => (
             <article
               key={item.id || `${item.title}-${index}`}
-              className="rounded-[1.25rem] bg-[#f8fafc] px-5 py-5"
+              className="rounded-[1.25rem] bg-[#f8f3ea] px-5 py-5"
             >
               <h3 className="text-base font-semibold text-[#111827]">
                 {item.title}

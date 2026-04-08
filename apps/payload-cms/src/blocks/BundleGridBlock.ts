@@ -1,12 +1,19 @@
 import type { Block } from 'payload'
 
-import { anchorIdField } from './shared'
+import { anchorIdField, createBlockImages } from './shared'
 
 export const BundleGridBlock: Block = {
   slug: 'bundle-grid',
   labels: {
     singular: 'Bundle Grid',
     plural: 'Bundle Grids',
+  },
+  admin: {
+    images: createBlockImages({
+      label: 'Bundles',
+      accent: '#C08E3E',
+      layout: 'products',
+    }),
   },
   fields: [
     anchorIdField,
