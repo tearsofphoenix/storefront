@@ -2,7 +2,7 @@ import { Metadata } from "next"
 
 import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
-import { listCollections } from "@lib/data/collections"
+import { getHomepageCollection } from "@lib/data/collections"
 import { getI18n } from "@lib/i18n/server"
 import { getRegion } from "@lib/data/regions"
 import { getLandingPageBySlug } from "@lib/payload/get-landing-page"
@@ -59,21 +59,16 @@ export default async function Home(props: {
     return <BlockRenderer blocks={landingPage.sections} />
   }
 
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
+  const homepageCollection = await getHomepageCollection()
 
-  if (!collections) {
+  if (!homepageCollection) {
     return null
   }
 
   return (
     <>
-      <Hero collection={collections[0] ?? null} region={region} />
-      <FeaturedProducts
-        collections={collections.slice(0, 1)}
-        region={region}
-      />
+      <Hero collection={homepageCollection} region={region} />
+      <FeaturedProducts collections={[homepageCollection]} region={region} />
     </>
   )
 }

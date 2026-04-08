@@ -5,6 +5,8 @@ import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
 import { logMedusaRequestError } from "@lib/util/log-medusa-request-error"
 
+const DEFAULT_HOMEPAGE_COLLECTION_HANDLE = "homepage-featured"
+
 export const retrieveCollection = async (id: string) => {
   const next = {
     ...(await getCacheOptions("collections")),
@@ -49,7 +51,7 @@ export const listCollections = async (
 
 export const getCollectionByHandle = async (
   handle: string
-): Promise<HttpTypes.StoreCollection> => {
+): Promise<HttpTypes.StoreCollection | null> => {
   const next = {
     ...(await getCacheOptions("collections")),
   }
@@ -60,5 +62,37 @@ export const getCollectionByHandle = async (
       next,
       cache: "force-cache",
     })
-    .then(({ collections }) => collections[0])
+    .then(({ collections }) => collections[0] ?? null)
+    .catch((error) => {
+      logMedusaRequestError("getCollectionByHandle", error)
+      return null
+    })
+}
+
+const getHomepageCollectionHandleCandidates = () => {
+  const configuredHandle = process.env.HOMEPAGE_COLLECTION_HANDLE?.trim()
+
+  return Array.from(
+    new Set(
+      [configuredHandle, DEFAULT_HOMEPAGE_COLLECTION_HANDLE].filter(
+        (handle): handle is string => Boolean(handle)
+      )
+    )
+  )
+}
+
+export const getHomepageCollection = async () => {
+  for (const handle of getHomepageCollectionHandleCandidates()) {
+    const collection = await getCollectionByHandle(handle)
+
+    if (collection) {
+      return collection
+    }
+  }
+
+  const { collections } = await listCollections({
+    fields: "id, handle, title",
+  })
+
+  return collections[0] ?? null
 }
