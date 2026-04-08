@@ -89,6 +89,8 @@ For Vercel deployments, use the production `DATABASE_URL` and `PAYLOAD_SECRET` f
 
 This repo also includes `vercel.json`, which runs `pnpm run build:vercel` so Vercel deploys execute migrations before building the app.
 
+当你新增了 Payload plugin（例如 `@payloadcms/storage-s3`）后，必须重新生成 `src/app/(payload)/admin/importMap.js`。现在 `pnpm build` 和 `pnpm dev` 已经自动先执行 `pnpm generate:importmap`，避免部署后出现 `PayloadComponent not found in importMap`。
+
 ## Media uploads with Cloudflare R2
 
 线上部署在 Vercel 时，`media` 不能继续依赖本地 `staticDir` 持久化，所以这个项目现在通过 `@payloadcms/storage-s3` 接 Cloudflare R2。
