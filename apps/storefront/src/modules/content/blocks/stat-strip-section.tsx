@@ -11,7 +11,7 @@ export const StatStripSection = ({
 
   return (
     <section className="content-container py-10 small:py-12">
-      <div className="rounded-[1.75rem] bg-[#1c1b19] px-6 py-8 text-white small:px-8">
+      <div className="bg-[#1c1b19] px-6 py-8 text-white small:px-8">
         {eyebrow ? (
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
             {eyebrow}
@@ -26,7 +26,7 @@ export const StatStripSection = ({
           {items.map((item, index) => (
             <article
               key={item.id || `${item.value}-${index}`}
-              className="rounded-[1.25rem] border border-white/10 bg-white/5 px-5 py-5"
+              className="bg-white/5 px-5 py-5"
             >
               <p className="text-3xl font-semibold text-white">{item.value}</p>
               <p className="mt-2 text-sm font-medium text-white/80">

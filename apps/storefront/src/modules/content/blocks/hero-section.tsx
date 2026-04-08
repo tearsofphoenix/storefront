@@ -36,7 +36,7 @@ export const HeroSection = ({
           <div className="flex flex-wrap gap-3 pt-2">
             {primaryCTA?.label && primaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center rounded-full bg-[#111827] px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85"
+                className="inline-flex items-center justify-center bg-[#111827] px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85"
                 href={primaryCTA.href}
               >
                 {primaryCTA.label}
@@ -44,7 +44,7 @@ export const HeroSection = ({
             ) : null}
             {secondaryCTA?.label && secondaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center rounded-full border border-black/15 px-5 py-3 text-sm font-medium text-[#111827] transition-colors hover:border-black/40"
+                className="inline-flex items-center justify-center bg-[#e9dfcf] px-5 py-3 text-sm font-medium text-[#111827] transition-colors hover:bg-[#e1d6c6]"
                 href={secondaryCTA.href}
               >
                 {secondaryCTA.label}
@@ -52,7 +52,7 @@ export const HeroSection = ({
             ) : null}
           </div>
         </div>
-        <div className="overflow-hidden rounded-[2rem] bg-[#e6dcc9]">
+        <div className="overflow-hidden bg-[#e6dcc9]">
           {mediaType === "video" && videoUrl ? (
             <video
               autoPlay

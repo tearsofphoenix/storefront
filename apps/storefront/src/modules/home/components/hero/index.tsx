@@ -2,7 +2,6 @@ import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
 import {
   getStorefrontThemePresentation,
-  toRgba,
 } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -70,9 +69,9 @@ export default async function Hero({ collection, region }: HeroProps) {
 
   return (
     <section
-      className="border-b bg-[#f7f7fa]"
+      className="bg-[#f3ede2]"
       style={{
-        borderColor: "#d9dfe8",
+        borderColor: "transparent",
       }}
     >
       <div className="content-container grid gap-10 py-12 small:grid-cols-[0.95fr_1.05fr] small:items-center small:py-16">
@@ -80,12 +79,12 @@ export default async function Hero({ collection, region }: HeroProps) {
           <div
             className="theme-section-panel overflow-hidden"
             style={{
-              borderRadius: theme.panelRadius,
-              borderColor: "#d9dfe8",
-              background: "#ffffff",
+              borderRadius: 0,
+              borderColor: "transparent",
+              background: "#efe7d8",
             }}
           >
-            <div className="border-b border-[#e5e7eb] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
+            <div className="px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
               {collection ? collection.title : theme.brandName}
             </div>
             <div className="p-5 small:p-8">
@@ -96,8 +95,8 @@ export default async function Hero({ collection, region }: HeroProps) {
                 isFeatured
                 className="bg-[#f7f7fa] p-0 shadow-none"
                 style={{
-                  borderRadius: theme.panelRadius,
-                  border: "1px solid #e5e7eb",
+                  borderRadius: 0,
+                  border: "none",
                   boxShadow: "none",
                 }}
               />
@@ -147,7 +146,8 @@ export default async function Hero({ collection, region }: HeroProps) {
               href={secondaryHref}
               className="theme-outline-button"
               style={{
-                borderColor: "#d9dfe8",
+                borderColor: "transparent",
+                background: "#e9e0d0",
               }}
             >
               {secondaryLabel}
@@ -155,9 +155,9 @@ export default async function Hero({ collection, region }: HeroProps) {
           </div>
 
           <div
-            className="grid gap-3 rounded-[14px] border border-[#d9dfe8] bg-white p-5 small:max-w-[34rem] small:grid-cols-3"
+            className="grid gap-3 bg-[#efe7d8] p-5 small:max-w-[34rem] small:grid-cols-3"
             style={{
-              boxShadow: `0 2px 5px ${toRgba(theme.accentColor, 0.35)}`,
+              boxShadow: "none",
             }}
           >
             {(heroHighlights.length > 0

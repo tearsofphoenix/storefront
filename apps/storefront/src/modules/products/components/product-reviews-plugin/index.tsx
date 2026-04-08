@@ -24,9 +24,7 @@ const ProductReviewsPlugin = async ({ product }: ProductReviewsPluginProps) => {
   }
 
   return (
-    <section
-      className="rounded-[14px] border border-[#e5e7eb] bg-white px-6 py-8 small:px-10"
-    >
+    <section className="bg-[#f3ede2] px-6 py-8 small:px-10">
       <div className="grid gap-3">
         <span className="theme-eyebrow">
           {plugin.name ?? "Reviews"}
@@ -53,12 +51,12 @@ const ProductReviewsPlugin = async ({ product }: ProductReviewsPluginProps) => {
         </div>
         <div className="flex flex-wrap gap-3 pt-2">
           <span
-            className="rounded-md border border-[#d9dfe8] bg-[#f7f7fa] px-4 py-2 text-sm text-grey-70"
+            className="bg-[#e9e0d0] px-4 py-2 text-sm text-grey-70"
           >
             {t(messages.product.pluginSlug, { slug: plugin.slug })}
           </span>
           <span
-            className="rounded-md border border-[#d9dfe8] bg-[#f7f7fa] px-4 py-2 text-sm text-grey-70"
+            className="bg-[#e9e0d0] px-4 py-2 text-sm text-grey-70"
           >
             {t(messages.product.storefrontModules, { count: reviewerCount })}
           </span>

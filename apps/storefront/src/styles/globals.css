@@ -87,7 +87,7 @@
   }
 
   .theme-section-panel {
-    border-radius: 20px;
+    border-radius: 0;
     background: #f3ede2;
   }
 
@@ -96,7 +96,7 @@
     width: fit-content;
     align-items: center;
     gap: 0.35rem;
-    border-radius: 9999px;
+    border-radius: 0;
     background: #efe7d8;
     padding: 0.35rem 0.7rem;
     font-size: 0.68rem;
@@ -113,7 +113,7 @@
     width: fit-content;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 0;
     padding: 0.7rem 1.1rem;
     font-size: 0.875rem;
     font-weight: 600;
@@ -140,7 +140,7 @@
   }
 
   .contrast-btn {
-    @apply px-4 py-2 border border-black rounded-full hover:bg-black hover:text-white transition-colors duration-200 ease-in;
+    @apply px-4 py-2 hover:bg-black hover:text-white transition-colors duration-200 ease-in;
   }
 
   .text-xsmall-regular {

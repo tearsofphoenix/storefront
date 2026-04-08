@@ -40,8 +40,8 @@ export default async function ProductPreview({
           className="bg-[#f7f7fa] p-0 shadow-none transition-opacity duration-200 group-hover:opacity-90"
           style={{
             background: "#f7f7fa",
-            border: "1px solid #e5e7eb",
-            borderRadius: theme.panelRadius,
+            border: "none",
+            borderRadius: 0,
             boxShadow: "none",
           }}
         />

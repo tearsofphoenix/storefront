@@ -47,7 +47,7 @@ const Item: React.FC<AccordionItemProps> = ({
     <AccordionPrimitive.Item
       {...props}
       className={clx(
-        "group border-t border-[#e5e7eb] py-3 last:mb-0 last:border-b",
+        "group border-t border-black/8 py-3 last:mb-0 last:border-b last:border-black/8",
         className
       )}
     >
@@ -87,10 +87,10 @@ Accordion.Item = Item
 
 const MorphingTrigger = () => {
   return (
-    <div className="group relative rounded-md border border-[#d9dfe8] bg-white p-[6px] text-grey-90 transition-colors hover:bg-[#f7f7fa]">
+    <div className="group relative bg-[#e9e0d0] p-[6px] text-grey-90 transition-colors hover:bg-[#ddd0b9]">
       <div className="h-5 w-5">
-        <span className="absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] rounded-full bg-grey-50 duration-300 group-radix-state-open:rotate-90" />
-        <span className="absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] rounded-full bg-grey-50 duration-300 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90" />
+        <span className="absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] bg-grey-50 duration-300 group-radix-state-open:rotate-90" />
+        <span className="absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] bg-grey-50 duration-300 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90" />
       </div>
     </div>
   )

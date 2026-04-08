@@ -36,7 +36,7 @@ export const BundleGridSection = ({
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="rounded-[2rem] bg-[#f1e9de] px-6 py-8 small:px-8">
+      <div className="bg-[#f1e9de] px-6 py-8 small:px-8">
         <div className="flex flex-col gap-3">
           {eyebrow ? (
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">

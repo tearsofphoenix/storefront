@@ -66,7 +66,7 @@ const StorefrontPluginHighlights = async () => {
         {highlights.map((highlight) => (
           <article
             key={highlight.pluginId}
-            className="rounded-[14px] border border-[#e5e7eb] bg-white p-6"
+            className="bg-[#f3ede2] p-6"
           >
             <div className="grid gap-3">
               <span className="theme-eyebrow">

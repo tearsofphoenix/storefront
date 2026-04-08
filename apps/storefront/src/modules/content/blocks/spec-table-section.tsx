@@ -7,7 +7,7 @@ export const SpecTableSection = ({ rows, title }: PayloadSpecTableBlock) => {
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="overflow-hidden rounded-[1.75rem] bg-[#f7f2e8]">
+      <div className="overflow-hidden bg-[#f7f2e8]">
         {title ? (
           <div className="border-b border-black/8 px-6 py-5 small:px-8">
             <h2 className="text-2xl font-semibold text-[#111827]">{title}</h2>

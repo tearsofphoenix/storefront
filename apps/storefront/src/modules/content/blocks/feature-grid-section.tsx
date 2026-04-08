@@ -31,7 +31,7 @@ export const FeatureGridSection = ({
           return (
             <article
               key={item.id || `${item.title}-${index}`}
-              className="overflow-hidden rounded-[1.75rem] bg-[#f4ede1]"
+              className="overflow-hidden bg-[#f4ede1]"
             >
               {imageUrl ? (
                 <img

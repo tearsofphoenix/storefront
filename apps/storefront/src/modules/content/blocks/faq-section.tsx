@@ -17,7 +17,7 @@ export const FAQSection = ({ items, title }: PayloadFaqBlock) => {
           {items.map((item, index) => (
             <details
               key={item.id || `${item.question}-${index}`}
-              className="group rounded-[1.5rem] bg-[#f5eee4] p-5"
+              className="group bg-[#f5eee4] p-5"
             >
               <summary className="cursor-pointer list-none text-base font-semibold text-[#111827]">
                 {item.question}

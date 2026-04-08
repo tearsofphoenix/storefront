@@ -26,7 +26,7 @@ export const FaqGroupsSection = ({
           {groups.map((group, groupIndex) => (
             <section
               key={group.id || `${group.title}-${groupIndex}`}
-              className="rounded-[1.5rem] bg-[#f4ede2] p-5"
+              className="bg-[#f4ede2] p-5"
             >
               <h3 className="text-xl font-semibold text-[#111827]">
                 {group.title}
@@ -40,7 +40,7 @@ export const FaqGroupsSection = ({
                 {group.items?.map((item, itemIndex) => (
                   <details
                     key={item.id || `${item.question}-${itemIndex}`}
-                    className="rounded-[1rem] bg-[#faf6ee] p-4"
+                    className="bg-[#faf6ee] p-4"
                   >
                     <summary className="cursor-pointer list-none text-sm font-semibold text-[#111827]">
                       {item.question}

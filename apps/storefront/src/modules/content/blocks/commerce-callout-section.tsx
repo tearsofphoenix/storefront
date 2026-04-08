@@ -27,12 +27,12 @@ export const CommerceCalloutSection = ({
   return (
     <section className="content-container py-12 small:py-16">
       <div
-        className={`grid gap-8 rounded-[2rem] bg-[#f1e9de] p-6 small:p-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
+        className={`grid gap-8 bg-[#f1e9de] p-6 small:p-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
           imageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
         {showImage !== false ? (
-          <div className="overflow-hidden rounded-[1.5rem] bg-[#e5dac7]">
+          <div className="overflow-hidden bg-[#e5dac7]">
             {imageUrl ? (
               <img
                 alt={product.title}

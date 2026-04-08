@@ -14,7 +14,7 @@ export const ComparisonTableSection = ({
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="overflow-hidden rounded-[1.75rem] bg-[#f7f2e8]">
+      <div className="overflow-hidden bg-[#f7f2e8]">
         <div className="border-b border-black/8 px-6 py-6 small:px-8">
           {eyebrow ? (
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">

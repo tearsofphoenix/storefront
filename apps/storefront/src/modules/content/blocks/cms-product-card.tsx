@@ -28,7 +28,7 @@ export const CmsProductCard = ({
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group block">
       <article
-        className={`overflow-hidden rounded-[1.75rem] bg-[#f8f3ea] transition-transform duration-200 group-hover:-translate-y-1 ${
+        className={`overflow-hidden bg-[#f8f3ea] transition-transform duration-200 group-hover:-translate-y-1 ${
           isBundle ? "lg:group-hover:-translate-y-1.5" : ""
         }`}
       >
@@ -40,19 +40,19 @@ export const CmsProductCard = ({
             className="border-none bg-[#ebe2d2] p-0 shadow-none"
             style={{
               background: "#ebe2d2",
-              borderRadius: 20,
+              borderRadius: 0,
             }}
           />
         </div>
         <div className="flex flex-col gap-3 px-5 pb-5">
           <div className="flex flex-wrap items-center gap-2">
             {badge ? (
-              <span className="rounded-full bg-[#111827] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+              <span className="bg-[#111827] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
                 {badge}
               </span>
             ) : null}
             {highlight ? (
-              <span className="rounded-full bg-[#efe6d7] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#111827]">
+              <span className="bg-[#efe6d7] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#111827]">
                 {highlight}
               </span>
             ) : null}
@@ -80,7 +80,7 @@ export const CmsProductCard = ({
             </div>
           ) : null}
           {isBundle ? (
-            <span className="inline-flex w-fit items-center rounded-full bg-[#111827] px-4 py-2 text-sm font-medium text-white transition-opacity group-hover:opacity-85">
+            <span className="inline-flex w-fit items-center bg-[#111827] px-4 py-2 text-sm font-medium text-white transition-opacity group-hover:opacity-85">
               {ctaLabel || "Explore bundle"}
             </span>
           ) : null}

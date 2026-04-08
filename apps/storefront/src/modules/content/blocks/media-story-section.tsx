@@ -15,11 +15,11 @@ export const MediaStorySection = ({
   return (
     <section className="content-container py-12 small:py-16">
       <div
-        className={`grid gap-8 rounded-[2rem] bg-[#f2eadf] p-6 small:p-10 lg:grid-cols-2 lg:items-center ${
+        className={`grid gap-8 bg-[#f2eadf] p-6 small:p-10 lg:grid-cols-2 lg:items-center ${
           isImageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
-        <div className="overflow-hidden rounded-[1.5rem] bg-[#e6dcc9]">
+        <div className="overflow-hidden bg-[#e6dcc9]">
           {imageUrl ? (
             <img
               alt={media?.alt || title}

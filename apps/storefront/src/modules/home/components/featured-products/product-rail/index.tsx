@@ -34,7 +34,7 @@ export default async function ProductRail({
 
   return (
     <section className="content-container py-12 small:py-16">
-      <div className="mb-6 flex items-end justify-between gap-6 border-b pb-6">
+      <div className="mb-6 flex items-end justify-between gap-6 pb-6">
         <div className="grid gap-1">
           <h2
             className="text-[1.75rem] font-semibold text-grey-80 small:text-[2rem]"

@@ -17,7 +17,7 @@ export const SectionNav = ({ items, title }: PayloadSectionNavBlock) => {
           {items.map((item, index) => (
             <a
               key={item.id || `${item.anchorId}-${index}`}
-              className="inline-flex items-center rounded-full bg-[#efe7d8] px-3 py-2 text-sm font-medium text-[#111827] transition-colors hover:bg-[#e6ddcd]"
+              className="inline-flex items-center bg-[#efe7d8] px-3 py-2 text-sm font-medium text-[#111827] transition-colors hover:bg-[#e6ddcd]"
               href={`#${item.anchorId}`}
             >
               {item.label}
