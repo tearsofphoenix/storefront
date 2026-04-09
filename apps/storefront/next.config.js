@@ -62,6 +62,17 @@ const nextConfig = {
         : []),
     ],
   },
+  headers: () => [
+    {
+      source: '/.well-known/apple-developer-merchantid-domain-association',
+      headers: [
+        {
+          key: 'Content-Type',
+          value: 'application/json',
+        },
+      ],
+    },
+  ]
 }
 
 module.exports = nextConfig

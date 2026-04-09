@@ -1,6 +1,11 @@
 "use client"
 
-import { isManual, isStripeLike, isZeroTotalCart } from "@lib/constants"
+import {
+  isHostedRedirectPayment,
+  isManual,
+  isStripeLike,
+  isZeroTotalCart,
+} from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
@@ -58,6 +63,14 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
+    case isHostedRedirectPayment(paymentSession?.provider_id):
+      return (
+        <HostedRedirectPaymentButton
+          cart={cart}
+          notReady={notReady}
+          data-testid={dataTestId}
+        />
+      )
     case isManual(paymentSession?.provider_id):
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
@@ -65,6 +78,98 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     default:
       return <Button disabled>{messages.common.selectPaymentMethod}</Button>
   }
+}
+
+const submitHostedPaymentForm = ({
+  action,
+  fields,
+  method = "POST",
+}: {
+  action: string
+  fields: Record<string, string>
+  method?: string
+}) => {
+  const form = document.createElement("form")
+  form.method = method
+  form.action = action
+  form.style.display = "none"
+
+  Object.entries(fields).forEach(([key, value]) => {
+    const input = document.createElement("input")
+    input.type = "hidden"
+    input.name = key
+    input.value = value
+    form.appendChild(input)
+  })
+
+  document.body.appendChild(form)
+  form.submit()
+}
+
+const HostedRedirectPaymentButton = ({
+  cart,
+  notReady,
+  "data-testid": dataTestId,
+}: {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+  "data-testid"?: string
+}) => {
+  const { messages } = useI18n()
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const handlePayment = async () => {
+    setSubmitting(true)
+    setErrorMessage(null)
+
+    try {
+      const nextCart = await placeOrder()
+      const pendingSession = nextCart?.payment_collection?.payment_sessions?.find(
+        (session: any) =>
+          session?.provider_id &&
+          isHostedRedirectPayment(session.provider_id) &&
+          session?.data?.redirect_url
+      )
+
+      if (!pendingSession?.data?.redirect_url || !pendingSession?.data?.form_fields) {
+        throw new Error("Hosted payment redirect data is missing.")
+      }
+
+      submitHostedPaymentForm({
+        action: pendingSession.data.redirect_url as string,
+        fields: Object.fromEntries(
+          Object.entries(
+            pendingSession.data.form_fields as Record<string, string | number>
+          ).map(([key, value]) => [key, String(value)])
+        ),
+        method: String(pendingSession.data.form_method || "POST"),
+      })
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to start hosted payment."
+      )
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <Button
+        disabled={notReady}
+        isLoading={submitting}
+        onClick={handlePayment}
+        size="large"
+        data-testid={dataTestId}
+      >
+        {messages.common.placeOrder}
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="hosted-payment-error-message"
+      />
+    </>
+  )
 }
 
 const StripePaymentButton = ({

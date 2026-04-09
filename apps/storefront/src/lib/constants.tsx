@@ -34,6 +34,14 @@ export const paymentInfoMap: Record<
     title: "Manual Payment",
     icon: <CreditCard />,
   },
+  "pp_ecpay-aio_ecpay-aio": {
+    title: "ECPay Payment",
+    icon: <CreditCard />,
+  },
+  "pp_payuni-upp_payuni-upp": {
+    title: "PayUni Payment",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 
@@ -49,6 +57,13 @@ export const isPaypal = (providerId?: string) => {
 }
 export const isManual = (providerId?: string) => {
   return providerId?.startsWith("pp_system_default")
+}
+
+export const isHostedRedirectPayment = (providerId?: string) => {
+  return (
+    providerId === "pp_ecpay-aio_ecpay-aio" ||
+    providerId === "pp_payuni-upp_payuni-upp"
+  )
 }
 
 export const isZeroTotalCart = (cart?: {

@@ -1,7 +1,12 @@
 "use client"
 
 import { RadioGroup } from "@headlessui/react"
-import { isStripeLike, isZeroTotalCart, paymentInfoMap } from "@lib/constants"
+import {
+  isHostedRedirectPayment,
+  isStripeLike,
+  isZeroTotalCart,
+  paymentInfoMap,
+} from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
@@ -73,9 +78,18 @@ const Payment = ({
       return
     }
 
-    if (isStripeLike(method)) {
+    if (isStripeLike(method) || isHostedRedirectPayment(method)) {
       await initiatePaymentSession(cart, {
         provider_id: method,
+        data: {
+          cart_id: cart.id,
+          country_code: cart.shipping_address?.country_code || "tw",
+          email: cart.email,
+          amount: cart.total,
+          context: {
+            items: cart.items,
+          },
+        },
       })
 
       router.refresh()
@@ -114,6 +128,15 @@ const Payment = ({
       if (!isFreeOrder && !checkActiveSession && selectedPaymentMethod) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          data: {
+            cart_id: cart.id,
+            country_code: cart.shipping_address?.country_code || "tw",
+            email: cart.email,
+            amount: cart.total,
+            context: {
+              items: cart.items,
+            },
+          },
         })
       }
 

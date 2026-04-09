@@ -28,7 +28,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method"
               >
-                {paymentInfoMap[payment.provider_id].title}
+                {paymentInfoMap[payment.provider_id]?.title || payment.provider_id}
               </Text>
             </div>
             <div className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4">
@@ -37,7 +37,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
                 <Container className="flex h-7 w-fit items-center rounded-md border border-[#d9dfe8] bg-white p-2 shadow-none">
-                  {paymentInfoMap[payment.provider_id].icon}
+                  {paymentInfoMap[payment.provider_id]?.icon}
                 </Container>
                 <Text data-testid="payment-amount">
                   {isStripeLike(payment.provider_id) && payment.data?.card_last4
