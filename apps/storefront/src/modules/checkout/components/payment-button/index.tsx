@@ -6,7 +6,7 @@ import {
   isStripeLike,
   isZeroTotalCart,
 } from "@lib/constants"
-import { placeOrder } from "@lib/data/cart"
+import { initiatePaymentSession, placeOrder } from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -140,6 +140,36 @@ const HostedRedirectPaymentButton = ({
     setErrorMessage(null)
 
     try {
+      const sessions = cart.payment_collection?.payment_sessions ?? []
+      const hostedProviderId =
+        sessions.find(
+          (session) =>
+            session?.status === "pending" &&
+            session?.provider_id &&
+            isHostedRedirectPayment(session.provider_id)
+        )?.provider_id ??
+        sessions.find(
+          (session) =>
+            session?.provider_id && isHostedRedirectPayment(session.provider_id)
+        )?.provider_id
+
+      if (!hostedProviderId) {
+        throw new Error("Hosted payment session is missing. Please reselect payment method.")
+      }
+
+      await initiatePaymentSession(cart, {
+        provider_id: hostedProviderId,
+        data: {
+          cart_id: cart.id,
+          country_code: cart.shipping_address?.country_code || "tw",
+          email: cart.email,
+          amount: cart.total,
+          context: {
+            items: cart.items,
+          },
+        },
+      })
+
       const nextCart = await placeOrder()
       const pendingSession = findHostedSession(nextCart)
 

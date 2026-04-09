@@ -125,7 +125,11 @@ const Payment = ({
         return
       }
 
-      if (!isFreeOrder && !checkActiveSession && selectedPaymentMethod) {
+      if (
+        !isFreeOrder &&
+        selectedPaymentMethod &&
+        isHostedRedirectPayment(selectedPaymentMethod)
+      ) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
           data: {
@@ -138,6 +142,21 @@ const Payment = ({
             },
           },
         })
+        router.refresh()
+      } else if (!isFreeOrder && !checkActiveSession && selectedPaymentMethod) {
+        await initiatePaymentSession(cart, {
+          provider_id: selectedPaymentMethod,
+          data: {
+            cart_id: cart.id,
+            country_code: cart.shipping_address?.country_code || "tw",
+            email: cart.email,
+            amount: cart.total,
+            context: {
+              items: cart.items,
+            },
+          },
+        })
+        router.refresh()
       }
 
       return router.push(pathname + "?" + createQueryString("step", "review"), {
