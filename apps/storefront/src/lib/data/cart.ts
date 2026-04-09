@@ -331,6 +331,36 @@ export async function initiatePaymentSession(
   })
 }
 
+export async function startHostedPaymentRedirect({
+  cartId,
+  providerId,
+}: {
+  cartId: string
+  providerId?: string
+}) {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  return await sdk.client
+    .fetch<{
+      session_id: string
+      provider_id: string
+      redirect_url: string
+      form_method?: string
+      form_fields: Record<string, string | number>
+    }>("/store/hosted-payment/redirect", {
+      method: "POST",
+      body: {
+        cart_id: cartId,
+        provider_id: providerId,
+      },
+      headers,
+      cache: "no-store",
+    })
+    .catch(medusaError)
+}
+
 export async function applyPromotions(codes: string[]) {
   const cartId = await getCartId()
 

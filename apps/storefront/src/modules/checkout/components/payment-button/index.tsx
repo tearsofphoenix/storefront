@@ -6,7 +6,11 @@ import {
   isStripeLike,
   isZeroTotalCart,
 } from "@lib/constants"
-import { initiatePaymentSession, placeOrder } from "@lib/data/cart"
+import {
+  initiatePaymentSession,
+  placeOrder,
+  startHostedPaymentRedirect,
+} from "@lib/data/cart"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
@@ -122,19 +126,6 @@ const HostedRedirectPaymentButton = ({
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const findHostedSession = (nextCart?: HttpTypes.StoreCart | null) => {
-    const sessions = nextCart?.payment_collection?.payment_sessions ?? []
-
-    return (
-      sessions.find(
-        (session) =>
-          session?.provider_id &&
-          isHostedRedirectPayment(session.provider_id) &&
-          session?.data?.redirect_url
-      ) ?? null
-    )
-  }
-
   const handlePayment = async () => {
     setSubmitting(true)
     setErrorMessage(null)
@@ -170,23 +161,25 @@ const HostedRedirectPaymentButton = ({
         },
       })
 
-      const nextCart = await placeOrder()
-      const pendingSession = findHostedSession(nextCart)
+      const redirectData = await startHostedPaymentRedirect({
+        cartId: cart.id,
+        providerId: hostedProviderId,
+      })
 
-      if (!pendingSession?.data?.redirect_url || !pendingSession?.data?.form_fields) {
+      if (!redirectData?.redirect_url || !redirectData?.form_fields) {
         throw new Error(
           "Hosted payment redirect data is missing. Please refresh checkout and try again."
         )
       }
 
       submitHostedPaymentForm({
-        action: pendingSession.data.redirect_url as string,
+        action: redirectData.redirect_url,
         fields: Object.fromEntries(
           Object.entries(
-            pendingSession.data.form_fields as Record<string, string | number>
+            redirectData.form_fields as Record<string, string | number>
           ).map(([key, value]) => [key, String(value)])
         ),
-        method: String(pendingSession.data.form_method || "POST"),
+        method: String(redirectData.form_method || "POST"),
       })
     } catch (error) {
       setErrorMessage(
