@@ -500,7 +500,26 @@ export async function placeOrder(cartId?: string) {
     redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
   }
 
-  return cartRes.cart
+  if (!cartRes?.cart) {
+    return null
+  }
+
+  // Hosted payment flows need the latest payment session payload,
+  // including provider redirect metadata generated during complete().
+  const hostedCart = await sdk.client
+    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
+      method: "GET",
+      query: {
+        fields:
+          "id,*payment_collection,*payment_collection.payment_sessions,+payment_collection.payment_sessions.data",
+      },
+      headers,
+      cache: "no-store",
+    })
+    .then(({ cart }) => cart)
+    .catch(() => null)
+
+  return hostedCart ?? cartRes.cart
 }
 
 /**

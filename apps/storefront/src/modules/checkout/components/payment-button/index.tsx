@@ -48,7 +48,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shipping_methods?.length ?? 0) < 1
   const isFreeOrder = isZeroTotalCart(cart)
 
-  const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const paymentSession =
+    cart.payment_collection?.payment_sessions?.find(
+      (session) => session.status === "pending"
+    ) ?? cart.payment_collection?.payment_sessions?.[0]
 
   switch (true) {
     case isFreeOrder:
@@ -119,21 +122,31 @@ const HostedRedirectPaymentButton = ({
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  const findHostedSession = (nextCart?: HttpTypes.StoreCart | null) => {
+    const sessions = nextCart?.payment_collection?.payment_sessions ?? []
+
+    return (
+      sessions.find(
+        (session) =>
+          session?.provider_id &&
+          isHostedRedirectPayment(session.provider_id) &&
+          session?.data?.redirect_url
+      ) ?? null
+    )
+  }
+
   const handlePayment = async () => {
     setSubmitting(true)
     setErrorMessage(null)
 
     try {
       const nextCart = await placeOrder()
-      const pendingSession = nextCart?.payment_collection?.payment_sessions?.find(
-        (session: any) =>
-          session?.provider_id &&
-          isHostedRedirectPayment(session.provider_id) &&
-          session?.data?.redirect_url
-      )
+      const pendingSession = findHostedSession(nextCart)
 
       if (!pendingSession?.data?.redirect_url || !pendingSession?.data?.form_fields) {
-        throw new Error("Hosted payment redirect data is missing.")
+        throw new Error(
+          "Hosted payment redirect data is missing. Please refresh checkout and try again."
+        )
       }
 
       submitHostedPaymentForm({
