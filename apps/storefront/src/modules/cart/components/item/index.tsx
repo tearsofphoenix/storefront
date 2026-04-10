@@ -45,7 +45,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
 
   return (
-    <Table.Row className="w-full border-b border-[#f1f5f9]" data-testid="product-row">
+    <Table.Row className="w-full border-b border-[var(--rm-border)]" data-testid="product-row">
       <Table.Cell className="w-24 !pl-0 p-4">
         <LocalizedClientLink
           href={`/products/${item.product_handle}`}
@@ -79,7 +79,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
             <CartItemSelect
               value={item.quantity}
               onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="h-10 w-14 rounded-md border-[#d9dfe8] bg-white p-4"
+              className="h-10 w-14 border-[var(--rm-border)] bg-white p-4"
               data-testid="product-select-button"
             >
               {/* TODO: Update this with the v2 way of managing inventory */}

@@ -13,7 +13,7 @@ async function ProductOnboardingCta() {
   }
 
   return (
-    <Container className="h-full w-full max-w-4xl bg-[#f3ede2] p-6 shadow-none">
+    <Container className="rm-panel-soft h-full w-full max-w-4xl p-6 shadow-none">
       <div className="flex flex-col gap-y-4 center">
         <Text className="text-xl text-ui-fg-base">
           Your demo product is ready.
@@ -22,7 +22,7 @@ async function ProductOnboardingCta() {
           You can now continue setting up your store in the admin.
         </Text>
         <a href="http://localhost:7001/a/orders?onboarding_step=create_order_nextjs">
-          <Button className="w-full bg-[#111827] text-white hover:bg-[#1f2937]">
+          <Button className="theme-solid-button !w-full !rounded-none">
             {messages.common.automaticActionCta}
           </Button>
         </a>

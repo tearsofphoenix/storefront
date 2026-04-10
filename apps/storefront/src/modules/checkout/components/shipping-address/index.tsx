@@ -97,7 +97,7 @@ const ShippingAddress = ({
   return (
     <>
       {customer && (addressesInRegion?.length || 0) > 0 && (
-        <Container className="mb-6 flex flex-col gap-y-4 p-5">
+        <Container className="rm-panel-soft mb-6 flex flex-col gap-y-4 p-5">
           <p className="text-small-regular">
             {t(messages.common.shippingAddressPrompt, {
               name: customer.first_name ?? "",

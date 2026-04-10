@@ -11,7 +11,7 @@ const CheckoutSummary = async ({ cart }: { cart: any }) => {
 
   return (
     <aside className="sticky top-0 flex flex-col-reverse gap-y-8 py-8 small:flex-col small:py-0">
-      <div className="flex w-full flex-col rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
+      <div className="rm-panel flex w-full flex-col px-6 py-6 small:px-8 small:py-8">
         <Divider className="my-6 small:hidden" />
         <Heading
           level="h2"

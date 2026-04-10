@@ -39,8 +39,8 @@ export default async function ProductPreview({
           isFeatured={isFeatured}
           className="bg-[#f7f7fa] p-0 shadow-none transition-opacity duration-200 group-hover:opacity-90"
           style={{
-            background: "#f7f7fa",
-            border: "none",
+            background: "var(--rm-surface-soft)",
+            border: "1px solid var(--rm-border)",
             borderRadius: 0,
             boxShadow: "none",
           }}
@@ -48,10 +48,10 @@ export default async function ProductPreview({
         <div className="grid gap-2">
           <div className="flex items-start justify-between gap-4">
             <Text
-              className="text-sm font-medium leading-6 text-grey-70"
+              className="text-sm font-medium leading-6"
               data-testid="product-title"
               style={{
-                color: "#111827",
+                color: "var(--rm-text)",
                 fontFamily: theme.headingFontFamily,
               }}
             >

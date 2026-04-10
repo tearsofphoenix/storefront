@@ -21,7 +21,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang={locale} data-mode="light">
-      <body className="bg-white text-grey-90 antialiased">
+      <body className="antialiased">
         <I18nProvider locale={locale} messages={messages}>
           <main className="relative min-h-screen">{props.children}</main>
         </I18nProvider>

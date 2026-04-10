@@ -69,22 +69,26 @@ export default async function Hero({ collection, region }: HeroProps) {
 
   return (
     <section
-      className="bg-[#f3ede2]"
+      className="border-y"
       style={{
-        borderColor: "transparent",
+        background: "var(--rm-bg)",
+        borderColor: "var(--rm-border)",
       }}
     >
-      <div className="content-container grid gap-10 py-12 small:grid-cols-[0.95fr_1.05fr] small:items-center small:py-16">
+      <div className="content-container grid gap-12 py-16 small:grid-cols-[0.95fr_1.05fr] small:items-center small:py-24">
         <div className="order-2 small:order-1">
           <div
             className="theme-section-panel overflow-hidden"
             style={{
               borderRadius: 0,
-              borderColor: "transparent",
-              background: "#efe7d8",
+              borderColor: "var(--rm-border)",
+              background: "var(--rm-surface-soft)",
             }}
           >
-            <div className="px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
+            <div
+              className="px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em]"
+              style={{ color: "var(--rm-muted-soft)" }}
+            >
               {collection ? collection.title : theme.brandName}
             </div>
             <div className="p-5 small:p-8">
@@ -93,10 +97,10 @@ export default async function Hero({ collection, region }: HeroProps) {
                 images={primaryProduct?.images}
                 size="full"
                 isFeatured
-                className="bg-[#f7f7fa] p-0 shadow-none"
+                className="bg-[#fcfbf8] p-0 shadow-none"
                 style={{
                   borderRadius: 0,
-                  border: "none",
+                  border: "1px solid var(--rm-border)",
                   boxShadow: "none",
                 }}
               />
@@ -104,16 +108,19 @@ export default async function Hero({ collection, region }: HeroProps) {
           </div>
         </div>
 
-        <div className="order-1 grid gap-5 small:order-2">
+        <div className="order-1 grid gap-6 small:order-2">
           <div className="theme-eyebrow">
             {theme.heroEyebrow}
           </div>
-          <div className="grid gap-3">
+          <div className="grid gap-4">
             <h1
-              className="max-w-[12ch] text-4xl leading-none text-grey-90 small:text-6xl"
+              className="max-w-[12ch] text-4xl leading-[1.05] small:text-6xl"
               style={{
-                color: "#111827",
-                fontFamily: theme.headingFontFamily,
+                color: "var(--rm-text)",
+                fontFamily:
+                  theme.headingStyle === "serif"
+                    ? "var(--rm-font-serif)"
+                    : "var(--rm-font-sans)",
               }}
             >
               {theme.heroHeading}
@@ -121,7 +128,7 @@ export default async function Hero({ collection, region }: HeroProps) {
             <p
               className="max-w-[34rem] text-base leading-7 text-grey-60 small:text-lg"
               style={{
-                color: "#4b5563",
+                color: "var(--rm-muted)",
                 fontFamily: theme.bodyFontFamily,
               }}
             >
@@ -146,8 +153,8 @@ export default async function Hero({ collection, region }: HeroProps) {
               href={secondaryHref}
               className="theme-outline-button"
               style={{
-                borderColor: "transparent",
-                background: "#e9e0d0",
+                borderColor: "var(--rm-border-strong)",
+                background: "var(--rm-surface)",
               }}
             >
               {secondaryLabel}
@@ -155,8 +162,10 @@ export default async function Hero({ collection, region }: HeroProps) {
           </div>
 
           <div
-            className="grid gap-3 bg-[#efe7d8] p-5 small:max-w-[34rem] small:grid-cols-3"
+            className="grid gap-3 border bg-[#efe7d8] p-5 small:max-w-[34rem] small:grid-cols-3"
             style={{
+              borderColor: "var(--rm-border)",
+              background: "var(--rm-surface)",
               boxShadow: "none",
             }}
           >
@@ -172,14 +181,14 @@ export default async function Hero({ collection, region }: HeroProps) {
               <div key={metric.label} className="grid gap-1">
                 <span
                   className="text-[0.72rem] uppercase tracking-[0.16em]"
-                  style={{ color: "#6b7280" }}
+                  style={{ color: "var(--rm-muted-soft)" }}
                 >
                   {metric.label}
                 </span>
                 <span
                   className="text-base"
                   style={{
-                    color: "#111827",
+                    color: "var(--rm-text)",
                     fontFamily: theme.bodyFontFamily,
                   }}
                 >

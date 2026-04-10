@@ -6,9 +6,7 @@ import { getLocale } from "@lib/data/locale-actions"
 import { getI18n } from "@lib/i18n/server"
 import {
   getStorefrontThemePresentation,
-  toRgba,
 } from "@lib/util/theme-manifest"
-import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
@@ -23,34 +21,34 @@ export default async function Nav() {
   const theme = getStorefrontThemePresentation()
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50">
+    <div className="sticky inset-x-0 top-0 z-50">
       {theme.announcement ? (
         <div
           className="border-b px-4 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
           style={{
-            background: "#f7f7fa",
-            borderColor: "#d9dfe8",
-            color: "#6b7280",
+            background: "var(--rm-surface)",
+            borderColor: "var(--rm-border)",
+            color: "var(--rm-muted-soft)",
           }}
         >
           {theme.announcement}
         </div>
       ) : null}
       <header
-        className="relative mx-auto border-b bg-white"
+        className="relative mx-auto border-b backdrop-blur-md"
         style={{
-          borderColor: "#d9dfe8",
+          borderColor: "var(--rm-border)",
           background: theme.navBackground,
         }}
       >
         <nav
-          className="content-container flex min-h-[64px] items-center justify-between gap-4 text-sm"
+          className="content-container flex min-h-[74px] items-center justify-between gap-4 text-sm"
           style={{
-            color: "#6b7280",
+            color: "var(--rm-muted)",
             fontFamily: theme.bodyFontFamily,
           }}
         >
-          <div className="flex flex-1 basis-0 items-center gap-3">
+          <div className="flex flex-1 basis-0 items-center gap-4">
             <div className="flex h-full items-center shrink-0">
               <SideMenu
                 regions={regions}
@@ -65,9 +63,9 @@ export default async function Nav() {
             </div>
             <LocalizedClientLink
               href="/"
-              className="truncate text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
+              className="truncate text-[11px] font-semibold uppercase tracking-[0.18em] text-grey-90"
               style={{
-                color: "#111827",
+                color: "var(--rm-text)",
                 fontFamily: theme.headingFontFamily,
               }}
               data-testid="nav-store-link"
@@ -76,29 +74,30 @@ export default async function Nav() {
             </LocalizedClientLink>
           </div>
 
-          <div className="hidden items-center gap-x-6 small:flex">
+          <div className="hidden items-center gap-x-8 small:flex">
             <LocalizedClientLink
-              className="transition-colors hover:text-grey-90"
+              className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
               href="/store"
-              style={{ color: "#4b5563" }}
+              style={{ color: "var(--rm-muted)" }}
             >
               {messages.common.store}
             </LocalizedClientLink>
             <LocalizedClientLink
-              className="transition-colors hover:text-grey-90"
+              className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
               href="/account"
               data-testid="nav-account-link"
-              style={{ color: "#4b5563" }}
+              style={{ color: "var(--rm-muted)" }}
             >
               {messages.common.account}
             </LocalizedClientLink>
           </div>
 
-          <div className="flex flex-1 basis-0 items-center justify-end gap-x-3">
+          <div className="flex flex-1 basis-0 items-center justify-end gap-x-4">
             <div className="small:hidden">
               <LocalizedClientLink
-                className="inline-flex items-center rounded-md border border-[#d9dfe8] bg-white px-3 py-2 text-[13px] font-medium text-grey-70"
+                className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
                 href="/account"
+                style={{ color: "var(--rm-muted)" }}
               >
                 {messages.common.account}
               </LocalizedClientLink>
@@ -106,13 +105,11 @@ export default async function Nav() {
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="inline-flex items-center rounded-md border px-3 py-2 text-[13px] font-medium"
+                  className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em]"
                   href="/cart"
                   data-testid="nav-cart-link"
                   style={{
-                    color: "#111827",
-                    borderColor: "#d9dfe8",
-                    background: "#ffffff",
+                    color: "var(--rm-text)",
                   }}
                 >
                   {messages.common.cart} (0)

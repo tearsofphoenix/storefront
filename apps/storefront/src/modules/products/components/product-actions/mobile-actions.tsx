@@ -72,7 +72,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           leaveTo="opacity-0"
         >
           <div
-            className="flex h-full w-full flex-col items-center justify-center gap-y-3 bg-[#f3ede2] p-4 text-large-regular"
+            className="flex h-full w-full flex-col items-center justify-center gap-y-3 border-t border-[var(--rm-border)] bg-[var(--rm-surface)] p-4 text-large-regular"
             data-testid="mobile-actions"
           >
             <div className="flex items-center gap-x-2">
@@ -106,7 +106,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               {!isSimple && <Button
                 onClick={open}
                 variant="secondary"
-                className="w-full bg-[#e7ddcd]"
+                className="!w-full !rounded-none !border-[var(--rm-border)] !bg-[#fff]"
                 data-testid="mobile-actions-button"
               >
                 <div className="flex items-center justify-between w-full">
@@ -121,7 +121,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <Button
                 onClick={handleAddToCart}
                 disabled={!inStock || !variant}
-                className="w-full bg-[#111827] text-white hover:bg-[#1f2937]"
+                className="!w-full !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
@@ -146,7 +146,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-700 bg-opacity-75 backdrop-blur-sm" />
+            <div className="fixed inset-0 bg-black/45 backdrop-blur-[2px]" />
           </Transition.Child>
 
           <div className="fixed bottom-0 inset-x-0">
@@ -167,13 +167,13 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   <div className="w-full flex justify-end pr-6">
                     <button
                       onClick={close}
-                      className="flex h-12 w-12 items-center justify-center bg-[#e7ddcd] text-ui-fg-base"
+                      className="flex h-12 w-12 items-center justify-center border border-[var(--rm-border)] bg-[#fff] text-ui-fg-base"
                       data-testid="close-modal-button"
                     >
                       <X />
                     </button>
                   </div>
-                  <div className="bg-[#f6f1e8] px-6 py-12">
+                  <div className="border-t border-[var(--rm-border)] bg-[var(--rm-surface)] px-6 py-12">
                     {(product.variants?.length ?? 0) > 1 && (
                       <div className="flex flex-col gap-y-6">
                         {(product.options || []).map((option) => {

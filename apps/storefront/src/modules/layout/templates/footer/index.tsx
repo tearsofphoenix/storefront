@@ -19,17 +19,17 @@ export default async function Footer() {
 
   return (
     <footer
-      className="w-full border-t bg-white"
-      style={{ borderColor: "#d9dfe8" }}
+      className="w-full border-t"
+      style={{ borderColor: "var(--rm-border)", background: "var(--rm-surface)" }}
     >
       <div className="content-container flex flex-col w-full">
-        <div className="grid gap-10 py-14 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+        <div className="grid gap-12 py-16 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
           <div className="grid gap-6">
             <LocalizedClientLink
               href="/"
-              className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
+              className="text-[11px] font-semibold uppercase tracking-[0.16em]"
               style={{
-                color: "#111827",
+                color: "var(--rm-text)",
                 fontFamily: theme.headingFontFamily,
               }}
             >
@@ -39,7 +39,7 @@ export default async function Footer() {
               className="text-base-regular"
               style={{
                 maxWidth: 420,
-                color: "#4b5563",
+                color: "var(--rm-muted)",
                 fontFamily: theme.bodyFontFamily,
               }}
             >
@@ -50,7 +50,7 @@ export default async function Footer() {
           <div className="grid gap-8 text-small-regular small:col-span-3 small:grid-cols-3">
             <div className="flex flex-col gap-y-3">
               <span
-                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                className="text-[11px] font-semibold uppercase tracking-[0.14em]"
                 style={{ fontFamily: theme.headingFontFamily }}
               >
                 {messages.common.categories}
@@ -62,9 +62,10 @@ export default async function Footer() {
                   .map((category) => (
                     <li key={category.id}>
                       <LocalizedClientLink
-                        className="text-sm text-grey-60 transition-colors hover:text-grey-90"
+                        className="text-sm transition-colors"
                         href={`/categories/${category.handle}`}
                         data-testid="category-link"
+                        style={{ color: "var(--rm-muted)" }}
                       >
                         {category.name}
                       </LocalizedClientLink>
@@ -74,7 +75,7 @@ export default async function Footer() {
             </div>
             <div className="flex flex-col gap-y-3">
               <span
-                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                className="text-[11px] font-semibold uppercase tracking-[0.14em]"
                 style={{ fontFamily: theme.headingFontFamily }}
               >
                 {messages.common.collections}
@@ -83,8 +84,9 @@ export default async function Footer() {
                 {collections?.slice(0, 5).map((collection) => (
                   <li key={collection.id}>
                     <LocalizedClientLink
-                      className="text-sm text-grey-60 transition-colors hover:text-grey-90"
+                      className="text-sm transition-colors"
                       href={`/collections/${collection.handle}`}
+                      style={{ color: "var(--rm-muted)" }}
                     >
                       {collection.title}
                     </LocalizedClientLink>
@@ -94,16 +96,16 @@ export default async function Footer() {
             </div>
             <div className="flex flex-col gap-y-3">
               <span
-                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50"
+                className="text-[11px] font-semibold uppercase tracking-[0.14em]"
                 style={{ fontFamily: theme.headingFontFamily }}
               >
                 {messages.common.storefront}
               </span>
-              <ul className="grid grid-cols-1 gap-2 text-sm text-grey-60">
+              <ul className="grid grid-cols-1 gap-2 text-sm" style={{ color: "var(--rm-muted)" }}>
                 <li>
                   <LocalizedClientLink
                     href="/store"
-                    className="transition-colors hover:text-grey-90"
+                    className="transition-colors"
                   >
                     {messages.common.allProducts}
                   </LocalizedClientLink>
@@ -111,7 +113,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/cart"
-                    className="transition-colors hover:text-grey-90"
+                    className="transition-colors"
                   >
                     {messages.common.cart}
                   </LocalizedClientLink>
@@ -119,7 +121,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/privacy-policy"
-                    className="transition-colors hover:text-grey-90"
+                    className="transition-colors"
                   >
                     {messages.account.privacyPolicy}
                   </LocalizedClientLink>
@@ -127,7 +129,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/terms-of-use"
-                    className="transition-colors hover:text-grey-90"
+                    className="transition-colors"
                   >
                     {messages.account.termsOfUse}
                   </LocalizedClientLink>
@@ -137,7 +139,7 @@ export default async function Footer() {
                     href="https://docs.medusajs.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="transition-colors hover:text-grey-90"
+                    className="transition-colors"
                   >
                     {messages.common.documentation}
                   </a>
@@ -147,15 +149,15 @@ export default async function Footer() {
           </div>
         </div>
         <div
-          className="flex w-full flex-col gap-4 border-t py-4 text-ui-fg-muted small:flex-row small:items-center small:justify-between"
-          style={{ borderColor: "#e5e7eb" }}
+          className="flex w-full flex-col gap-4 border-t py-5 text-ui-fg-muted small:flex-row small:items-center small:justify-between"
+          style={{ borderColor: "var(--rm-border)" }}
         >
           <div className="grid gap-2">
             <Text className="txt-compact-small">
               © {new Date().getFullYear()} {theme.brandName}.{" "}
               {messages.common.rightsReserved}
             </Text>
-          </div>          
+          </div>
         </div>
       </div>
     </footer>

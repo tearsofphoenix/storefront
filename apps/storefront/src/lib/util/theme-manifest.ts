@@ -20,14 +20,14 @@ type StorefrontThemeManifestEnvelope = {
   theme: StorefrontThemeManifestEntry | null
 }
 
-const DEFAULT_PRIMARY = "#0a3149"
-const DEFAULT_ACCENT = "#eef0f5"
+const DEFAULT_PRIMARY = "#2559f4"
+const DEFAULT_ACCENT = "#f3efe7"
 const DEFAULT_BODY_FONT_FAMILY =
-  'var(--font-body), Quicksand, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  'reMarkableSans, Helvetica, Arial, sans-serif'
 const DEFAULT_SANS_FONT_FAMILY =
-  'var(--font-heading), Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  'reMarkableSans, Helvetica, Arial, sans-serif'
 const DEFAULT_SERIF_FONT_FAMILY =
-  'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif'
+  'reMarkableSerif, "Book Antiqua", Georgia, serif'
 
 export type StorefrontThemePresentation = {
   themeId: string | null
@@ -132,22 +132,22 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
       : 18
   const defaultShellBackground =
     surfaceStyle === "contrast"
-      ? "#f7f7fa"
+      ? "#fcfbf8"
       : surfaceStyle === "glass"
-      ? "#fafbfc"
-      : "#ffffff"
+      ? "#fcfbf8"
+      : "#fcfbf8"
   const defaultNavBackground =
     surfaceStyle === "glass"
-      ? "rgba(255, 255, 255, 0.94)"
+      ? "rgba(252, 251, 248, 0.94)"
       : surfaceStyle === "contrast"
-      ? "#ffffff"
-      : "#ffffff"
+      ? "#fcfbf8"
+      : "#fcfbf8"
   const defaultFooterBackground =
     surfaceStyle === "contrast"
-      ? "#f7f7fa"
+      ? "#f9f6f1"
       : surfaceStyle === "glass"
-      ? "#fafbfc"
-      : "#f7f7fa"
+      ? "#f9f6f1"
+      : "#f9f6f1"
   const primaryColor = readColor(config.primaryColor, DEFAULT_PRIMARY)
   const accentColor = readColor(config.accentColor, DEFAULT_ACCENT)
   const buttonFillColor = readColor(config.buttonFillColor, "#111827")

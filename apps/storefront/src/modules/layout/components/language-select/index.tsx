@@ -148,14 +148,16 @@ const LanguageSelect = ({
           leaveTo="opacity-0 -translate-y-1"
         >
           <ListboxOptions
-            className="mt-3 max-h-[220px] w-full overflow-y-auto rounded-[12px] border border-[#d9dfe8] bg-white text-small-regular uppercase text-black shadow-[0_12px_30px_rgba(15,23,42,0.08)] no-scrollbar"
+            className="mt-3 max-h-[220px] w-full overflow-y-auto border bg-white text-small-regular uppercase text-black no-scrollbar"
+            style={{ borderColor: "var(--rm-border)", boxShadow: "none" }}
             static
           >
             {options.map((o) => (
               <ListboxOption
                 key={o.code}
                 value={o}
-                className="flex cursor-pointer items-center gap-x-2 px-3 py-2 transition-colors hover:bg-[#f7f7fa]"
+                className="flex cursor-pointer items-center gap-x-2 px-3 py-2 transition-colors"
+                style={{ color: "var(--rm-text)" }}
               >
                 {o.countryCode ? (
                   /* @ts-ignore */

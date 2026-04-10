@@ -56,7 +56,7 @@ const ChatbotProductMeta = ({
   }
 
   return (
-    <span className="rounded-full bg-[#f8fafc] px-2 py-1 text-[11px] font-medium text-[#4b5563]">
+    <span className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-2 py-1 text-[11px] font-medium text-[#4b5563]">
       {label}: {value}
     </span>
   )
@@ -77,7 +77,7 @@ const ChatbotProductLinkCard = ({
   return (
     <LocalizedClientLink
       href={`/products/${product.handle}`}
-      className="block rounded-2xl border border-[#e5e7eb] bg-white p-3 transition-colors hover:border-[#cbd5e1] hover:bg-[#fcfcfd]"
+      className="block border border-[var(--rm-border)] bg-white p-3 transition-colors hover:border-[var(--rm-border-strong)] hover:bg-[var(--rm-surface-soft)]"
     >
       <div className="flex items-start gap-3">
         <div className="w-16 shrink-0">
@@ -99,7 +99,7 @@ const ChatbotProductLinkCard = ({
               )}
             </div>
             {product.on_sale && (
-              <span className="shrink-0 rounded-full bg-[#111827] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-white">
+              <span className="shrink-0 border border-[var(--rm-text)] bg-[var(--rm-text)] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-white">
                 {labels.sale}
               </span>
             )}
@@ -144,7 +144,7 @@ const ChatbotProductDetailCard = ({
   }
 }) => {
   return (
-    <div className="rounded-2xl border border-[#e5e7eb] bg-white p-3">
+    <div className="border border-[var(--rm-border)] bg-white p-3">
       <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
         {labels.productDetails}
       </p>
@@ -191,7 +191,7 @@ const ChatbotProductDetailCard = ({
             {product.option_titles.map((optionTitle) => (
               <span
                 key={`${product.id}-option-${optionTitle}`}
-                className="rounded-full bg-[#f8fafc] px-2 py-1 text-[11px] text-[#4b5563]"
+                className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-2 py-1 text-[11px] text-[#4b5563]"
               >
                 {optionTitle}
               </span>
@@ -209,7 +209,7 @@ const ChatbotProductDetailCard = ({
             {product.variant_titles.slice(0, 6).map((variantTitle) => (
               <span
                 key={`${product.id}-variant-${variantTitle}`}
-                className="rounded-full bg-[#f8fafc] px-2 py-1 text-[11px] text-[#4b5563]"
+                className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-2 py-1 text-[11px] text-[#4b5563]"
               >
                 {variantTitle}
               </span>

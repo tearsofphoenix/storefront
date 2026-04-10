@@ -15,12 +15,12 @@ export default async function CheckoutLayout({
   const theme = getStorefrontThemePresentation()
 
   return (
-    <div className="relative w-full bg-[#f7f7fa] small:min-h-screen">
-      <div className="border-b border-[#d9dfe8] bg-white">
+    <div className="relative w-full bg-[var(--rm-bg)] small:min-h-screen">
+      <div className="border-b border-[var(--rm-border)] bg-[var(--rm-surface)]">
         <nav className="content-container flex min-h-[64px] items-center justify-between">
           <LocalizedClientLink
             href="/cart"
-            className="flex flex-1 basis-0 items-center gap-x-2 text-[13px] font-medium uppercase text-grey-70"
+            className="flex flex-1 basis-0 items-center gap-x-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-70"
             data-testid="back-to-cart-link"
           >
             <ChevronDown className="rotate-90" size={16} />

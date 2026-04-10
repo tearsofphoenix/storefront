@@ -31,10 +31,10 @@ const Overview = ({ customer, orders }: OverviewProps) => {
             </span>
           </span>
         </div>
-        <div className="flex flex-col border-t border-[#e5e7eb] py-8">
+        <div className="flex flex-col border-t border-[var(--rm-border)] py-8">
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
             <div className="mb-6 grid gap-4 small:grid-cols-2">
-              <div className="flex flex-col gap-y-4 rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
+              <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
                 <h3 className="text-large-semi">Profile</h3>
                 <div className="flex items-end gap-x-2">
                   <span
@@ -50,7 +50,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-y-4 rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
+              <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
                 <h3 className="text-large-semi">Addresses</h3>
                 <div className="flex items-end gap-x-2">
                   <span
@@ -84,7 +84,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                         data-value={order.id}
                       >
                         <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
-                          <Container className="flex items-center justify-between rounded-[12px] border border-[#e5e7eb] bg-white p-5 shadow-none">
+                          <Container className="rm-panel flex items-center justify-between p-5 shadow-none">
                             <div className="grid grid-cols-3 grid-rows-2 text-small-regular gap-x-4 flex-1">
                               <span className="font-semibold">Date placed</span>
                               <span className="font-semibold">

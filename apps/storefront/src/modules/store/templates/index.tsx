@@ -21,13 +21,16 @@ const StoreTemplate = async ({
   const sort = sortBy || "created_at"
 
   return (
-    <section className="content-container py-10" data-testid="category-container">
-      <div className="mb-8 flex flex-col gap-4 border-b border-[#e5e7eb] pb-6 small:flex-row small:items-end small:justify-between">
+    <section className="content-container py-12 small:py-16" data-testid="category-container">
+      <div
+        className="mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between"
+        style={{ borderColor: "var(--rm-border)" }}
+      >
         <div className="grid gap-2">
-          <h1 className="text-[1.75rem] font-semibold text-grey-80 small:text-[2rem]" data-testid="store-page-title">
+          <h1 className="text-[1.9rem] font-semibold small:text-[2.3rem]" data-testid="store-page-title">
             {messages.common.allProducts}
           </h1>
-          <p className="max-w-[32rem] text-sm leading-6 text-grey-60 small:text-base">
+          <p className="max-w-[32rem] text-sm leading-6 small:text-base" style={{ color: "var(--rm-muted)" }}>
             {messages.store.catalogDescription}
           </p>
         </div>

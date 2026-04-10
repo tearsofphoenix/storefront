@@ -142,7 +142,7 @@ function FreeShippingInline({
   }
 }) {
   return (
-    <div className="bg-neutral-100 p-2 rounded-lg border">
+    <div className="border bg-neutral-100 p-2">
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs text-neutral-600">
           <div>
@@ -174,14 +174,14 @@ function FreeShippingInline({
         <div className="flex justify-between gap-1">
           <div
             className={clx(
-              "bg-gradient-to-r from-zinc-400 to-zinc-500 h-1 rounded-full max-w-full duration-500 ease-in-out",
+              "h-1 max-w-full bg-gradient-to-r from-zinc-400 to-zinc-500 duration-500 ease-in-out",
               {
                 "from-green-400 to-green-500": price.target_reached,
               }
             )}
             style={{ width: `${price.remaining_percentage}%` }}
           ></div>
-          <div className="bg-neutral-300 h-1 rounded-full w-fit flex-grow"></div>
+          <div className="h-1 w-fit flex-grow bg-neutral-300"></div>
         </div>
       </div>
     </div>
@@ -210,14 +210,14 @@ function FreeShippingPopup({
     >
       <div>
         <Button
-          className="rounded-full bg-neutral-900 shadow-none outline-none border-none text-[15px] p-2"
+          className="border-none bg-neutral-900 p-2 text-[15px] shadow-none outline-none"
           onClick={() => setIsClosed(true)}
         >
           <XMark />
         </Button>
       </div>
 
-      <div className="w-[400px] bg-black text-white p-6 rounded-lg ">
+      <div className="w-[400px] border border-[var(--rm-text)] bg-[var(--rm-text)] p-6 text-white">
         <div className="pb-4">
           <div className="space-y-3">
             <div className="flex justify-between text-[15px] text-neutral-400">
@@ -250,28 +250,28 @@ function FreeShippingPopup({
             <div className="flex justify-between gap-1">
               <div
                 className={clx(
-                  "bg-gradient-to-r from-zinc-400 to-zinc-500 h-1.5 rounded-full max-w-full duration-500 ease-in-out",
+                  "h-1.5 max-w-full bg-gradient-to-r from-zinc-400 to-zinc-500 duration-500 ease-in-out",
                   {
                     "from-green-400 to-green-500": price.target_reached,
                   }
                 )}
                 style={{ width: `${price.remaining_percentage}%` }}
               ></div>
-              <div className="bg-zinc-600 h-1.5 rounded-full w-fit flex-grow"></div>
+              <div className="h-1.5 w-fit flex-grow bg-zinc-600"></div>
             </div>
           </div>
         </div>
 
         <div className="flex gap-3">
           <LocalizedClientLink
-            className="rounded-2xl bg-transparent shadow-none outline-none border-[1px] border-white text-[15px] py-2.5 px-4"
+            className="border border-white bg-transparent px-4 py-2.5 text-[15px] shadow-none outline-none"
             href="/cart"
           >
             View cart
           </LocalizedClientLink>
 
           <LocalizedClientLink
-            className="flex-grow rounded-2xl bg-white text-neutral-950 shadow-none outline-none border-[1px] border-white text-[15px] py-2.5 px-4 text-center"
+            className="flex-grow border border-white bg-white px-4 py-2.5 text-center text-[15px] text-neutral-950 shadow-none outline-none"
             href="/store"
           >
             View products

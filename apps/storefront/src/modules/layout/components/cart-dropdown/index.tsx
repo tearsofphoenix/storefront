@@ -84,13 +84,12 @@ const CartDropdown = ({
       <Popover className="relative h-full">
         <PopoverButton className="h-full">
           <LocalizedClientLink
-            className="inline-flex h-full items-center rounded-md border px-3 py-2 text-[13px] font-medium transition-colors"
+            className="inline-flex h-full items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
             href="/cart"
             data-testid="nav-cart-link"
             style={{
-              borderColor: "#d9dfe8",
-              background: "#ffffff",
-              color: "#111827",
+              background: "transparent",
+              color: "var(--rm-text)",
             }}
           >{`${messages.common.cart} (${totalItems})`}</LocalizedClientLink>
         </PopoverButton>
@@ -106,10 +105,18 @@ const CartDropdown = ({
         >
           <PopoverPanel
             static
-            className="absolute right-0 top-[calc(100%+10px)] hidden w-[420px] rounded-[14px] border border-[#d9dfe8] bg-white text-ui-fg-base shadow-[0_12px_30px_rgba(15,23,42,0.08)] small:block"
+            className="absolute right-0 top-[calc(100%+10px)] hidden w-[420px] border text-ui-fg-base small:block"
             data-testid="nav-cart-dropdown"
+            style={{
+              borderColor: "var(--rm-border)",
+              background: "var(--rm-bg)",
+              boxShadow: "none",
+            }}
           >
-            <div className="flex items-center justify-center border-b border-[#e5e7eb] p-4">
+            <div
+              className="flex items-center justify-center border-b p-4"
+              style={{ borderColor: "var(--rm-border)" }}
+            >
               <h3 className="text-large-semi">{messages.common.cart}</h3>
             </div>
             {cartState && cartState.items?.length ? (
@@ -181,7 +188,10 @@ const CartDropdown = ({
                       </div>
                     ))}
                 </div>
-                <div className="flex flex-col gap-y-4 border-t border-[#e5e7eb] p-4 text-small-regular">
+                <div
+                  className="flex flex-col gap-y-4 border-t p-4 text-small-regular"
+                  style={{ borderColor: "var(--rm-border)" }}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-ui-fg-base font-semibold">
                       {messages.common.subtotalExcludingTaxes}
@@ -199,7 +209,7 @@ const CartDropdown = ({
                   </div>
                   <LocalizedClientLink href="/cart" passHref>
                     <Button
-                      className="w-full rounded-md bg-black text-white"
+                      className="w-full border border-transparent bg-[#2559f4] text-white"
                       size="large"
                       data-testid="go-to-cart-button"
                     >
@@ -223,7 +233,7 @@ const CartDropdown = ({
                         </span>
                         <Button
                           onClick={close}
-                          className="rounded-md border border-black bg-black text-white"
+                          className="border border-transparent bg-[#2559f4] text-white"
                         >
                           {messages.common.exploreProducts}
                         </Button>

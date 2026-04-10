@@ -43,7 +43,7 @@ const AccountInfo = ({
 
   return (
     <div
-      className="rounded-[12px] border border-[#e5e7eb] bg-white p-5 text-small-regular"
+      className="rm-panel p-5 text-small-regular"
       data-testid={dataTestid}
     >
       <div className="flex items-end justify-between gap-4">
@@ -60,7 +60,7 @@ const AccountInfo = ({
         <div>
           <Button
             variant="secondary"
-            className="min-h-[25px] w-[100px] rounded-md border-[#d9dfe8] bg-white py-1"
+            className="min-h-[25px] w-[100px] !rounded-none !border-[var(--rm-border)] !bg-white py-1"
             onClick={handleToggle}
             type={state ? "reset" : "button"}
             data-testid="edit-button"
@@ -125,7 +125,7 @@ const AccountInfo = ({
             <div className="flex items-center justify-end mt-2">
               <Button
                 isLoading={pending}
-                className="w-full rounded-md bg-[#111827] text-white hover:bg-[#1f2937] small:max-w-[140px]"
+                className="w-full !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)] small:max-w-[140px]"
                 type="submit"
                 data-testid="save-button"
               >

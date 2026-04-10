@@ -18,7 +18,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
   }
 
   return (
-    <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
+    <div className="rm-panel-soft p-5">
       <h2 className="text-base-semi">Order Summary</h2>
       <div className="my-2 text-small-regular text-ui-fg-base">
         <div className="mb-2 flex items-center justify-between text-base-regular text-ui-fg-base">
@@ -47,7 +47,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
             <span>{getAmount(order.tax_total)}</span>
           </div>
         </div>
-        <div className="my-4 h-px w-full border-b border-[#d9dfe8]" />
+        <div className="my-4 h-px w-full border-b border-[var(--rm-border)]" />
         <div className="mb-2 flex items-center justify-between text-base-regular text-ui-fg-base">
           <span>Total</span>
           <span className="font-semibold">{getAmount(order.total)}</span>

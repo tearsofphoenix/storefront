@@ -390,7 +390,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const mapReturnPath = `${pathname}?step=delivery`
 
   return (
-    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
+    <section className="rm-panel px-6 py-6 small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -414,7 +414,7 @@ const Shipping: React.FC<ShippingProps> = ({
             <Text>
               <button
                 onClick={handleEdit}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-60 transition-colors hover:text-grey-90"
                 data-testid="edit-delivery-button"
               >
                 {messages.common.edit}
@@ -436,7 +436,7 @@ const Shipping: React.FC<ShippingProps> = ({
             <div data-testid="delivery-options-container">
               <div className="pt-2 md:pt-0">
                 {!hasAnyDeliveryOptions && (
-                  <div className="rounded-rounded border border-ui-border-base bg-ui-bg-subtle px-6 py-5">
+                  <div className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-6 py-5">
                     <Text className="txt-medium-plus text-ui-fg-base">
                       {messages.common.shippingMethodUnavailable}
                     </Text>
@@ -462,10 +462,12 @@ const Shipping: React.FC<ShippingProps> = ({
                       value={PICKUP_OPTION_ON}
                       data-testid="delivery-option-radio"
                       className={clx(
-                        "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                        "mb-2 flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                         {
-                          "border-ui-border-interactive":
+                          "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
                             showPickupOptions === PICKUP_OPTION_ON,
+                          "border-[var(--rm-border)] bg-white":
+                            showPickupOptions !== PICKUP_OPTION_ON,
                         }
                       )}
                     >
@@ -504,11 +506,13 @@ const Shipping: React.FC<ShippingProps> = ({
                           data-testid="delivery-option-radio"
                           disabled={isDisabled}
                           className={clx(
-                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 hover:shadow-borders-interactive-with-active",
+                            "flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                             {
-                              "border-ui-border-interactive":
+                              "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
                                 option.id === shippingMethodId,
-                              "hover:shadow-brders-none cursor-not-allowed":
+                              "border-[var(--rm-border)] bg-white":
+                                option.id !== shippingMethodId,
+                              "cursor-not-allowed":
                                 isDisabled,
                             }
                           )}
@@ -543,7 +547,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           ECPAY_PROVIDER_IDS.has(option.provider_id ?? "") && (
                           <div className="w-full mt-2 pl-8 pr-4 mb-2">
                             {selectedShippingMethodData?.CVSStoreID && (
-                              <div className="mb-4 rounded-md border border-[#e5e7eb] bg-[#f8fafc] p-4">
+                              <div className="mb-4 border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] p-4">
                                 <Text className="mb-1 font-semibold text-ui-fg-base">
                                   {String(selectedShippingMethodData.CVSStoreName)} (
                                   {String(selectedShippingMethodData.CVSStoreID)})
@@ -615,11 +619,13 @@ const Shipping: React.FC<ShippingProps> = ({
                           disabled={option.insufficient_inventory}
                           data-testid="delivery-option-radio"
                           className={clx(
-                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                            "mb-2 flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                             {
-                              "border-ui-border-interactive":
+                              "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
                                 option.id === shippingMethodId,
-                              "hover:shadow-brders-none cursor-not-allowed":
+                              "border-[var(--rm-border)] bg-white":
+                                option.id !== shippingMethodId,
+                              "cursor-not-allowed":
                                 option.insufficient_inventory,
                             }
                           )}
@@ -666,7 +672,7 @@ const Shipping: React.FC<ShippingProps> = ({
             )}
             <Button
               size="large"
-              className="mt"
+              className="theme-solid-button !mt-1 !rounded-none"
               onClick={handleSubmit}
               isLoading={isLoading}
               disabled={

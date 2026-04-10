@@ -423,12 +423,12 @@ const ChatbotWidget = () => {
     <>
       {isOpen && (
         <div
-          className="fixed right-4 z-50 w-[calc(100vw-2rem)] max-w-[396px] overflow-hidden rounded-[20px] border border-[#d9dfe8] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.16)] small:right-6"
+          className="fixed right-4 z-50 w-[calc(100vw-2rem)] max-w-[396px] overflow-hidden border border-[var(--rm-border)] bg-white shadow-none small:right-6"
           style={{
             bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.75rem)",
           }}
         >
-          <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
+          <div className="flex items-center justify-between border-b border-[var(--rm-border)] bg-[var(--rm-surface)] px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-[#111827]">
                 {settings.title || messages.chatbot.title}
@@ -458,7 +458,7 @@ const ChatbotWidget = () => {
           </div>
 
           {activeProductContext && (
-            <div className="border-b border-[#eef2f7] bg-[#f8fafc] px-4 py-3">
+            <div className="border-b border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-4 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
                 {messages.chatbot.currentProduct}
               </p>
@@ -467,19 +467,19 @@ const ChatbotWidget = () => {
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {activeProductContext.selected_variant_title && (
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.selectedVariant}:{" "}
                     {activeProductContext.selected_variant_title}
                   </span>
                 )}
                 {activeProductContext.price_label && (
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.price}: {activeProductContext.price_label}
                   </span>
                 )}
                 {typeof activeProductContext.selected_variant_in_stock ===
                   "boolean" && (
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.availability}:{" "}
                     {activeProductContext.selected_variant_in_stock
                       ? messages.chatbot.inStock
@@ -503,10 +503,10 @@ const ChatbotWidget = () => {
                   className={`flex ${isAssistant ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                    className={`max-w-[88%] border px-4 py-3 text-sm leading-6 ${
                       isAssistant
-                        ? "bg-[#f3f4f6] text-[#111827]"
-                        : "bg-[#111827] text-white"
+                        ? "border-[var(--rm-border)] bg-[var(--rm-surface-soft)] text-[#111827]"
+                        : "border-[var(--rm-text)] bg-[var(--rm-text)] text-white"
                     }`}
                   >
                     {isAssistant && message.isStreaming ? (
@@ -532,7 +532,7 @@ const ChatbotWidget = () => {
                         {message.sources.map((source) => (
                           <span
                             key={`${message.id}-${source.type}-${source.label}`}
-                            className="rounded-full bg-white px-2 py-1 text-[11px] text-[#4b5563]"
+                            className="border border-[var(--rm-border)] bg-white px-2 py-1 text-[11px] text-[#4b5563]"
                           >
                             {source.label}
                           </span>
@@ -551,7 +551,7 @@ const ChatbotWidget = () => {
 
             {isSubmitting && !chatMessages.some((message) => message.isStreaming) && (
               <div className="flex justify-start">
-                <div className="rounded-2xl bg-[#f3f4f6] px-4 py-3 text-sm text-[#6b7280]">
+                <div className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-4 py-3 text-sm text-[#6b7280]">
                   {messages.chatbot.thinking}
                 </div>
               </div>
@@ -565,7 +565,7 @@ const ChatbotWidget = () => {
           </div>
 
           {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
-            <div className="border-t border-[#f3f4f6] px-4 py-3">
+            <div className="border-t border-[var(--rm-border)] px-4 py-3">
               <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
                 {messages.chatbot.suggested}
               </p>
@@ -584,7 +584,7 @@ const ChatbotWidget = () => {
                       })
                       void sendMessage(question)
                     }}
-                    className="rounded-full border border-[#d9dfe8] px-3 py-1.5 text-xs text-[#111827] transition-colors hover:bg-[#f8fafc]"
+                    className="border border-[var(--rm-border)] px-3 py-1.5 text-xs text-[#111827] transition-colors hover:border-[var(--rm-border-strong)] hover:bg-[var(--rm-surface-soft)]"
                   >
                     {question}
                   </button>
@@ -593,7 +593,7 @@ const ChatbotWidget = () => {
             </div>
           )}
 
-          <div className="border-t border-[#e5e7eb] p-4">
+          <div className="border-t border-[var(--rm-border)] p-4">
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -604,7 +604,7 @@ const ChatbotWidget = () => {
                 }
               }}
               placeholder={settings.placeholder_text || messages.chatbot.placeholder}
-              className="min-h-[92px] w-full rounded-xl border border-[#d9dfe8] px-3 py-3 text-sm outline-none transition-colors focus:border-[#111827]"
+              className="min-h-[92px] w-full border border-[var(--rm-border)] px-3 py-3 text-sm outline-none transition-colors focus:border-[var(--rm-border-strong)]"
               disabled={isSubmitting || isStreamingResponse}
             />
             <div className="mt-3 flex items-center justify-between">
@@ -616,7 +616,7 @@ const ChatbotWidget = () => {
                 onClick={() => {
                   void sendMessage(input)
                 }}
-                className="rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
+                className="theme-solid-button !rounded-none"
                 isLoading={isSubmitting}
                 disabled={isSubmitting || isStreamingResponse || !input.trim()}
               >
@@ -630,7 +630,7 @@ const ChatbotWidget = () => {
       <button
         type="button"
         onClick={handleToggle}
-        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-[#111827] px-4 py-3 text-sm font-medium text-white shadow-[0_18px_40px_rgba(15,23,42,0.24)] transition-transform hover:-translate-y-0.5 small:right-6"
+        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 border border-[var(--rm-text)] bg-[var(--rm-text)] px-4 py-3 text-sm font-medium text-white shadow-none transition-colors hover:border-[var(--rm-primary)] hover:bg-[var(--rm-primary)] small:right-6"
         style={{
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
         }}

@@ -317,7 +317,7 @@ const renderInlineNodes = (content: string, keyPrefix: string): ReactNode[] => {
       nodes.push(
         <code
           key={tokenKey}
-          className="rounded-md border border-grey-20 bg-white/80 px-1.5 py-0.5 font-mono text-[12px] text-grey-80"
+          className="border border-[var(--rm-border)] bg-white/80 px-1.5 py-0.5 font-mono text-[12px] text-grey-80"
         >
           {match[4]}
         </code>
@@ -424,7 +424,7 @@ const ChatbotMessageContent = ({ content }: ChatbotMessageContentProps) => {
             return (
               <div
                 key={key}
-                className="overflow-x-auto rounded-xl border border-grey-20 bg-white"
+                className="overflow-x-auto border border-[var(--rm-border)] bg-white"
               >
                 <table className="min-w-full border-collapse text-left text-[13px] leading-5 text-grey-70">
                   <thead className="bg-grey-5 text-grey-90">
@@ -468,7 +468,7 @@ const ChatbotMessageContent = ({ content }: ChatbotMessageContentProps) => {
             return (
               <div
                 key={key}
-                className="overflow-hidden rounded-xl border border-grey-20 bg-grey-90 text-white"
+                className="overflow-hidden border border-grey-20 bg-grey-90 text-white"
               >
                 {block.language && (
                   <div className="border-b border-white/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/60">

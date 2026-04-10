@@ -55,14 +55,14 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       <ChatbotContextSync productContext={chatbotProductContext} />
       {!hasInlineCommerceCallout ? (
         <div
-          className="content-container py-10 small:py-12"
+          className="content-container py-12 small:py-14"
           data-testid="product-container"
         >
           <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">
             <div className="min-w-0">
               <ImageGallery images={images} />
             </div>
-            <div className="grid gap-8 small:sticky small:top-24">
+            <div className="grid gap-8 small:sticky small:top-20">
               <ProductInfo product={product} />
               <Suspense
                 fallback={
@@ -85,7 +85,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           className={
             hasInlineCommerceCallout
               ? "pt-0"
-              : "mt-14 pt-10"
+              : "mt-16 border-t border-[var(--rm-border)] pt-12"
           }
         >
           <BlockRenderer
@@ -97,7 +97,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           />
         </div>
       ) : null}
-      <div className="content-container mt-12 pt-8">
+      <div className="content-container mt-14 border-t border-[var(--rm-border)] pt-10">
         <ProductTabs product={product} />
       </div>
       {isStorefrontPluginEnabled("reviews") ? (
@@ -112,7 +112,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         <StorefrontPluginHighlights />
       </div>
       <div
-        className="content-container my-16 small:my-32"
+        className="content-container my-16 border-t border-[var(--rm-border)] pt-10 small:my-24"
         data-testid="related-products-container"
       >
         <Suspense fallback={<SkeletonRelatedProducts />}>

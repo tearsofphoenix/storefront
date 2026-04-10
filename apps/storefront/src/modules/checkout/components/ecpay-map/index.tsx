@@ -49,7 +49,7 @@ export default function ECPayMapSelector({
       <Button
         type="submit"
         disabled={isDisabled}
-        className="w-full h-10 mt-2 rounded-md bg-[#111827] text-white hover:bg-[#1f2937]"
+        className="theme-solid-button !mt-2 !h-10 !w-full !rounded-none"
       >
         {"Select CVS Store"}
       </Button>

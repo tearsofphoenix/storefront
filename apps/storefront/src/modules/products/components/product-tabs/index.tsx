@@ -47,31 +47,39 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
   const { messages } = useI18n()
 
   return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-2 gap-x-8">
+    <div className="py-8 text-small-regular text-grey-70">
+      <div className="grid grid-cols-1 gap-8 small:grid-cols-2">
         <div className="flex flex-col gap-y-4">
           <div>
-            <span className="font-semibold">{messages.product.material}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.material}
+            </span>
             <p>{product.material ? product.material : "-"}</p>
           </div>
           <div>
-            <span className="font-semibold">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
               {messages.product.countryOfOrigin}
             </span>
             <p>{product.origin_country ? product.origin_country : "-"}</p>
           </div>
           <div>
-            <span className="font-semibold">{messages.product.type}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.type}
+            </span>
             <p>{product.type ? product.type.value : "-"}</p>
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
           <div>
-            <span className="font-semibold">{messages.product.weight}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.weight}
+            </span>
             <p>{product.weight ? `${product.weight} g` : "-"}</p>
           </div>
           <div>
-            <span className="font-semibold">{messages.product.dimensions}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.dimensions}
+            </span>
             <p>
               {product.length && product.width && product.height
                 ? `${product.length}L x ${product.width}W x ${product.height}H`
@@ -88,19 +96,21 @@ const ShippingInfoTab = () => {
   const { messages } = useI18n()
 
   return (
-    <div className="text-small-regular py-8">
+    <div className="py-8 text-small-regular text-grey-70">
       <div className="grid grid-cols-1 gap-y-8">
         <div className="flex items-start gap-x-2">
           <FastDelivery />
           <div>
-            <span className="font-semibold">{messages.product.fastDelivery}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.fastDelivery}
+            </span>
             <p className="max-w-sm">{messages.product.fastDeliveryCopy}</p>
           </div>
         </div>
         <div className="flex items-start gap-x-2">
           <Refresh />
           <div>
-            <span className="font-semibold">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
               {messages.product.simpleExchanges}
             </span>
             <p className="max-w-sm">{messages.product.simpleExchangesCopy}</p>
@@ -109,7 +119,9 @@ const ShippingInfoTab = () => {
         <div className="flex items-start gap-x-2">
           <Back />
           <div>
-            <span className="font-semibold">{messages.product.easyReturns}</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-grey-50">
+              {messages.product.easyReturns}
+            </span>
             <p className="max-w-sm">{messages.product.easyReturnsCopy}</p>
           </div>
         </div>

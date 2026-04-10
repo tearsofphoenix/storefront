@@ -47,7 +47,7 @@ const Item: React.FC<AccordionItemProps> = ({
     <AccordionPrimitive.Item
       {...props}
       className={clx(
-        "group border-t border-black/8 py-3 last:mb-0 last:border-b last:border-black/8",
+        "group border-t border-[var(--rm-border)] py-3 last:mb-0 last:border-b last:border-[var(--rm-border)]",
         className
       )}
     >
@@ -55,7 +55,9 @@ const Item: React.FC<AccordionItemProps> = ({
         <div className="flex flex-col">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
-              <Text className="text-sm font-medium text-grey-80">{title}</Text>
+              <Text className="text-sm font-medium uppercase tracking-[0.1em] text-grey-80">
+                {title}
+              </Text>
             </div>
             <AccordionPrimitive.Trigger>
               {customTrigger || <MorphingTrigger />}
@@ -87,10 +89,10 @@ Accordion.Item = Item
 
 const MorphingTrigger = () => {
   return (
-    <div className="group relative bg-[#e9e0d0] p-[6px] text-grey-90 transition-colors hover:bg-[#ddd0b9]">
+    <div className="group relative border border-[var(--rm-border)] bg-[#fff] p-[6px] text-grey-90 transition-colors hover:border-[var(--rm-border-strong)]">
       <div className="h-5 w-5">
-        <span className="absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] bg-grey-50 duration-300 group-radix-state-open:rotate-90" />
-        <span className="absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] bg-grey-50 duration-300 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90" />
+        <span className="absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] bg-grey-70 duration-300 group-radix-state-open:rotate-90" />
+        <span className="absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] bg-grey-70 duration-300 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90" />
       </div>
     </div>
   )

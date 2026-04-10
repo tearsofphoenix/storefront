@@ -33,10 +33,11 @@ export function Pagination({
     <button
       key={pageNumber}
       className={clx(
-        "inline-flex h-10 min-w-10 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors",
+        "inline-flex h-10 min-w-10 items-center justify-center border px-3 text-sm font-medium transition-colors",
         {
-          "border-[#111827] bg-[#111827] text-white": isCurrent,
-          "border-[#d9dfe8] bg-white text-grey-60 hover:text-grey-90": !isCurrent,
+          "border-[var(--rm-text)] bg-[var(--rm-text)] text-white": isCurrent,
+          "border-[var(--rm-border)] bg-white text-grey-60 hover:border-[var(--rm-border-strong)] hover:text-grey-90":
+            !isCurrent,
         }
       )}
       disabled={isCurrent}

@@ -36,10 +36,11 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               onClick={() => updateOption(option.id, v)}
               key={v}
               className={clx(
-                "flex h-10 min-w-[56px] items-center justify-center px-4 text-sm transition-colors",
+                "flex h-10 min-w-[56px] items-center justify-center border px-4 text-sm transition-colors",
                 {
-                  "bg-[#111827] text-white": v === current,
-                  "bg-[#e9e0d0] text-grey-70 hover:text-grey-90":
+                  "border-[var(--rm-text)] bg-[var(--rm-text)] text-white":
+                    v === current,
+                  "border-[var(--rm-border)] bg-[#fff] text-grey-70 hover:border-[var(--rm-border-strong)] hover:text-grey-90":
                     v !== current,
                 }
               )}

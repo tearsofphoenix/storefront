@@ -33,17 +33,17 @@ export default async function ProductRail({
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="mb-6 flex items-end justify-between gap-6 pb-6">
+    <section className="content-container border-t py-14 small:py-20" style={{ borderColor: "var(--rm-border)" }}>
+      <div className="mb-8 flex items-end justify-between gap-6 pb-8">
         <div className="grid gap-1">
           <h2
-            className="text-[1.75rem] font-semibold text-grey-80 small:text-[2rem]"
+            className="text-[1.9rem] font-semibold small:text-[2.3rem]"
             style={{ fontFamily: theme.headingFontFamily }}
           >
             Featured
           </h2>
           <p
-            className="text-sm text-grey-60 small:text-base"
+            className="text-sm small:text-base"
             style={{ fontFamily: theme.bodyFontFamily }}
           >
             {collection.title}
@@ -51,12 +51,13 @@ export default async function ProductRail({
         </div>
         <LocalizedClientLink
           href="/store"
-          className="hidden items-center gap-2 text-sm font-medium text-grey-60 transition-colors hover:text-grey-90 small:inline-flex"
+          className="hidden items-center gap-2 border-b border-transparent text-[12px] font-medium uppercase tracking-[0.12em] transition-colors small:inline-flex"
+          style={{ color: "var(--rm-muted)" }}
         >
           {messages.common.browseAllProducts}
         </LocalizedClientLink>
       </div>
-      <ul className="grid grid-cols-2 gap-6 small:grid-cols-4" data-testid="featured-products-list">
+      <ul className="grid grid-cols-2 gap-x-7 gap-y-12 small:grid-cols-4" data-testid="featured-products-list">
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>

@@ -81,7 +81,7 @@ const GoogleAuthButton = () => {
       <Button
         type="button"
         variant="secondary"
-        className="h-11 w-full rounded-md"
+        className="h-11 w-full !rounded-none !border-[var(--rm-border)] !bg-white"
         isLoading={isPending}
         onClick={handleGoogleLogin}
         data-testid="google-auth-button"

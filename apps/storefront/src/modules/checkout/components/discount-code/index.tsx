@@ -58,7 +58,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   }
 
   return (
-    <div className="w-full bg-white flex flex-col">
+    <div className="flex w-full flex-col bg-transparent">
       <div className="txt-medium">
         <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
           <Label className="flex gap-x-1 my-2 items-center">
@@ -80,7 +80,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             <>
               <div className="flex w-full gap-x-2">
                 <Input
-                  className="size-full rounded-md border-[#d9dfe8] bg-white"
+                  className="size-full !rounded-none !border-[var(--rm-border)] !bg-white"
                   id="promotion-input"
                   name="code"
                   type="text"
@@ -89,7 +89,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                 />
                 <SubmitButton
                   variant="secondary"
-                  className="rounded-md border-[#d9dfe8] bg-white"
+                  className="!rounded-none !border-[var(--rm-border)] !bg-white"
                   data-testid="discount-apply-button"
                 >
                   {messages.common.apply}

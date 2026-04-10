@@ -32,7 +32,7 @@ const AccountNav = ({
         {route !== `/${countryCode}/account` ? (
           <LocalizedClientLink
             href="/account"
-            className="flex items-center gap-x-2 rounded-md border border-[#d9dfe8] px-4 py-3 text-small-regular"
+            className="flex items-center gap-x-2 border border-[var(--rm-border)] px-4 py-3 text-small-regular"
             data-testid="account-main-link"
             >
               <>
@@ -46,11 +46,11 @@ const AccountNav = ({
               {t(messages.account.hello, { name: customer?.first_name ?? "" })}
             </div>
             <div className="text-base-regular">
-              <ul className="overflow-hidden rounded-[12px] border border-[#e5e7eb]">
+              <ul className="overflow-hidden border border-[var(--rm-border)]">
                 <li>
                   <LocalizedClientLink
                     href="/account/profile"
-                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
                     data-testid="profile-link"
                   >
                     <>
@@ -65,7 +65,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/addresses"
-                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
                     data-testid="addresses-link"
                   >
                     <>
@@ -80,7 +80,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/orders"
-                    className="flex items-center justify-between border-b border-[#e5e7eb] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
                     data-testid="orders-link"
                   >
                     <div className="flex items-center gap-x-2">
@@ -110,7 +110,7 @@ const AccountNav = ({
         )}
       </div>
       <div className="hidden small:block" data-testid="account-nav">
-        <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
+        <div className="rm-panel-soft p-5">
           <div className="pb-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-50">
               {messages.account.title}

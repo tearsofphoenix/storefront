@@ -196,6 +196,7 @@ const HostedRedirectPaymentButton = ({
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
+        className="theme-solid-button !rounded-none"
         data-testid={dataTestId}
       >
         {messages.common.placeOrder}
@@ -317,6 +318,7 @@ const StripePaymentButton = ({
         onClick={handlePayment}
         size="large"
         isLoading={submitting}
+        className="theme-solid-button !rounded-none"
         data-testid={dataTestId}
       >
         {messages.common.placeOrder}
@@ -357,6 +359,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
+        className="theme-solid-button !rounded-none"
         data-testid="submit-order-button"
       >
         {messages.common.placeOrder}

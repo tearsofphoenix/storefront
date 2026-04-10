@@ -22,7 +22,7 @@ const ItemsTemplate = async ({ cart }: ItemsTemplateProps) => {
       </div>
       <Table className="w-full">
         <Table.Header className="border-t-0">
-          <Table.Row className="border-b border-[#e5e7eb] text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
+          <Table.Row className="border-b border-[var(--rm-border)] text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
             <Table.HeaderCell className="!pl-0">
               {messages.common.item}
             </Table.HeaderCell>

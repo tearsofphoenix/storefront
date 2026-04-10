@@ -113,7 +113,7 @@ export default function ChatbotInteractiveProductActions({
 
   if (!product) {
     return (
-      <div className="mt-4 flex h-9 w-full animate-pulse items-center justify-center rounded-md bg-[#f3f4f6] text-xs text-[#6b7280]">
+      <div className="mt-4 flex h-9 w-full animate-pulse items-center justify-center border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] text-xs text-[#6b7280]">
         {messages.chatbot.thinking}
       </div>
     )
@@ -140,7 +140,7 @@ export default function ChatbotInteractiveProductActions({
         onClick={handleAddToCart}
         disabled={!inStock || !selectedVariant || isAdding || !isValidVariant || isSuccess}
         variant="primary"
-        className="h-9 w-full rounded-md bg-[#111827] text-xs text-white hover:bg-[#1f2937]"
+        className="h-9 w-full !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] text-xs !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
         isLoading={isAdding}
       >
         {isSuccess

@@ -45,7 +45,7 @@ const SortProducts = ({
         data-testid={dataTestId}
         value={sortBy}
         onChange={(event) => handleChange(event.target.value)}
-        className="min-w-[220px] border-[#d9dfe8] bg-white text-sm text-grey-80 hover:bg-white"
+        className="min-w-[220px] border-[var(--rm-border)] bg-white text-sm text-grey-80 hover:bg-white"
       >
         {sortOptions.map((option) => (
           <option key={option.value} value={option.value}>

@@ -39,11 +39,11 @@ const Addresses = ({
   const [message, formAction] = useActionState(setAddresses, null)
 
   return (
-    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
+    <section className="rm-panel px-6 py-6 small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
-          className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
+          className="flex flex-row items-baseline gap-x-2 text-3xl-regular"
         >
           Shipping Address
           {!isOpen && <CheckCircleSolid />}
@@ -52,7 +52,7 @@ const Addresses = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-sm font-medium text-grey-80 transition-colors hover:text-grey-90"
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-60 transition-colors hover:text-grey-90"
               data-testid="edit-address-button"
             >
               Edit
@@ -82,7 +82,7 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
-            <SubmitButton className="mt-6" data-testid="submit-address-button">
+            <SubmitButton className="theme-solid-button !mt-6 !rounded-none" data-testid="submit-address-button">
               Continue to delivery
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />

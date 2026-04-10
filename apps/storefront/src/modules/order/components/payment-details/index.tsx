@@ -20,7 +20,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
       <div>
         {payment && (
           <div className="grid w-full gap-6 small:grid-cols-[0.8fr_1.2fr]">
-            <div className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4">
+            <div className="rm-panel-soft flex flex-col p-4">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Payment method
               </Text>
@@ -31,12 +31,12 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                 {paymentInfoMap[payment.provider_id]?.title || payment.provider_id}
               </Text>
             </div>
-            <div className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4">
+            <div className="rm-panel-soft flex flex-col p-4">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Payment details
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
-                <Container className="flex h-7 w-fit items-center rounded-md border border-[#d9dfe8] bg-white p-2 shadow-none">
+                <Container className="flex h-7 w-fit items-center border border-[var(--rm-border)] bg-white p-2 shadow-none">
                   {paymentInfoMap[payment.provider_id]?.icon}
                 </Container>
                 <Text data-testid="payment-amount">

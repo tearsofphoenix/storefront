@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4">
-      <div className="grid gap-4 rounded-[14px] border border-[#e5e7eb] bg-white p-8 text-center">
+      <div className="rm-panel grid gap-4 p-8 text-center">
         <h1 className="text-2xl font-semibold text-grey-90">Page not found</h1>
         <p className="text-sm text-grey-60">
           The page you tried to access does not exist.

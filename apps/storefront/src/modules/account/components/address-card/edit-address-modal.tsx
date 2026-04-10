@@ -65,9 +65,9 @@ const EditAddress: React.FC<EditAddressProps> = ({
     <>
       <div
         className={clx(
-          "flex h-full min-h-[220px] w-full flex-col justify-between rounded-[12px] border border-[#d9dfe8] bg-white p-5 transition-colors",
+          "rm-panel flex h-full min-h-[220px] w-full flex-col justify-between p-5 transition-colors",
           {
-            "border-gray-900": isActive,
+            "border-[var(--rm-border-strong)]": isActive,
           }
         )}
         data-testid="address-container"
@@ -222,7 +222,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10 rounded-md border-[#d9dfe8] bg-white"
+                className="h-10 !rounded-none !border-[var(--rm-border)] !bg-white"
                 data-testid="cancel-button"
               >
                 Cancel

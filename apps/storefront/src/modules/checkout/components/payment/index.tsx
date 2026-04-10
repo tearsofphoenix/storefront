@@ -174,7 +174,7 @@ const Payment = ({
   }, [isOpen])
 
   return (
-    <section className="rounded-[18px] border border-[#e5e7eb] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] small:px-8 small:py-8">
+    <section className="rm-panel px-6 py-6 small:px-8 small:py-8">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -193,7 +193,7 @@ const Payment = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-sm font-medium text-grey-80 transition-colors hover:text-grey-90"
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-60 transition-colors hover:text-grey-90"
               data-testid="edit-payment-button"
             >
               {messages.common.edit}
@@ -255,7 +255,7 @@ const Payment = ({
 
           <Button
             size="large"
-            className="mt-6"
+            className="theme-solid-button !mt-6 !rounded-none"
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
@@ -293,7 +293,7 @@ const Payment = ({
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
                   data-testid="payment-details-summary"
                 >
-                  <Container className="flex h-7 w-fit items-center rounded-md border border-[#d9dfe8] bg-white p-2 shadow-none">
+                  <Container className="flex h-7 w-fit items-center border border-[var(--rm-border)] bg-white p-2 shadow-none">
                     {paymentInfoMap[selectedPaymentMethod]?.icon || (
                       <CreditCard />
                     )}

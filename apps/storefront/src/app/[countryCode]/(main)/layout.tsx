@@ -36,11 +36,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
         style={{
           minHeight: "100vh",
           background: theme.shellBackground,
-          backgroundImage:
-            theme.headingStyle === "serif"
-              ? `linear-gradient(180deg, ${theme.shellBackground} 0%, ${theme.navBackground} 55%, ${theme.footerBackground} 100%)`
-              : undefined,
-          color: "#111827",
+          color: "var(--rm-text)",
         }}
       >
         <Nav />

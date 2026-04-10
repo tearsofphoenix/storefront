@@ -34,7 +34,7 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-opacity-75 backdrop-blur-md  h-screen" />
+          <div className="fixed inset-0 h-screen bg-black/45 backdrop-blur-[2px]" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-hidden">
@@ -65,7 +65,7 @@ const Modal = ({
                     "max-w-xl": size === "medium",
                     "max-w-3xl": size === "large",
                     "bg-transparent shadow-none": search,
-                    "rounded-[14px] border border-[#d9dfe8] bg-white shadow-[0_20px_48px_rgba(15,23,42,0.12)]": !search,
+                    "border border-[var(--rm-border)] bg-white shadow-none": !search,
                   }
                 )}
               >
@@ -89,7 +89,7 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <button
           onClick={close}
           data-testid="close-modal-button"
-          className="rounded-md border border-[#d9dfe8] p-2"
+          className="border border-[var(--rm-border)] p-2"
         >
           <X size={20} />
         </button>

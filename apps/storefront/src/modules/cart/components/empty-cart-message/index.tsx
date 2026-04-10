@@ -11,7 +11,7 @@ const EmptyCartMessage = async () => {
       className="flex items-start justify-center px-2 py-24 small:py-36"
       data-testid="empty-cart-message"
     >
-      <div className="grid max-w-[38rem] gap-5 rounded-[14px] border border-[#e5e7eb] bg-white p-8 small:p-10">
+      <div className="rm-panel grid max-w-[38rem] gap-5 p-8 small:p-10">
         <Heading
           level="h1"
           className="flex flex-row items-baseline gap-x-2 text-3xl-regular"

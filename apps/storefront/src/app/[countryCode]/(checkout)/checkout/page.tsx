@@ -26,7 +26,7 @@ export default async function Checkout() {
     process.env.NEXT_PUBLIC_MEDUSA_PAYMENTS_ACCOUNT_ID || null
 
   return (
-    <div className="grid grid-cols-1 small:grid-cols-[1fr_416px] content-container gap-x-40 py-12">
+    <div className="content-container grid grid-cols-1 gap-x-16 gap-y-8 py-12 small:grid-cols-[1fr_416px]">
       <PaymentWrapper
         cart={cart}
         stripeKey={stripeKey}

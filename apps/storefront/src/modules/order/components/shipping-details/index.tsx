@@ -23,7 +23,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
       </Heading>
       <div className="grid gap-6 small:grid-cols-3">
         <div
-          className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4"
+          className="rm-panel-soft flex flex-col p-4"
           data-testid="shipping-address-summary"
         >
           <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -47,7 +47,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
         </div>
 
         <div
-          className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4"
+          className="rm-panel-soft flex flex-col p-4"
           data-testid="shipping-contact-summary"
         >
           <Text className="txt-medium-plus text-ui-fg-base mb-1">Contact</Text>
@@ -58,7 +58,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
         </div>
 
         <div
-          className="flex flex-col rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-4"
+          className="rm-panel-soft flex flex-col p-4"
           data-testid="shipping-method-summary"
         >
           <Text className="txt-medium-plus text-ui-fg-base mb-1">Method</Text>
@@ -97,7 +97,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
               | undefined
 
             return (
-              <div key={fulfillment.id} className="grid gap-3 rounded-[12px] border border-[#e5e7eb] bg-white p-4">
+              <div key={fulfillment.id} className="rm-panel grid gap-3 p-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <Text className="txt-medium-plus text-ui-fg-base">
                     {fulfillmentState} · {fulfillment.id}

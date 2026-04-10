@@ -14,7 +14,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
   }
 
   return (
-    <div className="rounded-[12px] border border-[#e5e7eb] bg-[#f7f7fa] p-5">
+    <div className="rm-panel-soft p-5">
       <Text>
         We have sent the order confirmation details to{" "}
         <span
