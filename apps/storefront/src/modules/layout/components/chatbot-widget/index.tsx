@@ -217,7 +217,7 @@ const ChatbotWidget = () => {
           session_id: sessionId,
           page_path: pathname,
           country_code: countryCode,
-          language: typeof navigator !== "undefined" ? navigator.language : locale,
+          language: locale,
           product_handle: productHandle,
           product_context: activeProductContext ?? undefined,
           messages: requestMessages.map((message) => ({
