@@ -11,6 +11,7 @@ type ThumbnailProps = {
   thumbnail?: string | null
   // TODO: Fix image typings
   images?: any[] | null
+  alt?: string
   size?: "small" | "medium" | "large" | "full" | "square"
   isFeatured?: boolean
   className?: string
@@ -21,6 +22,7 @@ type ThumbnailProps = {
 const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
+  alt,
   size = "small",
   isFeatured,
   className,
@@ -47,21 +49,22 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       style={style}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} />
+      <ImageOrPlaceholder image={initialImage} size={size} alt={alt} />
     </Container>
   )
 }
 
 const ImageOrPlaceholder = ({
   image,
+  alt,
   size,
-}: Pick<ThumbnailProps, "size"> & { image?: string | null }) => {
+}: Pick<ThumbnailProps, "size" | "alt"> & { image?: string | null }) => {
   const unoptimized = shouldUnoptimizeImage(image)
 
   return image ? (
     <Image
       src={image}
-      alt="Thumbnail"
+      alt={alt ?? ""}
       className="absolute inset-0 object-cover object-center"
       draggable={false}
       quality={50}

@@ -11,6 +11,7 @@ import Modal from "@modules/common/components/modal"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import { HttpTypes } from "@medusajs/types"
 import { addCustomerAddress } from "@lib/data/customer"
+import { useI18n } from "@lib/i18n/use-i18n"
 
 const AddAddress = ({
   region,
@@ -19,6 +20,7 @@ const AddAddress = ({
   region: HttpTypes.StoreRegion
   addresses: HttpTypes.StoreCustomerAddress[]
 }) => {
+  const { messages } = useI18n()
   const [successState, setSuccessState] = useState(false)
   const { state, open, close: closeModal } = useToggleState(false)
 
@@ -53,27 +55,27 @@ const AddAddress = ({
         onClick={open}
         data-testid="add-address-button"
       >
-        <span className="text-base-semi">New address</span>
+        <span className="text-base-semi">{messages.account.newAddress}</span>
         <Plus />
       </button>
 
       <Modal isOpen={state} close={close} data-testid="add-address-modal">
         <Modal.Title>
-          <Heading className="mb-2">Add address</Heading>
+          <Heading className="mb-2">{messages.account.addAddress}</Heading>
         </Modal.Title>
         <form action={formAction}>
           <Modal.Body>
             <div className="flex flex-col gap-y-2">
               <div className="grid grid-cols-2 gap-x-2">
                 <Input
-                  label="First name"
+                  label={messages.common.firstName}
                   name="first_name"
                   required
                   autoComplete="given-name"
                   data-testid="first-name-input"
                 />
                 <Input
-                  label="Last name"
+                  label={messages.common.lastName}
                   name="last_name"
                   required
                   autoComplete="family-name"
@@ -81,34 +83,34 @@ const AddAddress = ({
                 />
               </div>
               <Input
-                label="Company"
+                label={messages.common.company}
                 name="company"
                 autoComplete="organization"
                 data-testid="company-input"
               />
               <Input
-                label="Address"
+                label={messages.common.address}
                 name="address_1"
                 required
                 autoComplete="address-line1"
                 data-testid="address-1-input"
               />
               <Input
-                label="Apartment, suite, etc."
+                label={messages.common.apartmentSuiteEtc}
                 name="address_2"
                 autoComplete="address-line2"
                 data-testid="address-2-input"
               />
               <div className="grid grid-cols-[144px_1fr] gap-x-2">
                 <Input
-                  label="Postal code"
+                  label={messages.common.postalCode}
                   name="postal_code"
                   required
                   autoComplete="postal-code"
                   data-testid="postal-code-input"
                 />
                 <Input
-                  label="City"
+                  label={messages.common.city}
                   name="city"
                   required
                   autoComplete="locality"
@@ -116,7 +118,7 @@ const AddAddress = ({
                 />
               </div>
               <Input
-                label="Province / State"
+                label={messages.common.stateProvince}
                 name="province"
                 autoComplete="address-level1"
                 data-testid="state-input"
@@ -129,7 +131,7 @@ const AddAddress = ({
                 data-testid="country-select"
               />
               <Input
-                label="Phone"
+                label={messages.common.phone}
                 name="phone"
                 autoComplete="phone"
                 data-testid="phone-input"
@@ -153,9 +155,11 @@ const AddAddress = ({
                 className="h-10 !rounded-none !border-[var(--rm-border)] !bg-white"
                 data-testid="cancel-button"
               >
-                Cancel
+                {messages.common.cancel}
               </Button>
-              <SubmitButton data-testid="save-button">Save</SubmitButton>
+              <SubmitButton data-testid="save-button">
+                {messages.common.save}
+              </SubmitButton>
             </div>
           </Modal.Footer>
         </form>

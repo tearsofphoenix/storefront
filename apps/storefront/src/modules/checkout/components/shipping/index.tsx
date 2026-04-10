@@ -264,7 +264,9 @@ const Shipping: React.FC<ShippingProps> = ({
 
         setEcpaySettings(null)
         setEcpaySettingsError(
-          err instanceof Error ? err.message : "Failed to load ECPay settings"
+          err instanceof Error
+            ? err.message
+            : messages.common.failedToLoadEcpaySettings
         )
       } finally {
         if (isActive) {
@@ -278,7 +280,7 @@ const Shipping: React.FC<ShippingProps> = ({
     return () => {
       isActive = false
     }
-  }, [hasEcpayOption])
+  }, [hasEcpayOption, messages.common.failedToLoadEcpaySettings])
 
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })
@@ -667,7 +669,7 @@ const Shipping: React.FC<ShippingProps> = ({
             />
             {isECPaySelected && !hasSelectedStore && (
               <Text className="text-rose-500 txt-medium mb-4">
-                {"Please select a store using the map selector before continuing."}
+                {messages.common.selectStoreBeforeContinuing}
               </Text>
             )}
             <Button

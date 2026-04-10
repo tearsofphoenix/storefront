@@ -1,6 +1,7 @@
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
+import { getI18n } from "@lib/i18n/server"
 import { getProductPrice } from "@lib/util/get-product-price"
 
 type CmsProductCardProps = {
@@ -12,7 +13,7 @@ type CmsProductCardProps = {
   variant?: "shelf" | "bundle"
 }
 
-export const CmsProductCard = ({
+export const CmsProductCard = async ({
   badge,
   ctaLabel,
   description,
@@ -20,6 +21,7 @@ export const CmsProductCard = ({
   product,
   variant = "shelf",
 }: CmsProductCardProps) => {
+  const { messages } = await getI18n()
   const { cheapestPrice } = getProductPrice({
     product,
   })
@@ -36,6 +38,7 @@ export const CmsProductCard = ({
           <Thumbnail
             thumbnail={product.thumbnail}
             images={product.images}
+            alt={product.title ?? ""}
             size="full"
             className="border-none bg-[#ebe2d2] p-0 shadow-none"
             style={{
@@ -81,7 +84,7 @@ export const CmsProductCard = ({
           ) : null}
           {isBundle ? (
             <span className="inline-flex w-fit items-center bg-[#111827] px-4 py-2 text-sm font-medium text-white transition-opacity group-hover:opacity-85">
-              {ctaLabel || "Explore bundle"}
+              {ctaLabel || messages.common.exploreBundle}
             </span>
           ) : null}
         </div>

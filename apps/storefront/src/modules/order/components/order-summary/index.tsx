@@ -1,4 +1,7 @@
+"use client"
+
 import { convertToLocale } from "@lib/util/money"
+import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 
 type OrderSummaryProps = {
@@ -6,6 +9,8 @@ type OrderSummaryProps = {
 }
 
 const OrderSummary = ({ order }: OrderSummaryProps) => {
+  const { messages } = useI18n()
+
   const getAmount = (amount?: number | null) => {
     if (!amount) {
       return
@@ -19,37 +24,37 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
 
   return (
     <div className="rm-panel-soft p-5">
-      <h2 className="text-base-semi">Order Summary</h2>
+      <h2 className="text-base-semi">{messages.order.orderSummary}</h2>
       <div className="my-2 text-small-regular text-ui-fg-base">
         <div className="mb-2 flex items-center justify-between text-base-regular text-ui-fg-base">
-          <span>Subtotal</span>
+          <span>{messages.common.subtotal}</span>
           <span>{getAmount(order.subtotal)}</span>
         </div>
         <div className="flex flex-col gap-y-1">
           {order.discount_total > 0 && (
             <div className="flex items-center justify-between">
-              <span>Discount</span>
+              <span>{messages.common.discount}</span>
               <span>- {getAmount(order.discount_total)}</span>
             </div>
           )}
           {order.gift_card_total > 0 && (
             <div className="flex items-center justify-between">
-              <span>Discount</span>
+              <span>{messages.common.discount}</span>
               <span>- {getAmount(order.gift_card_total)}</span>
             </div>
           )}
           <div className="flex items-center justify-between">
-            <span>Shipping</span>
+            <span>{messages.common.shipping}</span>
             <span>{getAmount(order.shipping_total)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>Taxes</span>
+            <span>{messages.common.taxes}</span>
             <span>{getAmount(order.tax_total)}</span>
           </div>
         </div>
         <div className="my-4 h-px w-full border-b border-[var(--rm-border)]" />
         <div className="mb-2 flex items-center justify-between text-base-regular text-ui-fg-base">
-          <span>Total</span>
+          <span>{messages.common.total}</span>
           <span className="font-semibold">{getAmount(order.total)}</span>
         </div>
       </div>

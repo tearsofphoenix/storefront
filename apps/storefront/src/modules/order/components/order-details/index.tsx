@@ -1,3 +1,6 @@
+"use client"
+
+import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { Text } from "@medusajs/ui"
 
@@ -7,6 +10,8 @@ type OrderDetailsProps = {
 }
 
 const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
+  const { messages } = useI18n()
+
   const formatStatus = (str: string) => {
     const formatted = str.split("_").join(" ")
 
@@ -16,7 +21,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
   return (
     <div className="rm-panel-soft p-5">
       <Text>
-        We have sent the order confirmation details to{" "}
+        {messages.order.confirmationSentPrefix}{" "}
         <span
           className="text-ui-fg-medium-plus font-semibold"
           data-testid="order-email"
@@ -26,26 +31,27 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
         .
       </Text>
       <Text className="mt-2">
-        Order date:{" "}
+        {messages.order.orderDate}:{" "}
         <span data-testid="order-date">
           {new Date(order.created_at).toDateString()}
         </span>
       </Text>
       <Text className="mt-2 font-medium text-grey-90">
-        Order number: <span data-testid="order-id">{order.display_id}</span>
+        {messages.account.orderNumber}:{" "}
+        <span data-testid="order-id">{order.display_id}</span>
       </Text>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 text-compact-small">
         {showStatus && (
           <>
             <Text>
-              Order status:{" "}
+              {messages.order.orderStatus}:{" "}
               <span className="text-ui-fg-subtle " data-testid="order-status">
                 {formatStatus(order.fulfillment_status)}
               </span>
             </Text>
             <Text>
-              Payment status:{" "}
+              {messages.order.paymentStatus}:{" "}
               <span
                 className="text-ui-fg-subtle "
                 data-testid="order-payment-status"

@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { getI18n } from "@lib/i18n/server"
 
 import ProfilePhone from "@modules/account//components/profile-phone"
 import ProfileBillingAddress from "@modules/account/components/profile-billing-address"
@@ -10,12 +11,17 @@ import { notFound } from "next/navigation"
 import { listRegions } from "@lib/data/regions"
 import { retrieveCustomer } from "@lib/data/customer"
 
-export const metadata: Metadata = {
-  title: "Profile",
-  description: "View and edit your Panda AI Store profile.",
+export async function generateMetadata(): Promise<Metadata> {
+  const { messages } = await getI18n()
+
+  return {
+    title: messages.account.profile,
+    description: messages.account.profileDescription,
+  }
 }
 
 export default async function Profile() {
+  const { messages } = await getI18n()
   const customer = await retrieveCustomer()
   const regions = await listRegions()
 
@@ -26,11 +32,9 @@ export default async function Profile() {
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Profile</h1>
+        <h1 className="text-2xl-semi">{messages.account.profile}</h1>
         <p className="text-base-regular">
-          View and update your profile information, including your name, email,
-          and phone number. You can also update your billing address, or change
-          your password.
+          {messages.account.profileDescription}
         </p>
       </div>
       <div className="flex flex-col gap-y-8 w-full">

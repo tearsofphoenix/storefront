@@ -1,4 +1,7 @@
+"use client"
+
 import { convertToLocale } from "@lib/util/money"
+import { useI18n } from "@lib/i18n/use-i18n"
 import {
   getFulfillmentStateLabel,
   getOrderFulfillments,
@@ -14,12 +17,13 @@ type ShippingDetailsProps = {
 }
 
 const ShippingDetails = ({ order }: ShippingDetailsProps) => {
+  const { messages, t } = useI18n()
   const fulfillments = getOrderFulfillments(order)
 
   return (
     <div>
       <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
-        Delivery
+        {messages.common.delivery}
       </Heading>
       <div className="grid gap-6 small:grid-cols-3">
         <div
@@ -27,7 +31,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           data-testid="shipping-address-summary"
         >
           <Text className="txt-medium-plus text-ui-fg-base mb-1">
-            Shipping Address
+            {messages.order.shippingAddress}
           </Text>
           <Text className="txt-medium text-ui-fg-subtle">
             {order.shipping_address?.first_name}{" "}
@@ -50,7 +54,9 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           className="rm-panel-soft flex flex-col p-4"
           data-testid="shipping-contact-summary"
         >
-          <Text className="txt-medium-plus text-ui-fg-base mb-1">Contact</Text>
+          <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            {messages.order.contact}
+          </Text>
           <Text className="txt-medium text-ui-fg-subtle">
             {order.shipping_address?.phone}
           </Text>
@@ -61,7 +67,9 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           className="rm-panel-soft flex flex-col p-4"
           data-testid="shipping-method-summary"
         >
-          <Text className="txt-medium-plus text-ui-fg-base mb-1">Method</Text>
+          <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            {messages.common.method}
+          </Text>
           <Text className="txt-medium text-ui-fg-subtle">
             {(order as any).shipping_methods[0]?.name} (
             {convertToLocale({
@@ -74,7 +82,9 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
       </div>
       {fulfillments.length > 0 && (
         <div className="mt-8 grid gap-4" data-testid="shipping-fulfillment-summary">
-          <Text className="txt-medium-plus text-ui-fg-base">Fulfillment timeline</Text>
+          <Text className="txt-medium-plus text-ui-fg-base">
+            {messages.order.fulfillmentTimeline}
+          </Text>
           {fulfillments.map((fulfillment) => {
             const labels = fulfillment.labels ?? []
             const fulfillmentState = getFulfillmentStateLabel(fulfillment)
@@ -103,40 +113,66 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                     {fulfillmentState} · {fulfillment.id}
                   </Text>
                   <Text className="txt-medium text-ui-fg-subtle">
-                    Provider {fulfillment.provider_id ?? "n/a"}
+                    {t(messages.order.provider, {
+                      provider: fulfillment.provider_id ?? messages.order.notAvailable,
+                    })}
                   </Text>
                 </div>
                 <div className="grid gap-1 text-ui-fg-subtle txt-medium">
                   {fulfillment.packed_at && (
-                    <Text>Packed at: {new Date(fulfillment.packed_at).toLocaleString()}</Text>
+                    <Text>
+                      {t(messages.order.packedAt, {
+                        date: new Date(fulfillment.packed_at).toLocaleString(),
+                      })}
+                    </Text>
                   )}
                   {fulfillment.shipped_at && (
                     <Text data-testid="fulfillment-shipped-at">
-                      Shipped at: {new Date(fulfillment.shipped_at).toLocaleString()}
+                      {t(messages.order.shippedAt, {
+                        date: new Date(fulfillment.shipped_at).toLocaleString(),
+                      })}
                     </Text>
                   )}
                   {fulfillment.delivered_at && (
                     <Text data-testid="fulfillment-delivered-at">
-                      Delivered at: {new Date(fulfillment.delivered_at).toLocaleString()}
+                      {t(messages.order.deliveredAt, {
+                        date: new Date(fulfillment.delivered_at).toLocaleString(),
+                      })}
                     </Text>
                   )}
                   {fulfillment.canceled_at && (
-                    <Text>Canceled at: {new Date(fulfillment.canceled_at).toLocaleString()}</Text>
+                    <Text>
+                      {t(messages.order.canceledAt, {
+                        date: new Date(fulfillment.canceled_at).toLocaleString(),
+                      })}
+                    </Text>
                   )}
                   {ecpayStatusMessage && (
-                    <Text>ECPay status: {ecpayStatusMessage}</Text>
+                    <Text>
+                      {t(messages.order.ecpayStatus, { status: ecpayStatusMessage })}
+                    </Text>
                   )}
                   {ecpayLogisticsId && (
-                    <Text>ECPay logistics ID: {ecpayLogisticsId}</Text>
+                    <Text>
+                      {t(messages.order.ecpayLogisticsId, { id: ecpayLogisticsId })}
+                    </Text>
                   )}
                   {ecpayStoreId && (
-                    <Text>ECPay store ID: {ecpayStoreId}</Text>
+                    <Text>
+                      {t(messages.order.ecpayStoreId, { id: ecpayStoreId })}
+                    </Text>
                   )}
                   {ecpayPaymentNo && (
-                    <Text>CVS payment no: {ecpayPaymentNo}</Text>
+                    <Text>
+                      {t(messages.order.cvsPaymentNo, { number: ecpayPaymentNo })}
+                    </Text>
                   )}
                   {ecpayValidationNo && (
-                    <Text>CVS validation no: {ecpayValidationNo}</Text>
+                    <Text>
+                      {t(messages.order.cvsValidationNo, {
+                        number: ecpayValidationNo,
+                      })}
+                    </Text>
                   )}
                 </div>
                 {labels.length > 0 && (
@@ -144,7 +180,9 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                     {labels.map((label, index) => (
                       <div key={`${fulfillment.id}-${index}`} className="grid gap-1 text-ui-fg-subtle txt-medium">
                         <Text data-testid="fulfillment-tracking-number">
-                          Tracking: {label.tracking_number ?? "n/a"}
+                          {t(messages.order.tracking, {
+                            tracking: label.tracking_number ?? messages.order.notAvailable,
+                          })}
                         </Text>
                         {label.tracking_url && (
                           <a
@@ -154,7 +192,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                             className="text-sm font-medium text-grey-90 transition-colors hover:text-grey-70"
                             data-testid="fulfillment-tracking-link"
                           >
-                            Track shipment
+                            {messages.order.trackShipment}
                           </a>
                         )}
                         {label.label_url && (
@@ -164,7 +202,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
                             rel="noreferrer"
                             className="text-sm font-medium text-grey-90 transition-colors hover:text-grey-70"
                           >
-                            View label
+                            {messages.order.viewLabel}
                           </a>
                         )}
                       </div>

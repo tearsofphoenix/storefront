@@ -2,6 +2,7 @@
 
 import { XMark } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
+import { useI18n } from "@lib/i18n/use-i18n"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
@@ -18,16 +19,20 @@ type OrderDetailsTemplateProps = {
 const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
   order,
 }) => {
+  const { messages } = useI18n()
+
   return (
     <div className="flex flex-col justify-center gap-y-6">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-semibold text-grey-90">Order details</h1>
+        <h1 className="text-2xl font-semibold text-grey-90">
+          {messages.order.orderDetails}
+        </h1>
         <LocalizedClientLink
           href="/account/orders"
           className="flex items-center gap-2 text-sm text-grey-60 transition-colors hover:text-grey-90"
           data-testid="back-to-overview-button"
         >
-          <XMark /> Back to overview
+          <XMark /> {messages.order.backToOverview}
         </LocalizedClientLink>
       </div>
       <div

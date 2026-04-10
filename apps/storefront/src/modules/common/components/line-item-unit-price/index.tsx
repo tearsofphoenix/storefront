@@ -1,4 +1,5 @@
 import { convertToLocale } from "@lib/util/money"
+import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
 
@@ -13,6 +14,7 @@ const LineItemUnitPrice = ({
   style = "default",
   currencyCode,
 }: LineItemUnitPriceProps) => {
+  const { messages } = useI18n()
   const quantity = item.quantity > 0 ? item.quantity : 1
   const total = item.total ?? 0
   const original_total = item.original_total ?? total
@@ -28,7 +30,9 @@ const LineItemUnitPrice = ({
         <>
           <p>
             {style === "default" && (
-              <span className="text-ui-fg-muted">Original: </span>
+              <span className="text-ui-fg-muted">
+                {messages.product.original}:{" "}
+              </span>
             )}
             <span
               className="line-through"

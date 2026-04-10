@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@lib/i18n/use-i18n"
 import { Stripe, StripeElementsOptions } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import { HttpTypes } from "@medusajs/types"
@@ -20,26 +21,21 @@ const StripeWrapper: React.FC<StripeWrapperProps> = ({
   stripePromise,
   children,
 }) => {
+  const { messages } = useI18n()
   const options: StripeElementsOptions = {
     clientSecret: paymentSession!.data?.client_secret as string | undefined,
   }
 
   if (!stripeKey) {
-    throw new Error(
-      "Stripe key is missing. Set NEXT_PUBLIC_STRIPE_KEY environment variable."
-    )
+    throw new Error(messages.common.stripeKeyMissing)
   }
 
   if (!stripePromise) {
-    throw new Error(
-      "Stripe promise is missing. Make sure you have provided a valid Stripe key."
-    )
+    throw new Error(messages.common.stripePromiseMissing)
   }
 
   if (!paymentSession?.data?.client_secret) {
-    throw new Error(
-      "Stripe client secret is missing. Cannot initialize Stripe."
-    )
+    throw new Error(messages.common.stripeClientSecretMissing)
   }
 
   return (

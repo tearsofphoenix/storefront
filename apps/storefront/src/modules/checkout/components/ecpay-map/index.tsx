@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@lib/i18n/use-i18n"
 import { Button } from "@medusajs/ui"
 
 type ECPayMapProps = {
@@ -21,6 +22,7 @@ export default function ECPayMapSelector({
   returnPath,
   disabled = false,
 }: ECPayMapProps) {
+  const { messages } = useI18n()
   const isDisabled = disabled || !merchantId || !serverReplyUrl
   const extraData = new URLSearchParams({
     ...(cartId ? { cartId } : {}),
@@ -51,7 +53,7 @@ export default function ECPayMapSelector({
         disabled={isDisabled}
         className="theme-solid-button !mt-2 !h-10 !w-full !rounded-none"
       >
-        {"Select CVS Store"}
+        {messages.common.selectCvsStore}
       </Button>
     </form>
   )

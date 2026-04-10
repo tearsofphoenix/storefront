@@ -1,11 +1,16 @@
 import { Metadata } from "next"
+import { getI18n } from "@lib/i18n/server"
 
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import StoreTemplate from "@modules/store/templates"
 
-export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+export async function generateMetadata(): Promise<Metadata> {
+  const { messages } = await getI18n()
+
+  return {
+    title: messages.common.store,
+    description: messages.store.catalogDescription,
+  }
 }
 
 type Params = {

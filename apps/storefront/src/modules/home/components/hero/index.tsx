@@ -95,6 +95,7 @@ export default async function Hero({ collection, region }: HeroProps) {
               <Thumbnail
                 thumbnail={primaryProduct?.thumbnail}
                 images={primaryProduct?.images}
+                alt={primaryProduct?.title ?? ""}
                 size="full"
                 isFeatured
                 className="bg-[#fcfbf8] p-0 shadow-none"
@@ -171,7 +172,7 @@ export default async function Hero({ collection, region }: HeroProps) {
           >
             {(heroHighlights.length > 0
               ? heroHighlights.map((value) => ({
-                  label: "Featured",
+                  label: messages.home.featuredLabel,
                   value,
                 }))
               : theme.heroMetrics

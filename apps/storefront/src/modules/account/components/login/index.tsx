@@ -32,7 +32,7 @@ const Login = ({ setCurrentView }: Props) => {
             label={messages.common.email}
             name="email"
             type="email"
-            title="Enter a valid email address."
+            title={messages.common.enterValidEmail}
             autoComplete="email"
             required
             data-testid="email-input"

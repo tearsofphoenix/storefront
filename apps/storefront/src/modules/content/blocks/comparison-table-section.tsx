@@ -1,6 +1,7 @@
+import { getI18n } from "@lib/i18n/server"
 import { PayloadComparisonTableBlock } from "types/payload"
 
-export const ComparisonTableSection = ({
+export const ComparisonTableSection = async ({
   description,
   eyebrow,
   leftColumnLabel,
@@ -8,6 +9,8 @@ export const ComparisonTableSection = ({
   rows,
   title,
 }: PayloadComparisonTableBlock) => {
+  const { messages } = await getI18n()
+
   if (!rows?.length) {
     return null
   }
@@ -31,7 +34,7 @@ export const ComparisonTableSection = ({
           ) : null}
         </div>
         <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] border-b border-black/8 bg-[#efe7d8] px-6 py-4 text-sm font-semibold text-[#111827] small:px-8">
-          <div>Feature</div>
+          <div>{messages.common.feature}</div>
           <div>{leftColumnLabel}</div>
           <div>{rightColumnLabel}</div>
         </div>

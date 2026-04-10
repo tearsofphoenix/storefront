@@ -1,5 +1,6 @@
 import { getPercentageDiff } from "@lib/util/get-percentage-diff"
 import { convertToLocale } from "@lib/util/money"
+import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
 
@@ -14,6 +15,7 @@ const LineItemPrice = ({
   style = "default",
   currencyCode,
 }: LineItemPriceProps) => {
+  const { messages } = useI18n()
   const originalPrice = item.original_total ?? item.total ?? 0
   const currentPrice = item.total ?? originalPrice
   const hasReducedPrice = currentPrice < originalPrice
@@ -25,7 +27,9 @@ const LineItemPrice = ({
           <>
             <p>
               {style === "default" && (
-                <span className="text-ui-fg-subtle">Original: </span>
+                <span className="text-ui-fg-subtle">
+                  {messages.product.original}:{" "}
+                </span>
               )}
               <span
                 className="line-through text-ui-fg-muted"

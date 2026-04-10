@@ -1,13 +1,18 @@
 import { Metadata } from "next"
+import { getI18n } from "@lib/i18n/server"
 
 import Overview from "@modules/account/components/overview"
 import { notFound } from "next/navigation"
 import { retrieveCustomer } from "@lib/data/customer"
 import { listOrders } from "@lib/data/orders"
 
-export const metadata: Metadata = {
-  title: "Account",
-  description: "Overview of your account activity.",
+export async function generateMetadata(): Promise<Metadata> {
+  const { messages } = await getI18n()
+
+  return {
+    title: messages.account.title,
+    description: messages.account.overviewDescription,
+  }
 }
 
 export default async function OverviewTemplate() {

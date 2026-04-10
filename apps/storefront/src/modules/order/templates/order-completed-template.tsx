@@ -1,6 +1,7 @@
 import { Heading } from "@medusajs/ui"
 import { cookies as nextCookies } from "next/headers"
 
+import { getI18n } from "@lib/i18n/server"
 import CartTotals from "@modules/common/components/cart-totals"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
@@ -17,6 +18,7 @@ type OrderCompletedTemplateProps = {
 export default async function OrderCompletedTemplate({
   order,
 }: OrderCompletedTemplateProps) {
+  const { messages } = await getI18n()
   const cookies = await nextCookies()
 
   const isOnboarding = cookies.get("_medusa_onboarding")?.value === "true"
@@ -33,12 +35,12 @@ export default async function OrderCompletedTemplate({
             level="h1"
             className="mb-4 flex flex-col gap-y-3 text-3xl text-ui-fg-base"
           >
-            <span>Thank you!</span>
-            <span>Your order was placed successfully.</span>
+            <span>{messages.order.thankYou}</span>
+            <span>{messages.order.placedSuccessfully}</span>
           </Heading>
           <OrderDetails order={order} showStatus />
           <Heading level="h2" className="flex flex-row text-3xl-regular">
-            Summary
+            {messages.common.summary}
           </Heading>
           <Items order={order} />
           <CartTotals totals={order} />

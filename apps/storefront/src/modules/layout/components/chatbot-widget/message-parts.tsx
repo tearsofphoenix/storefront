@@ -84,6 +84,7 @@ const ChatbotProductLinkCard = ({
           <Thumbnail
             thumbnail={product.thumbnail}
             images={[]}
+            alt={product.title ?? ""}
             size="square"
             className="border-[#eef2f7] bg-[#f7f7fa] p-0"
           />
@@ -153,6 +154,7 @@ const ChatbotProductDetailCard = ({
           <Thumbnail
             thumbnail={product.thumbnail}
             images={[]}
+            alt={product.title ?? ""}
             size="square"
             className="border-[#eef2f7] bg-[#f7f7fa] p-0"
           />

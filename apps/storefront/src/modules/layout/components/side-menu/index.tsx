@@ -17,6 +17,7 @@ type SideMenuProps = {
   locales: Locale[] | null
   currentLocale: string | null
   brandName?: string
+  primaryColor?: string
   navBackground?: string
   headingFontFamily?: string
   bodyFontFamily?: string
@@ -26,7 +27,8 @@ const SideMenu = ({
   regions,
   locales,
   currentLocale,
-  brandName = "Panda Store",
+  brandName,
+  primaryColor: _primaryColor,
   navBackground = "var(--rm-bg)",
   headingFontFamily = "reMarkableSans, Helvetica, sans-serif",
   bodyFontFamily = "reMarkableSans, Helvetica, sans-serif",
@@ -34,6 +36,7 @@ const SideMenu = ({
   const countryToggleState = useToggleState()
   const languageToggleState = useToggleState()
   const { messages } = useI18n()
+  const resolvedBrandName = brandName || messages.home.metadataTitle
 
   const sideMenuItems = [
     { label: messages.common.store, href: "/store", testId: "store-link" },
@@ -108,7 +111,7 @@ const SideMenu = ({
                           fontFamily: headingFontFamily,
                         }}
                       >
-                        {brandName}
+                        {resolvedBrandName}
                       </LocalizedClientLink>
                       <button
                         data-testid="close-menu-button"
@@ -199,7 +202,7 @@ const SideMenu = ({
                           className="mt-4 text-[11px] leading-5"
                           style={{ color: "var(--rm-muted-soft)" }}
                         >
-                          © {new Date().getFullYear()} {brandName}.{" "}
+                          © {new Date().getFullYear()} {resolvedBrandName}.{" "}
                           {messages.common.rightsReserved}
                         </Text>
                       </div>

@@ -7,12 +7,14 @@ import { useEffect, useMemo, useState } from "react"
 
 import { normalizeImageUrl } from "@lib/util/normalize-image-url"
 import { shouldUnoptimizeImage } from "@lib/util/should-unoptimize-image"
+import { useI18n } from "@lib/i18n/use-i18n"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
 }
 
 const ImageGallery = ({ images }: ImageGalleryProps) => {
+  const { messages } = useI18n()
   const galleryImages = useMemo(
     () =>
       images
@@ -62,7 +64,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
             <div className="relative aspect-square w-16 overflow-hidden border border-[var(--rm-border)] bg-[#fff] small:w-[78px]">
               <Image
                 src={image.url}
-                alt={`Product thumbnail ${index + 1}`}
+                alt={`${messages.product.productThumbnailAlt} ${index + 1}`}
                 fill
                 sizes="80px"
                 unoptimized={shouldUnoptimizeImage(image.url)}
@@ -75,7 +77,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       <Container className="order-1 relative aspect-[4/5] w-full overflow-hidden border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] small:order-2">
         <Image
           src={selectedImage.url}
-          alt="Product image"
+          alt={messages.product.productImageAlt}
           priority
           fill
           sizes="(max-width: 1024px) 100vw, 900px"

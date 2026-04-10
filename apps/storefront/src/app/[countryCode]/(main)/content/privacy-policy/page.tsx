@@ -1,17 +1,26 @@
 import { Metadata } from "next"
+import { getI18n } from "@lib/i18n/server"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy Policy",
+export async function generateMetadata(): Promise<Metadata> {
+  const { messages } = await getI18n()
+
+  return {
+    title: messages.common.privacyPolicyTitle,
+    description: messages.common.privacyPolicyTitle,
+  }
 }
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const { messages } = await getI18n()
+
   return (
     <div className="py-12 flex flex-col items-start justify-start min-h-[calc(100vh-64px)] content-container max-w-3xl mx-auto">
-      <h1 className="text-3xl-semi text-ui-fg-base mb-8">Privacy Policy</h1>
+      <h1 className="text-3xl-semi text-ui-fg-base mb-8">
+        {messages.common.privacyPolicyTitle}
+      </h1>
       <div className="text-base-regular text-ui-fg-subtle text-left w-full space-y-4">
-        <p>This is a placeholder for the Privacy Policy.</p>
-        <p>Please update this page with your actual privacy policy content.</p>
+        <p>{messages.common.privacyPolicyPlaceholder}</p>
+        <p>{messages.common.privacyPolicyPlaceholderHint}</p>
       </div>
     </div>
   )

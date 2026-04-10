@@ -27,7 +27,7 @@ const ProductReviewsPlugin = async ({ product }: ProductReviewsPluginProps) => {
     <section className="bg-[#f3ede2] px-6 py-8 small:px-10">
       <div className="grid gap-3">
         <span className="theme-eyebrow">
-          {plugin.name ?? "Reviews"}
+          {plugin.name ?? messages.product.reviews}
         </span>
         <div className="grid gap-2">
           <h3

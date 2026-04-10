@@ -18,20 +18,16 @@ import PaymentContainer, {
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
-const stripePaymentTypeLabels: Record<string, string> = {
-  apple_pay: "Apple Pay",
-  card: "Card",
-  google_pay: "Google Pay",
-  link: "Link",
-}
-
-const formatStripePaymentType = (type?: string | null) => {
+const formatStripePaymentType = (
+  type: string | null | undefined,
+  labels: Record<string, string>
+) => {
   if (!type) {
     return null
   }
 
   return (
-    stripePaymentTypeLabels[type] ||
+    labels[type] ||
     type
       .split("_")
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -47,6 +43,12 @@ const Payment = ({
   availablePaymentMethods: any[]
 }) => {
   const { messages } = useI18n()
+  const stripePaymentTypeLabels: Record<string, string> = {
+    apple_pay: messages.common.applePay,
+    card: messages.common.card,
+    google_pay: messages.common.googlePay,
+    link: messages.common.link,
+  }
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
   )
@@ -300,7 +302,10 @@ const Payment = ({
                   </Container>
                   <Text>
                     {isStripeLike(selectedPaymentMethod)
-                      ? formatStripePaymentType(stripePaymentType) ||
+                      ? formatStripePaymentType(
+                          stripePaymentType,
+                          stripePaymentTypeLabels
+                        ) ||
                         messages.common.cardWalletLink
                       : messages.common.anotherStepWillAppear}
                   </Text>

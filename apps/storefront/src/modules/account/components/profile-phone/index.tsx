@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useActionState } from "react";
+import { useI18n } from "@lib/i18n/use-i18n"
 
 import Input from "@modules/common/components/input"
 
@@ -13,6 +14,7 @@ type MyInformationProps = {
 }
 
 const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
+  const { messages } = useI18n()
   const [successState, setSuccessState] = React.useState(false)
 
   const updateCustomerPhone = async (
@@ -47,7 +49,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
   return (
     <form action={formAction} className="w-full">
       <AccountInfo
-        label="Phone"
+        label={messages.common.phone}
         currentInfo={`${customer.phone}`}
         isSuccess={successState}
         isError={!!state.error}
@@ -57,7 +59,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
       >
         <div className="grid grid-cols-1 gap-y-2">
           <Input
-            label="Phone"
+            label={messages.common.phone}
             name="phone"
             type="phone"
             autoComplete="phone"

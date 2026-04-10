@@ -35,6 +35,7 @@ export default async function ProductPreview({
         <Thumbnail
           thumbnail={product.thumbnail}
           images={product.images}
+          alt={product.title ?? ""}
           size="full"
           isFeatured={isFeatured}
           className="bg-[#f7f7fa] p-0 shadow-none transition-opacity duration-200 group-hover:opacity-90"

@@ -1,3 +1,6 @@
+"use client"
+
+import { useI18n } from "@lib/i18n/use-i18n"
 import { Container, Heading, Text } from "@medusajs/ui"
 
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
@@ -10,19 +13,20 @@ type PaymentDetailsProps = {
 }
 
 const PaymentDetails = ({ order }: PaymentDetailsProps) => {
+  const { messages, t } = useI18n()
   const payment = order.payment_collections?.[0].payments?.[0]
 
   return (
     <div>
       <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
-        Payment
+        {messages.common.payment}
       </Heading>
       <div>
         {payment && (
           <div className="grid w-full gap-6 small:grid-cols-[0.8fr_1.2fr]">
             <div className="rm-panel-soft flex flex-col p-4">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                {messages.common.paymentMethod}
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
@@ -33,7 +37,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
             </div>
             <div className="rm-panel-soft flex flex-col p-4">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment details
+                {messages.common.paymentDetails}
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
                 <Container className="flex h-7 w-fit items-center border border-[var(--rm-border)] bg-white p-2 shadow-none">
@@ -42,12 +46,13 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                 <Text data-testid="payment-amount">
                   {isStripeLike(payment.provider_id) && payment.data?.card_last4
                     ? `**** **** **** ${payment.data.card_last4}`
-                    : `${convertToLocale({
-                        amount: payment.amount,
-                        currency_code: order.currency_code,
-                      })} paid at ${new Date(
-                        payment.created_at ?? ""
-                      ).toLocaleString()}`}
+                    : t(messages.order.paidAt, {
+                        amount: convertToLocale({
+                          amount: payment.amount,
+                          currency_code: order.currency_code,
+                        }),
+                        date: new Date(payment.created_at ?? "").toLocaleString(),
+                      })}
                 </Text>
               </div>
             </div>

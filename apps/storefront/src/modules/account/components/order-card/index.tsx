@@ -1,5 +1,6 @@
 import { Button } from "@medusajs/ui"
 import { useMemo } from "react"
+import { useI18n } from "@lib/i18n/use-i18n"
 
 import {
   getFulfillmentStateLabel,
@@ -16,6 +17,8 @@ type OrderCardProps = {
 }
 
 const OrderCard = ({ order }: OrderCardProps) => {
+  const { messages, t } = useI18n()
+
   const numberOfLines = useMemo(() => {
     return (
       order.items?.reduce((acc, item) => {
@@ -52,21 +55,21 @@ const OrderCard = ({ order }: OrderCardProps) => {
           })}
         </span>
         <span className="pl-2">{`${numberOfLines} ${
-          numberOfLines > 1 ? "items" : "item"
+          numberOfLines > 1 ? messages.account.items : messages.common.item
         }`}</span>
       </div>
       <div className="flex items-center gap-4 text-small-regular text-ui-fg-subtle mt-2 flex-wrap">
         <span data-testid="order-fulfillment-status">
-          Fulfillment: {order.fulfillment_status.split("_").join(" ")}
+          {messages.account.fulfillment}: {order.fulfillment_status.split("_").join(" ")}
         </span>
         <span data-testid="order-payment-status">
-          Payment: {order.payment_status.split("_").join(" ")}
+          {messages.common.payment}: {order.payment_status.split("_").join(" ")}
         </span>
       </div>
       {latestFulfillment && (
         <div className="grid gap-1 text-small-regular text-ui-fg-subtle mt-2">
           <span data-testid="order-latest-fulfillment">
-            Latest shipment: {getFulfillmentStateLabel(latestFulfillment)}
+            {messages.account.latestShipment}: {getFulfillmentStateLabel(latestFulfillment)}
             {latestFulfillment.delivered_at
               ? ` · ${new Date(latestFulfillment.delivered_at).toLocaleDateString()}`
               : latestFulfillment.shipped_at
@@ -75,7 +78,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </span>
           {latestLabel?.tracking_number && (
             <span data-testid="order-latest-tracking">
-              Tracking: {latestLabel.tracking_number}
+              {t(messages.order.tracking, {
+                tracking: latestLabel.tracking_number,
+              })}
             </span>
           )}
         </div>
@@ -88,7 +93,12 @@ const OrderCard = ({ order }: OrderCardProps) => {
               className="flex flex-col gap-y-2"
               data-testid="order-item"
             >
-              <Thumbnail thumbnail={i.thumbnail} images={[]} size="full" />
+              <Thumbnail
+                thumbnail={i.thumbnail}
+                images={[]}
+                alt={i.title ?? ""}
+                size="full"
+              />
               <div className="flex items-center text-small-regular text-ui-fg-base">
                 <span
                   className="text-ui-fg-base font-semibold"
@@ -107,7 +117,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
             <span className="text-small-regular text-ui-fg-base">
               + {numberOfLines - 4}
             </span>
-            <span className="text-small-regular text-ui-fg-base">more</span>
+            <span className="text-small-regular text-ui-fg-base">
+              {messages.account.more}
+            </span>
           </div>
         )}
       </div>
@@ -118,7 +130,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
             variant="secondary"
             className="!rounded-none !border-[var(--rm-border)] !bg-white"
           >
-            See details
+            {messages.account.seeDetails}
           </Button>
         </LocalizedClientLink>
       </div>

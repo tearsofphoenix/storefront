@@ -14,6 +14,7 @@ import { StateType } from "@lib/hooks/use-toggle-state"
 import { useParams, usePathname } from "next/navigation"
 import { updateRegion } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
+import { useI18n } from "@lib/i18n/use-i18n"
 
 type CountryOption = {
   country: string
@@ -27,6 +28,7 @@ type CountrySelectProps = {
 }
 
 const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
+  const { messages } = useI18n()
   const [current, setCurrent] = useState<CountryOption | undefined>(undefined)
 
   const { countryCode } = useParams()
@@ -82,7 +84,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
           onClick={() => (state ? close() : open())}
         >
           <div className="txt-compact-small flex items-start gap-x-2">
-            <span>Shipping to:</span>
+            <span>{messages.common.shippingTo}:</span>
             {current && (
               <span className="txt-compact-small flex items-center gap-x-2">
                 {/* @ts-ignore */}

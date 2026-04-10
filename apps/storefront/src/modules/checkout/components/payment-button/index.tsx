@@ -145,7 +145,7 @@ const HostedRedirectPaymentButton = ({
         )?.provider_id
 
       if (!hostedProviderId) {
-        throw new Error("Hosted payment session is missing. Please reselect payment method.")
+        throw new Error(messages.common.hostedSessionMissing)
       }
 
       await initiatePaymentSession(cart, {
@@ -167,9 +167,7 @@ const HostedRedirectPaymentButton = ({
       })
 
       if (!redirectData?.redirect_url || !redirectData?.form_fields) {
-        throw new Error(
-          "Hosted payment redirect data is missing. Please refresh checkout and try again."
-        )
+        throw new Error(messages.common.hostedRedirectDataMissing)
       }
 
       submitHostedPaymentForm({
@@ -183,7 +181,9 @@ const HostedRedirectPaymentButton = ({
       })
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Failed to start hosted payment."
+        error instanceof Error
+          ? error.message
+          : messages.common.failedToStartHostedPayment
       )
       setSubmitting(false)
     }
@@ -294,9 +294,7 @@ const StripePaymentButton = ({
         }
 
         if (paymentIntent?.status === "processing") {
-          setErrorMessage(
-            "Payment is processing. Please wait a moment and refresh if the order page does not update."
-          )
+          setErrorMessage(messages.common.paymentProcessingHint)
           setSubmitting(false)
           return
         }
@@ -305,7 +303,9 @@ const StripePaymentButton = ({
       })
       .catch((error) => {
         setErrorMessage(
-          error instanceof Error ? error.message : "Payment confirmation failed."
+          error instanceof Error
+            ? error.message
+            : messages.common.paymentConfirmationFailed
         )
         setSubmitting(false)
       })

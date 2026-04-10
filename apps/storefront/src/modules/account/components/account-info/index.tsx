@@ -1,4 +1,5 @@
 import { Disclosure } from "@headlessui/react"
+import { useI18n } from "@lib/i18n/use-i18n"
 import { Badge, Button, clx } from "@medusajs/ui"
 import { useEffect } from "react"
 
@@ -22,10 +23,11 @@ const AccountInfo = ({
   isSuccess,
   isError,
   clearState,
-  errorMessage = "An error occurred, please try again",
+  errorMessage,
   children,
   'data-testid': dataTestid
 }: AccountInfoProps) => {
+  const { messages, t } = useI18n()
   const { state, close, toggle } = useToggleState()
 
   const { pending } = useFormStatus()
@@ -66,7 +68,7 @@ const AccountInfo = ({
             data-testid="edit-button"
             data-active={state}
           >
-            {state ? "Cancel" : "Edit"}
+            {state ? messages.common.cancel : messages.common.edit}
           </Button>
         </div>
       </div>
@@ -85,7 +87,11 @@ const AccountInfo = ({
           data-testid="success-message"
         >
           <Badge className="p-2 my-4" color="green">
-            <span>{label} updated succesfully</span>
+            <span>
+              {t(messages.common.updatedSuccessfully, {
+                field: label,
+              })}
+            </span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -104,7 +110,7 @@ const AccountInfo = ({
           data-testid="error-message"
         >
           <Badge className="p-2 my-4" color="red">
-            <span>{errorMessage}</span>
+            <span>{errorMessage ?? messages.common.genericErrorRetry}</span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -129,7 +135,7 @@ const AccountInfo = ({
                 type="submit"
                 data-testid="save-button"
               >
-                Save changes
+                {messages.common.save}
               </Button>
             </div>
           </div>
