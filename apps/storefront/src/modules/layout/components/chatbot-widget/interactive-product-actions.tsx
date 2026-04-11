@@ -145,9 +145,9 @@ export default function ChatbotInteractiveProductActions({
       >
         {isSuccess
           ? messages.common.addedToCart
-          : !selectedVariant && Object.keys(options).length === 0 && (product.variants?.length ?? 0) > 1
+          : !selectedVariant
           ? messages.common.selectVariant
-          : !inStock || !isValidVariant
+          : !inStock
           ? messages.common.outOfStock
           : messages.common.addToCart}
       </Button>

@@ -182,9 +182,9 @@ export default function ProductActions({
             isLoading={isAdding}
             data-testid="add-product-button"
           >
-            {!selectedVariant && !options
+            {!selectedVariant
               ? messages.common.selectVariant
-              : !inStock || !isValidVariant
+              : !inStock
               ? messages.common.outOfStock
               : messages.common.addToCart}
           </Button>
