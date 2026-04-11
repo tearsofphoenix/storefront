@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { getI18n } from "@lib/i18n/server"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
@@ -17,17 +18,31 @@ const StoreTemplate = async ({
   countryCode: string
 }) => {
   const { messages } = await getI18n()
+  const theme = getStorefrontThemePresentation()
+  const isPrestige = theme.themePresetKey === "prestige"
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
   return (
     <section className="content-container py-12 small:py-16" data-testid="category-container">
       <div
-        className="mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between"
+        className={
+          isPrestige
+            ? "mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between"
+            : "mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between"
+        }
         style={{ borderColor: "var(--pi-border)" }}
       >
         <div className="grid gap-2">
-          <h1 className="text-[1.9rem] font-semibold small:text-[2.3rem]" data-testid="store-page-title">
+          <h1
+            className={
+              isPrestige
+                ? "max-w-[14ch] text-[2.35rem] leading-[1.06] small:text-[3rem]"
+                : "text-[1.9rem] font-semibold small:text-[2.3rem]"
+            }
+            data-testid="store-page-title"
+            style={isPrestige ? { fontFamily: "var(--pi-heading-font)" } : undefined}
+          >
             {messages.common.allProducts}
           </h1>
           <p className="max-w-[32rem] text-sm leading-6 small:text-base" style={{ color: "var(--pi-muted)" }}>

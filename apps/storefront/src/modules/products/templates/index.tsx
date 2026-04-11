@@ -11,6 +11,7 @@ import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { isStorefrontPluginEnabled } from "@lib/util/plugin-manifest"
 import { buildChatbotProductContext } from "@lib/util/chatbot-product-context"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 import { PayloadContentBlock } from "types/payload"
@@ -46,6 +47,8 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     product,
     selectedVariantId,
   })
+  const theme = getStorefrontThemePresentation()
+  const isPrestige = theme.themePresetKey === "prestige"
   const hasInlineCommerceCallout = Boolean(
     contentBlocks?.some((block) => block.blockType === "commerce-callout")
   )
@@ -55,14 +58,30 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       <ChatbotContextSync productContext={chatbotProductContext} />
       {!hasInlineCommerceCallout ? (
         <div
-          className="content-container py-12 small:py-14"
+          className={
+            isPrestige
+              ? "content-container py-10 small:py-14"
+              : "content-container py-12 small:py-14"
+          }
           data-testid="product-container"
         >
-          <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">
+          <div
+            className={
+              isPrestige
+                ? "grid gap-10 small:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] small:items-start"
+                : "grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start"
+            }
+          >
             <div className="min-w-0">
               <ImageGallery images={images} />
             </div>
-            <div className="grid gap-8 small:sticky small:top-20">
+            <div
+              className={
+                isPrestige
+                  ? "grid gap-8 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6 small:sticky small:top-28 small:p-8"
+                  : "grid gap-8 small:sticky small:top-20"
+              }
+            >
               <ProductInfo product={product} />
               <Suspense
                 fallback={

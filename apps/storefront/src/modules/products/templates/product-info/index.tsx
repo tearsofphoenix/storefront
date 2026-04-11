@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import { Heading, Text } from "@medusajs/ui"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type ProductInfoProps = {
@@ -7,6 +8,9 @@ type ProductInfoProps = {
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
+  const theme = getStorefrontThemePresentation()
+  const isPrestige = theme.themePresetKey === "prestige"
+
   return (
     <div id="product-info">
       <div className="mx-auto flex max-w-[560px] flex-col gap-y-4">
@@ -24,7 +28,11 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         )}
         <Heading
           level="h2"
-          className="text-3xl leading-tight text-ui-fg-base small:text-4xl"
+          className={
+            isPrestige
+              ? "text-[2.35rem] leading-[1.06] text-ui-fg-base small:text-[3rem]"
+              : "text-3xl leading-tight text-ui-fg-base small:text-4xl"
+          }
           data-testid="product-title"
           style={{ fontFamily: "var(--pi-heading-font)", color: "var(--pi-text)" }}
         >

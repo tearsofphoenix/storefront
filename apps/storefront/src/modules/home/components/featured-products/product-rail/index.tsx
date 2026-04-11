@@ -1,5 +1,6 @@
 import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -12,6 +13,8 @@ export default async function ProductRail({
   region: HttpTypes.StoreRegion
 }) {
   const { messages } = await getI18n()
+  const theme = getStorefrontThemePresentation()
+  const isPrestige = theme.themePresetKey === "prestige"
   const {
     response: { products: pricedProducts },
   } = await listProducts({
@@ -25,6 +28,56 @@ export default async function ProductRail({
 
   if (!pricedProducts) {
     return null
+  }
+
+  if (isPrestige) {
+    const leadProduct = pricedProducts[0]
+    const supportingProducts = pricedProducts.slice(1, 5)
+
+    return (
+      <section
+        className="content-container border-t py-16 small:py-20"
+        style={{ borderColor: "var(--pi-border)" }}
+      >
+        <div className="mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between">
+          <div className="grid gap-2">
+            <span className="theme-eyebrow">Editorial selection</span>
+            <h2
+              className="max-w-[17ch] text-[2.3rem] leading-[1.05] small:text-[2.9rem]"
+              style={{ fontFamily: "var(--pi-heading-font)" }}
+            >
+              Featured pieces from {collection.title}
+            </h2>
+          </div>
+          <LocalizedClientLink
+            href="/store"
+            className="theme-outline-button !w-fit !px-5"
+          >
+            {messages.common.browseAllProducts}
+          </LocalizedClientLink>
+        </div>
+
+        <div className="grid gap-6 small:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+          {leadProduct ? (
+            <div className="small:min-h-[100%]">
+              <ProductPreview
+                product={leadProduct}
+                region={region}
+                isFeatured
+                layout="prestige-editorial"
+              />
+            </div>
+          ) : null}
+          <ul className="grid gap-6 small:grid-cols-1">
+            {supportingProducts.map((product) => (
+              <li key={product.id}>
+                <ProductPreview product={product} region={region} isFeatured />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
   }
 
   return (
