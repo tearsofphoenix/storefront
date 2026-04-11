@@ -12,7 +12,6 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
-import ThemeSwitcher from "@modules/layout/components/theme-switcher"
 import TurboSearch from "@modules/layout/components/turbo-search"
 
 export default async function Nav() {
@@ -113,7 +112,6 @@ export default async function Nav() {
                   {messages.common.account}
                 </LocalizedClientLink>
               </div>
-              <ThemeSwitcher className="hidden small:flex" />
               <Suspense
                 fallback={
                   <LocalizedClientLink
@@ -213,7 +211,6 @@ export default async function Nav() {
           </div>
 
           <div className="flex flex-1 basis-0 items-center justify-end gap-x-4">
-            <ThemeSwitcher className="hidden small:flex" />
             <div className="small:hidden">
               <LocalizedClientLink
                 className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
