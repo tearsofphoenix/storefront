@@ -69,10 +69,74 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isWoodmart = theme.themePresetKey === "woodmart"
   const isDawn = theme.themePresetKey === "dawn"
   const heroImage = normalizeImageUrl(
     primaryProduct?.thumbnail || primaryProduct?.images?.[0]?.url
   )
+
+  if (isWoodmart) {
+    return (
+      <section className="border-y border-[var(--pi-border)] bg-[var(--pi-bg)]">
+        <div className="content-container grid gap-6 py-8 small:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] small:py-10">
+          <div className="grid gap-5 rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6">
+            <span className="inline-flex w-fit rounded-[4px] border border-[var(--pi-border-strong)] px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+              {theme.heroEyebrow}
+            </span>
+            <h1
+              className="max-w-[12ch] text-[clamp(2.3rem,5vw,4.5rem)] leading-[0.95] text-[var(--pi-text)]"
+              style={{ fontFamily: "var(--pi-heading-font)" }}
+            >
+              {theme.heroHeading}
+            </h1>
+            <p className="max-w-[34rem] text-sm leading-6 text-[var(--pi-muted)] small:text-base">
+              {theme.heroSubheading}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <ActionLink
+                href={primaryHref}
+                className="theme-solid-button !rounded-[4px] !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-[#1a1713]"
+              >
+                {collection
+                  ? t(messages.home.shopCollection, { name: collection.title })
+                  : theme.ctaLabel}
+              </ActionLink>
+              <ActionLink
+                href={secondaryHref}
+                className="theme-outline-button !rounded-[4px] !border-[var(--pi-border-strong)] !text-[var(--pi-text)]"
+              >
+                {secondaryLabel}
+              </ActionLink>
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)]">
+            {heroImage ? (
+              <Image
+                src={heroImage}
+                alt={primaryProduct?.title ?? theme.brandName}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                unoptimized={shouldUnoptimizeImage(heroImage)}
+                className="object-cover object-center opacity-85"
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(26,23,19,0.08),rgba(26,23,19,0.56))]" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className="rounded-[4px] border border-[var(--pi-border)] bg-[rgba(26,23,19,0.72)] px-4 py-3 backdrop-blur-sm">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                  Lookbook
+                </span>
+                <p className="mt-2 text-sm text-[var(--pi-text)]">
+                  Curated scene styling with warm materials and tactile product detail.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   if (isDawn) {
     return (

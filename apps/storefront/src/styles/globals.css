@@ -151,6 +151,30 @@
     --pi-body-font: var(--pi-font-sans);
   }
 
+  :root[data-theme="woodmart"] {
+    --pi-font-sans: "Poppins", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Poppins", "Helvetica Neue", Arial, sans-serif;
+    --pi-bg: #1a1713;
+    --pi-surface: #241f1a;
+    --pi-surface-soft: #312922;
+    --pi-surface-emphasis: #40342a;
+    --pi-text: #e8dfd5;
+    --pi-muted: #b8aa99;
+    --pi-muted-soft: #9d8f80;
+    --pi-border: #3a2f28;
+    --pi-border-strong: #6b5545;
+    --pi-primary: #c8975a;
+    --pi-primary-hover: #b58448;
+    --pi-primary-active: #966a34;
+    --pi-accent: #c8975a;
+    --pi-focus: #c8975a;
+    --pi-shell-bg: #1a1713;
+    --pi-nav-bg: rgba(26, 23, 19, 0.94);
+    --pi-footer-bg: #241f1a;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
   :root[data-theme="minimal"] {
     --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
     --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;

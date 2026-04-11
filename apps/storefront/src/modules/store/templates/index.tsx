@@ -19,6 +19,7 @@ const StoreTemplate = async ({
 }) => {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isWoodmart = theme.themePresetKey === "woodmart"
   const isDawn = theme.themePresetKey === "dawn"
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -47,13 +48,55 @@ const StoreTemplate = async ({
         </div>
         <RefinementList sortBy={sort} />
       </div>
-      <Suspense fallback={<SkeletonProductGrid />}>
-        <PaginatedProducts
-          sortBy={sort}
-          page={pageNumber}
-          countryCode={countryCode}
-        />
-      </Suspense>
+      {isWoodmart ? (
+        <div className="grid gap-8 small:grid-cols-[260px_minmax(0,1fr)]">
+          <aside className="rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-4">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--pi-text)]">
+              Filters
+            </h3>
+            <div className="mt-4 grid gap-4 text-sm text-[var(--pi-muted)]">
+              <div className="grid gap-2">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                  Material
+                </span>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" />
+                  Oak
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" />
+                  Walnut
+                </label>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                  Tone
+                </span>
+                <div className="flex gap-2">
+                  <span className="h-4 w-4 rounded-full bg-[#c8975a]" />
+                  <span className="h-4 w-4 rounded-full bg-[#6b5545]" />
+                  <span className="h-4 w-4 rounded-full bg-[#e8dfd5]" />
+                </div>
+              </div>
+            </div>
+          </aside>
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+            />
+          </Suspense>
+        </div>
+      ) : (
+        <Suspense fallback={<SkeletonProductGrid />}>
+          <PaginatedProducts
+            sortBy={sort}
+            page={pageNumber}
+            countryCode={countryCode}
+          />
+        </Suspense>
+      )}
     </section>
   )
 }
