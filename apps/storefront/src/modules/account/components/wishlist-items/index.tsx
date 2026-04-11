@@ -41,7 +41,7 @@ const WishlistItems = ({ items }: WishlistItemsProps) => {
           <Thumbnail
             thumbnail={item.product_variant?.product?.thumbnail ?? null}
             alt={item.product_variant?.product?.title ?? ""}
-            size="full"
+            size="square"
           />
           <div className="flex flex-col gap-y-2 p-4">
             <h3 className="text-base-semi">
