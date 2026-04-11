@@ -1,13 +1,16 @@
 import { Heading } from "@medusajs/ui"
 
 import { getI18n } from "@lib/i18n/server"
+import { retrieveLoyaltyPoints } from "@lib/data/loyalty"
 import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
+import LoyaltyPoints from "@modules/checkout/components/loyalty-points"
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
 
 const CheckoutSummary = async ({ cart }: { cart: any }) => {
   const { messages } = await getI18n()
+  const loyaltyPoints = await retrieveLoyaltyPoints()
 
   return (
     <aside className="sticky top-0 flex flex-col-reverse gap-y-8 py-8 small:flex-col small:py-0">
@@ -24,6 +27,9 @@ const CheckoutSummary = async ({ cart }: { cart: any }) => {
         <ItemsPreviewTemplate cart={cart} />
         <div className="my-6">
           <DiscountCode cart={cart} />
+        </div>
+        <div className="my-6">
+          <LoyaltyPoints cart={cart} points={loyaltyPoints} />
         </div>
       </div>
     </aside>
