@@ -2,10 +2,12 @@
 
 import { Table, Text, clx } from "@medusajs/ui"
 import { updateLineItem } from "@lib/data/cart"
+import { removeBuilderLineItem } from "@lib/data/product-builder"
 import { HttpTypes } from "@medusajs/types"
 import CartItemSelect from "@modules/cart/components/cart-item-select"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import DeleteButton from "@modules/common/components/delete-button"
+import LineItemBuilderDetails from "@modules/common/components/line-item-builder-details"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
@@ -23,6 +25,10 @@ type ItemProps = {
 const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const metadata = (item.metadata as Record<string, unknown> | null) || null
+  const isBuilderMainProduct = metadata?.is_builder_main_product === true
+  const isBuilderRelatedItem =
+    isBuilderMainProduct || Boolean(metadata?.main_product_line_item_id)
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -71,34 +77,43 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           {item.product_title}
         </Text>
         <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        <LineItemBuilderDetails metadata={metadata} />
       </Table.Cell>
 
       {type === "full" && (
         <Table.Cell>
           <div className="flex w-28 items-center gap-2">
-            <DeleteButton id={item.id} data-testid="product-delete-button" />
-            <CartItemSelect
-              value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="h-10 w-14 border-[var(--pi-border)] bg-white p-4"
-              data-testid="product-select-button"
-            >
-              {/* TODO: Update this with the v2 way of managing inventory */}
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
-                  </option>
-                )
-              )}
+            <DeleteButton
+              id={item.id}
+              onDelete={isBuilderMainProduct ? removeBuilderLineItem : undefined}
+              data-testid="product-delete-button"
+            />
+            {isBuilderRelatedItem ? (
+              <Text className="text-sm text-ui-fg-muted">{item.quantity}</Text>
+            ) : (
+              <CartItemSelect
+                value={item.quantity}
+                onChange={(value) => changeQuantity(parseInt(value.target.value))}
+                className="h-10 w-14 border-[var(--pi-border)] bg-white p-4"
+                data-testid="product-select-button"
+              >
+                {/* TODO: Update this with the v2 way of managing inventory */}
+                {Array.from(
+                  {
+                    length: Math.min(maxQuantity, 10),
+                  },
+                  (_, i) => (
+                    <option value={i + 1} key={i}>
+                      {i + 1}
+                    </option>
+                  )
+                )}
 
-              <option value={1} key={1}>
-                1
-              </option>
-            </CartItemSelect>
+                <option value={1} key={1}>
+                  1
+                </option>
+              </CartItemSelect>
+            )}
             {updating && <Spinner />}
           </div>
           <ErrorMessage error={error} data-testid="product-error-message" />

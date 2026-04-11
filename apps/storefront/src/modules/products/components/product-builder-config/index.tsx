@@ -1,51 +1,40 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Input, Label, Checkbox, Text, Spinner } from "@medusajs/ui"
-import { sdk } from "@lib/config"
+import { useEffect, useMemo, useState } from "react"
+import { Checkbox, Input, Label, Text } from "@medusajs/ui"
+
 import { convertToLocale } from "@lib/util/money"
-import type {
-  ProductBuilder,
-  ProductBuilderCustomField,
-  ProductBuilderComplementary,
-  ProductBuilderAddon,
-  BuilderConfig,
-} from "@types/product-builder"
+import Thumbnail from "@modules/products/components/thumbnail"
+import type { BuilderConfig, ProductBuilder } from "@types/product-builder"
 
 type ProductBuilderConfigProps = {
-  productId: string
-  regionId: string
+  builder: ProductBuilder | null
   currencyCode: string
   onConfigChange: (config: BuilderConfig) => void
 }
 
+const emptyConfig: BuilderConfig = {
+  custom_field_values: {},
+  complementary_product_variants: [],
+  addon_variants: [],
+}
+
 export const ProductBuilderConfig = ({
-  productId,
-  regionId,
+  builder,
   currencyCode,
   onConfigChange,
 }: ProductBuilderConfigProps) => {
-  const [builder, setBuilder] = useState<ProductBuilder | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [customFieldValues, setCustomFieldValues] = useState<Record<string, any>>({})
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(
+    {}
+  )
   const [selectedComplementary, setSelectedComplementary] = useState<string[]>([])
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
 
   useEffect(() => {
-    if (!productId) return
-
-    sdk.client.fetch<{ product_builder: ProductBuilder }>(
-      `/admin/products/${productId}/builder`
-    )
-      .then(({ product_builder }) => {
-        setBuilder(product_builder)
-        setLoading(false)
-      })
-      .catch(() => {
-        setBuilder(null)
-        setLoading(false)
-      })
-  }, [productId])
+    setCustomFieldValues({})
+    setSelectedComplementary([])
+    setSelectedAddons([])
+  }, [builder?.id])
 
   useEffect(() => {
     onConfigChange({
@@ -53,42 +42,51 @@ export const ProductBuilderConfig = ({
       complementary_product_variants: selectedComplementary,
       addon_variants: selectedAddons,
     })
-  }, [customFieldValues, selectedComplementary, selectedAddons])
+  }, [customFieldValues, onConfigChange, selectedAddons, selectedComplementary])
 
-  if (loading) return <Spinner />
-  if (!builder) return null
+  const hasContent = useMemo(() => {
+    if (!builder) {
+      return false
+    }
 
-  const hasContent =
-    builder.custom_fields.length > 0 ||
-    builder.complementary_products.length > 0 ||
-    builder.addons.length > 0
+    return (
+      builder.custom_fields.length > 0 ||
+      builder.complementary_products.length > 0 ||
+      builder.addons.length > 0
+    )
+  }, [builder])
 
-  if (!hasContent) return null
+  if (!builder || !hasContent) {
+    return null
+  }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Custom Fields */}
+    <div className="flex flex-col gap-6 border border-[var(--pi-border)] bg-[var(--pi-bg)] p-5">
       {builder.custom_fields.length > 0 && (
         <div className="flex flex-col gap-3">
-          <Text className="font-medium text-sm">Customization</Text>
+          <Text className="text-sm font-medium text-[var(--pi-text)]">
+            Customization
+          </Text>
           {builder.custom_fields.map((field) => (
-            <div key={field.id} className="flex flex-col gap-1">
-              <Label>
+            <div key={field.id} className="flex flex-col gap-1.5">
+              <Label className="text-sm text-[var(--pi-text)]">
                 {field.name}
-                {field.is_required && <span className="text-red-500"> *</span>}
+                {field.is_required ? (
+                  <span className="text-ui-fg-error"> *</span>
+                ) : null}
               </Label>
-              {field.description && (
+              {field.description ? (
                 <Text className="text-xs text-ui-fg-muted">{field.description}</Text>
-              )}
+              ) : null}
               <Input
                 type={field.type === "number" ? "number" : "text"}
-                name={field.name}
+                name={field.id}
                 placeholder={field.name}
-                value={customFieldValues[field.name] || ""}
-                onChange={(e) =>
+                value={customFieldValues[field.id] || ""}
+                onChange={(event) =>
                   setCustomFieldValues((prev) => ({
                     ...prev,
-                    [field.name]: e.target.value,
+                    [field.id]: event.target.value,
                   }))
                 }
               />
@@ -97,47 +95,64 @@ export const ProductBuilderConfig = ({
         </div>
       )}
 
-      {/* Complementary Products */}
       {builder.complementary_products.length > 0 && (
         <div className="flex flex-col gap-3">
-          <Text className="font-medium text-sm">Also goes well with</Text>
-          {builder.complementary_products.map((cp) => {
-            if (!cp.product) return null
-            const variant = cp.product.variants?.[0]
+          <Text className="text-sm font-medium text-[var(--pi-text)]">
+            Also goes well with
+          </Text>
+          {builder.complementary_products.map((item) => {
+            if (!item.product) {
+              return null
+            }
+
+            const variant = item.product.variants?.[0]
+
+            if (!variant) {
+              return null
+            }
+
             return (
               <label
-                key={cp.id}
-                className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50"
+                key={item.id}
+                className="flex cursor-pointer items-center gap-3 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-3"
               >
                 <Checkbox
-                  checked={selectedComplementary.includes(variant?.id || "")}
+                  checked={selectedComplementary.includes(variant.id)}
                   onCheckedChange={(checked) => {
-                    if (checked && variant?.id) {
-                      setSelectedComplementary((prev) => [...prev, variant.id])
-                    } else {
+                    if (checked) {
                       setSelectedComplementary((prev) =>
-                        prev.filter((id) => id !== variant?.id)
+                        prev.includes(variant.id) ? prev : [...prev, variant.id]
                       )
+                      return
                     }
+
+                    setSelectedComplementary((prev) =>
+                      prev.filter((id) => id !== variant.id)
+                    )
                   }}
                 />
-                {cp.product.thumbnail && (
-                  <img
-                    src={cp.product.thumbnail}
-                    alt=""
-                    className="w-10 h-10 rounded object-cover"
+                <div className="w-14">
+                  <Thumbnail
+                    thumbnail={item.product.thumbnail}
+                    images={item.product.images}
+                    alt={item.product.title}
+                    size="square"
+                    className="p-0"
                   />
-                )}
-                <div className="flex flex-col">
-                  <Text className="text-sm">{cp.product.title}</Text>
-                  {variant?.calculated_price && (
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Text className="text-sm text-[var(--pi-text)]">
+                    {item.product.title}
+                  </Text>
+                  <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  {variant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({
                         amount: variant.calculated_price.calculated_amount,
                         currency_code: currencyCode,
                       })}
                     </Text>
-                  )}
+                  ) : null}
                 </div>
               </label>
             )
@@ -145,47 +160,62 @@ export const ProductBuilderConfig = ({
         </div>
       )}
 
-      {/* Add-ons */}
       {builder.addons.length > 0 && (
         <div className="flex flex-col gap-3">
-          <Text className="font-medium text-sm">Add-ons</Text>
-          {builder.addons.map((addon) => {
-            if (!addon.product) return null
-            const variant = addon.product.variants?.[0]
+          <Text className="text-sm font-medium text-[var(--pi-text)]">Add-ons</Text>
+          {builder.addons.map((item) => {
+            if (!item.product) {
+              return null
+            }
+
+            const variant = item.product.variants?.[0]
+
+            if (!variant) {
+              return null
+            }
+
             return (
               <label
-                key={addon.id}
-                className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50"
+                key={item.id}
+                className="flex cursor-pointer items-center gap-3 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-3"
               >
                 <Checkbox
-                  checked={selectedAddons.includes(variant?.id || "")}
+                  checked={selectedAddons.includes(variant.id)}
                   onCheckedChange={(checked) => {
-                    if (checked && variant?.id) {
-                      setSelectedAddons((prev) => [...prev, variant.id])
-                    } else {
+                    if (checked) {
                       setSelectedAddons((prev) =>
-                        prev.filter((id) => id !== variant?.id)
+                        prev.includes(variant.id) ? prev : [...prev, variant.id]
                       )
+                      return
                     }
+
+                    setSelectedAddons((prev) =>
+                      prev.filter((id) => id !== variant.id)
+                    )
                   }}
                 />
-                {addon.product.thumbnail && (
-                  <img
-                    src={addon.product.thumbnail}
-                    alt=""
-                    className="w-10 h-10 rounded object-cover"
+                <div className="w-14">
+                  <Thumbnail
+                    thumbnail={item.product.thumbnail}
+                    images={item.product.images}
+                    alt={item.product.title}
+                    size="square"
+                    className="p-0"
                   />
-                )}
-                <div className="flex flex-col">
-                  <Text className="text-sm">{addon.product.title}</Text>
-                  {variant?.calculated_price && (
+                </div>
+                <div className="flex flex-col gap-1">
+                  <Text className="text-sm text-[var(--pi-text)]">
+                    {item.product.title}
+                  </Text>
+                  <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  {variant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({
                         amount: variant.calculated_price.calculated_amount,
                         currency_code: currencyCode,
                       })}
                     </Text>
-                  )}
+                  ) : null}
                 </div>
               </label>
             )
@@ -195,3 +225,6 @@ export const ProductBuilderConfig = ({
     </div>
   )
 }
+
+export default ProductBuilderConfig
+export { emptyConfig as emptyBuilderConfig }

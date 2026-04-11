@@ -14,6 +14,7 @@ export type ProductBuilderComplementary = {
     title: string
     thumbnail?: string | null
     handle?: string
+    images?: { url?: string | null }[] | null
     variants: {
       id: string
       title: string
@@ -31,6 +32,8 @@ export type ProductBuilderAddon = {
     id: string
     title: string
     thumbnail?: string | null
+    handle?: string
+    images?: { url?: string | null }[] | null
     variants: {
       id: string
       title: string
@@ -50,7 +53,7 @@ export type ProductBuilder = {
 }
 
 export type BuilderConfig = {
-  custom_field_values: Record<string, any>
+  custom_field_values: Record<string, string>
   complementary_product_variants: string[]
   addon_variants: string[]
 }

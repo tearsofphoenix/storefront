@@ -6,11 +6,13 @@ import {
   PopoverPanel,
   Transition,
 } from "@headlessui/react"
+import { removeBuilderLineItem } from "@lib/data/product-builder"
 import { convertToLocale } from "@lib/util/money"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import DeleteButton from "@modules/common/components/delete-button"
+import LineItemBuilderDetails from "@modules/common/components/line-item-builder-details"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -128,66 +130,80 @@ const CartDropdown = ({
                         ? -1
                         : 1
                     })
-                    .map((item) => (
-                      <div
-                        className="grid grid-cols-[122px_1fr] gap-x-4"
-                        key={item.id}
-                        data-testid="cart-item"
-                      >
-                        <LocalizedClientLink
-                          href={`/products/${item.product_handle}`}
-                          className="w-24"
+                    .map((item) => {
+                      const metadata =
+                        (item.metadata as Record<string, unknown> | null) || null
+                      const isBuilderMainProduct =
+                        metadata?.is_builder_main_product === true
+
+                      return (
+                        <div
+                          className="grid grid-cols-[122px_1fr] gap-x-4"
+                          key={item.id}
+                          data-testid="cart-item"
                         >
-                          <Thumbnail
-                            thumbnail={item.thumbnail}
-                            images={item.variant?.product?.images}
-                            alt={item.title ?? ""}
-                            size="square"
-                          />
-                        </LocalizedClientLink>
-                        <div className="flex flex-col justify-between flex-1">
-                          <div className="flex flex-col flex-1">
-                            <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
-                                  <LocalizedClientLink
-                                    href={`/products/${item.product_handle}`}
-                                    data-testid="product-link"
+                          <LocalizedClientLink
+                            href={`/products/${item.product_handle}`}
+                            className="w-24"
+                          >
+                            <Thumbnail
+                              thumbnail={item.thumbnail}
+                              images={item.variant?.product?.images}
+                              alt={item.product_title ?? ""}
+                              size="square"
+                            />
+                          </LocalizedClientLink>
+                          <div className="flex flex-1 flex-col justify-between">
+                            <div className="flex flex-1 flex-col">
+                              <div className="flex items-start justify-between">
+                                <div className="mr-4 flex w-[180px] flex-col overflow-ellipsis whitespace-nowrap">
+                                  <h3 className="overflow-hidden text-base-regular text-ellipsis">
+                                    <LocalizedClientLink
+                                      href={`/products/${item.product_handle}`}
+                                      data-testid="product-link"
+                                    >
+                                      {item.product_title}
+                                    </LocalizedClientLink>
+                                  </h3>
+                                  <LineItemOptions
+                                    variant={item.variant}
+                                    data-testid="cart-item-variant"
+                                    data-value={item.variant}
+                                  />
+                                  <LineItemBuilderDetails
+                                    metadata={metadata}
+                                    compact
+                                  />
+                                  <span
+                                    data-testid="cart-item-quantity"
+                                    data-value={item.quantity}
                                   >
-                                    {item.title}
-                                  </LocalizedClientLink>
-                                </h3>
-                                <LineItemOptions
-                                  variant={item.variant}
-                                  data-testid="cart-item-variant"
-                                  data-value={item.variant}
-                                />
-                                <span
-                                  data-testid="cart-item-quantity"
-                                  data-value={item.quantity}
-                                >
-                                  {messages.common.quantity}: {item.quantity}
-                                </span>
-                              </div>
-                              <div className="flex justify-end">
-                                <LineItemPrice
-                                  item={item}
-                                  style="tight"
-                                  currencyCode={cartState.currency_code}
-                                />
+                                    {messages.common.quantity}: {item.quantity}
+                                  </span>
+                                </div>
+                                <div className="flex justify-end">
+                                  <LineItemPrice
+                                    item={item}
+                                    style="tight"
+                                    currencyCode={cartState.currency_code}
+                                  />
+                                </div>
                               </div>
                             </div>
+                            <DeleteButton
+                              id={item.id}
+                              className="mt-1"
+                              onDelete={
+                                isBuilderMainProduct ? removeBuilderLineItem : undefined
+                              }
+                              data-testid="cart-item-remove-button"
+                            >
+                              {messages.common.remove}
+                            </DeleteButton>
                           </div>
-                          <DeleteButton
-                            id={item.id}
-                            className="mt-1"
-                            data-testid="cart-item-remove-button"
-                          >
-                            {messages.common.remove}
-                          </DeleteButton>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                 </div>
                 <div
                   className="flex flex-col gap-y-4 border-t p-4 text-small-regular"

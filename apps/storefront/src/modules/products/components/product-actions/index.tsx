@@ -1,12 +1,16 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { addBuilderProductToCart } from "@lib/data/product-builder"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
-import { Button } from "@medusajs/ui"
+import { Button, Text } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
+import ProductBuilderConfig, {
+  emptyBuilderConfig,
+} from "@modules/products/components/product-builder-config"
 import { isEqual } from "lodash"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -14,10 +18,12 @@ import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import WishlistButton from "@modules/wishlist/components/wishlist-button"
 import { useRouter } from "next/navigation"
+import type { BuilderConfig, ProductBuilder } from "@types/product-builder"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
+  builder: ProductBuilder | null
   disabled?: boolean
 }
 
@@ -32,6 +38,8 @@ const optionsAsKeymap = (
 
 export default function ProductActions({
   product,
+  region,
+  builder,
   disabled,
 }: ProductActionsProps) {
   const { messages } = useI18n()
@@ -41,6 +49,8 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [builderConfig, setBuilderConfig] = useState<BuilderConfig>(emptyBuilderConfig)
+  const [error, setError] = useState<string | null>(null)
   const countryCode = useParams().countryCode as string
 
   useEffect(() => {
@@ -127,14 +137,31 @@ export default function ProductActions({
     if (!selectedVariant?.id) return null
 
     setIsAdding(true)
+    setError(null)
 
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
-    })
-
-    setIsAdding(false)
+    try {
+      if (builder) {
+        await addBuilderProductToCart({
+          countryCode,
+          productId: product.id,
+          variantId: selectedVariant.id,
+          quantity: 1,
+          builderConfig,
+        })
+      } else {
+        await addToCart({
+          variantId: selectedVariant.id,
+          quantity: 1,
+          countryCode,
+        })
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to add this product to the cart"
+      )
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   return (
@@ -167,6 +194,12 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        <ProductBuilderConfig
+          builder={builder}
+          currencyCode={region.currency_code}
+          onConfigChange={setBuilderConfig}
+        />
+
         <div className="flex items-center gap-3">
           <Button
             onClick={handleAddToCart}
@@ -192,6 +225,11 @@ export default function ProductActions({
             <WishlistButton variantId={selectedVariant.id} />
           )}
         </div>
+        {error ? (
+          <Text className="text-sm text-ui-fg-error" data-testid="add-product-error">
+            {error}
+          </Text>
+        ) : null}
         <MobileActions
           product={product}
           variant={selectedVariant}
