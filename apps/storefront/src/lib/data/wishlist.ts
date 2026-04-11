@@ -47,11 +47,33 @@ const isUnauthorizedError = (error: unknown) => {
   return message.toLowerCase().includes("unauthorized")
 }
 
+const isWishlistNotFoundError = (error: unknown) => {
+  const status = (error as any)?.response?.status ?? (error as any)?.status
+
+  if (status === 404) {
+    return true
+  }
+
+  const message =
+    typeof (error as any)?.message === "string"
+      ? (error as any).message
+      : String(error ?? "")
+
+  return message.toLowerCase().includes("no wishlist found")
+}
+
 const handleWishlistError = async (
-  error: unknown
+  error: unknown,
+  options: {
+    allowNotFoundAsEmpty?: boolean
+  } = {}
 ): Promise<null> => {
   if (isUnauthorizedError(error)) {
     await removeAuthToken()
+    return null
+  }
+
+  if (options.allowNotFoundAsEmpty && isWishlistNotFoundError(error)) {
     return null
   }
 
@@ -81,7 +103,9 @@ export const retrieveWishlist =
         cache: "force-cache",
       })
       .then(({ wishlist }) => wishlist)
-      .catch(handleWishlistError)
+      .catch((error) =>
+        handleWishlistError(error, { allowNotFoundAsEmpty: true })
+      )
   }
 
 // Create a wishlist for the authenticated customer
