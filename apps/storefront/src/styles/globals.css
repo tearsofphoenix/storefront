@@ -151,6 +151,36 @@
     --pi-body-font: var(--pi-font-sans);
   }
 
+  :root[data-theme="symmetry"] {
+    --pi-font-sans: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Libre Baskerville", Georgia, serif;
+    --pi-bg: #faf7f4;
+    --pi-surface: #f3ede5;
+    --pi-surface-soft: #efe5d7;
+    --pi-surface-emphasis: #dcc9af;
+    --pi-text: #1e1c19;
+    --pi-muted: #63564a;
+    --pi-muted-soft: #857665;
+    --pi-border: #d8cab7;
+    --pi-border-strong: #b79e7e;
+    --pi-primary: #2c2c2c;
+    --pi-primary-hover: #1f1f1f;
+    --pi-primary-active: #131313;
+    --pi-accent: #d4b896;
+    --pi-focus: #2c2c2c;
+    --pi-shell-bg: #faf7f4;
+    --pi-nav-bg: rgba(250, 247, 244, 0.95);
+    --pi-footer-bg: #efe5d7;
+    --pi-heading-font: var(--pi-font-serif);
+    --pi-body-font: var(--pi-font-sans);
+    --pi-scheme-1-bg: #faf7f4;
+    --pi-scheme-1-text: #1a1a1a;
+    --pi-scheme-2-bg: #2c2c2c;
+    --pi-scheme-2-text: #f5f5f5;
+    --pi-scheme-3-bg: #d4b896;
+    --pi-scheme-3-text: #1a1a1a;
+  }
+
   :root[data-theme="minimal"] {
     --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
     --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;

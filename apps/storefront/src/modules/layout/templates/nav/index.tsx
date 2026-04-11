@@ -21,7 +21,98 @@ export default async function Nav() {
   ])
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isSymmetry = theme.themePresetKey === "symmetry"
   const isDawn = theme.themePresetKey === "dawn"
+
+  if (isSymmetry) {
+    return (
+      <div className="sticky inset-x-0 top-0 z-50 border-b border-[var(--pi-border)] bg-[var(--pi-nav-bg)] backdrop-blur-md">
+        {theme.announcement ? (
+          <div
+            className="px-4 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+            style={{
+              background: "var(--pi-scheme-2-bg)",
+              color: "var(--pi-scheme-2-text)",
+            }}
+          >
+            {theme.announcement}
+          </div>
+        ) : null}
+        <header className="relative mx-auto">
+          <nav
+            className="content-container grid min-h-[84px] gap-4 py-4 small:grid-cols-[1fr_auto_1fr] small:items-center"
+            style={{
+              color: "var(--pi-muted)",
+              fontFamily: "var(--pi-body-font)",
+            }}
+          >
+            <div className="flex items-center gap-4">
+              <SideMenu
+                regions={regions}
+                locales={locales}
+                currentLocale={currentLocale}
+                brandName={theme.brandName}
+                primaryColor={theme.primaryColor}
+                navBackground="var(--pi-nav-bg)"
+              />
+              <div className="hidden items-center gap-x-6 small:flex">
+                <LocalizedClientLink
+                  className="text-[12px] uppercase tracking-[0.14em]"
+                  href="/store"
+                  style={{ color: "var(--pi-text)" }}
+                >
+                  {messages.common.store}
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  className="text-[12px] uppercase tracking-[0.14em]"
+                  href="/account"
+                  data-testid="nav-account-link"
+                  style={{ color: "var(--pi-muted)" }}
+                >
+                  {messages.common.account}
+                </LocalizedClientLink>
+              </div>
+            </div>
+
+            <LocalizedClientLink
+              href="/"
+              className="justify-self-center text-[13px] font-semibold uppercase tracking-[0.22em]"
+              style={{
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
+              }}
+              data-testid="nav-store-link"
+            >
+              {theme.brandName}
+            </LocalizedClientLink>
+
+            <div className="flex items-center justify-end gap-x-3">
+              <div className="hidden small:block">
+                <DawnSearch placeholder="Search boutique" />
+              </div>
+              <ThemeSwitcher className="hidden small:flex" />
+              <Suspense
+                fallback={
+                  <LocalizedClientLink
+                    className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] uppercase tracking-[0.12em]"
+                    href="/cart"
+                    data-testid="nav-cart-link"
+                    style={{
+                      color: "var(--pi-text)",
+                    }}
+                  >
+                    {messages.common.cart} (0)
+                  </LocalizedClientLink>
+                }
+              >
+                <CartButton />
+              </Suspense>
+            </div>
+          </nav>
+        </header>
+      </div>
+    )
+  }
 
   if (isDawn) {
     return (

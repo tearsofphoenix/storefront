@@ -56,6 +56,7 @@ export default async function PaginatedProducts({
     return null
   }
   const theme = getStorefrontThemePresentation()
+  const isSymmetry = theme.themePresetKey === "symmetry"
   const isDawn = theme.themePresetKey === "dawn"
 
   let {
@@ -73,7 +74,9 @@ export default async function PaginatedProducts({
     <>
       <ul
         className={
-          isDawn
+          isSymmetry
+            ? "grid w-full grid-cols-1 gap-6 border-t border-[var(--pi-border)] pt-8 small:grid-cols-2 xl:grid-cols-3"
+            : isDawn
             ? "grid w-full grid-cols-2 gap-x-5 gap-y-10 border-t border-[var(--pi-border)] pt-8 small:grid-cols-3"
             : "grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
         }

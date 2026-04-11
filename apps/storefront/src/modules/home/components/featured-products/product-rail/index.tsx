@@ -14,6 +14,7 @@ export default async function ProductRail({
 }) {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isSymmetry = theme.themePresetKey === "symmetry"
   const isDawn = theme.themePresetKey === "dawn"
   const {
     response: { products: pricedProducts },
@@ -58,6 +59,43 @@ export default async function ProductRail({
           className="grid grid-cols-2 gap-x-6 gap-y-10 small:grid-cols-3"
           data-testid="featured-products-list"
         >
+          {pricedProducts.map((product) => (
+            <li key={product.id}>
+              <ProductPreview product={product} region={region} isFeatured />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  if (isSymmetry) {
+    return (
+      <section className="content-container border-t py-14 small:py-20" style={{ borderColor: "var(--pi-border)" }}>
+        <div className="mb-8 grid gap-4 rounded-[2px] border border-[var(--pi-border)] bg-[var(--pi-scheme-2-bg)] px-6 py-8 text-[var(--pi-scheme-2-text)] small:grid-cols-[minmax(0,1fr)_auto] small:items-end">
+          <div className="grid gap-2">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-white/70">
+              Boutique feature
+            </span>
+            <h2
+              className="text-[2rem] leading-[1.02] small:text-[2.5rem]"
+              style={{ fontFamily: "var(--pi-heading-font)" }}
+            >
+              Color-blocked featured collection
+            </h2>
+            <p className="max-w-[36rem] text-sm leading-6 text-white/78 small:text-base">
+              {collection.title}
+            </p>
+          </div>
+          <LocalizedClientLink
+            href="/store"
+            className="theme-outline-button !w-fit !rounded-[999px] !border-white/40 !bg-transparent !text-white hover:!bg-white hover:!text-[var(--pi-scheme-2-bg)]"
+          >
+            {messages.common.browseAllProducts}
+          </LocalizedClientLink>
+        </div>
+
+        <ul className="grid gap-6 small:grid-cols-2 xl:grid-cols-4" data-testid="featured-products-list">
           {pricedProducts.map((product) => (
             <li key={product.id}>
               <ProductPreview product={product} region={region} isFeatured />

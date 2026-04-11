@@ -19,6 +19,7 @@ const StoreTemplate = async ({
 }) => {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isSymmetry = theme.themePresetKey === "symmetry"
   const isDawn = theme.themePresetKey === "dawn"
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -47,6 +48,23 @@ const StoreTemplate = async ({
         </div>
         <RefinementList sortBy={sort} />
       </div>
+      {isSymmetry ? (
+        <div className="mb-8 flex flex-wrap gap-2">
+          {[
+            { label: "Scheme one", background: "var(--pi-scheme-1-bg)", color: "var(--pi-scheme-1-text)" },
+            { label: "Scheme two", background: "var(--pi-scheme-2-bg)", color: "var(--pi-scheme-2-text)" },
+            { label: "Scheme three", background: "var(--pi-scheme-3-bg)", color: "var(--pi-scheme-3-text)" },
+          ].map((scheme) => (
+            <span
+              key={scheme.label}
+              className="inline-flex rounded-[999px] px-4 py-2 text-[11px] uppercase tracking-[0.16em]"
+              style={{ background: scheme.background, color: scheme.color }}
+            >
+              {scheme.label}
+            </span>
+          ))}
+        </div>
+      ) : null}
       <Suspense fallback={<SkeletonProductGrid />}>
         <PaginatedProducts
           sortBy={sort}
