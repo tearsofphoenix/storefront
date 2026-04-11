@@ -6,6 +6,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import { retrieveWishlist } from "@lib/data/wishlist"
+import { retrieveLoyaltyPoints } from "@lib/data/loyalty"
 
 type OverviewProps = {
   customer: HttpTypes.StoreCustomer | null
@@ -15,6 +16,7 @@ type OverviewProps = {
 const Overview = async ({ customer, orders }: OverviewProps) => {
   const { messages, t } = await getI18n()
   const wishlist = await retrieveWishlist()
+  const loyaltyPoints = await retrieveLoyaltyPoints()
   const wishlistItemCount = wishlist?.items?.length || 0
 
   return (
@@ -39,7 +41,7 @@ const Overview = async ({ customer, orders }: OverviewProps) => {
         </div>
         <div className="flex flex-col border-t border-[var(--pi-border)] py-8">
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
-            <div className="mb-6 grid gap-4 small:grid-cols-3">
+            <div className="mb-6 grid gap-4 small:grid-cols-4">
               <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
                 <h3 className="text-large-semi">{messages.account.profile}</h3>
                 <div className="flex items-end gap-x-2">
@@ -73,7 +75,7 @@ const Overview = async ({ customer, orders }: OverviewProps) => {
               </div>
 
               <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
-                <h3 className="text-large-semi">Wishlist</h3>
+                <h3 className="text-large-semi">{messages.account.wishlists}</h3>
                 <div className="flex items-end gap-x-2">
                   <span
                     className="text-3xl-semi leading-none"
@@ -83,7 +85,25 @@ const Overview = async ({ customer, orders }: OverviewProps) => {
                     {wishlistItemCount}
                   </span>
                   <span className="uppercase text-base-regular text-ui-fg-subtle">
-                    {wishlistItemCount === 1 ? "item" : "items"}
+                    {wishlistItemCount === 1
+                      ? messages.common.item.toLowerCase()
+                      : messages.account.items}
+                  </span>
+                </div>
+              </div>
+
+              <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
+                <h3 className="text-large-semi">{messages.account.loyalty}</h3>
+                <div className="flex items-end gap-x-2">
+                  <span
+                    className="text-3xl-semi leading-none"
+                    data-testid="loyalty-points-count"
+                    data-value={loyaltyPoints ?? 0}
+                  >
+                    {loyaltyPoints ?? 0}
+                  </span>
+                  <span className="uppercase text-base-regular text-ui-fg-subtle">
+                    {messages.common.pointsAbbreviation}
                   </span>
                 </div>
               </div>

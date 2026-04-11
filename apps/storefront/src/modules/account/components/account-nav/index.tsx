@@ -10,6 +10,7 @@ import User from "@modules/common/icons/user"
 import MapPin from "@modules/common/icons/map-pin"
 import Package from "@modules/common/icons/package"
 import HeartIcon from "@modules/common/icons/heart"
+import RewardIcon from "@modules/common/icons/reward"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import { signout } from "@lib/data/customer"
@@ -93,6 +94,19 @@ const AccountNav = ({
                 </li>
                 <li>
                   <LocalizedClientLink
+                    href="/account/loyalty"
+                    className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
+                    data-testid="loyalty-link"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <RewardIcon className="h-5 w-5" />
+                      <span>{messages.account.loyalty}</span>
+                    </div>
+                    <ChevronDown className="transform -rotate-90" />
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
                     href="/account/wishlists"
                     className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
                     data-testid="wishlists-link"
@@ -166,6 +180,15 @@ const AccountNav = ({
                   data-testid="orders-link"
                 >
                   {messages.account.orders}
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/loyalty"
+                  route={route!}
+                  data-testid="loyalty-link"
+                >
+                  {messages.account.loyalty}
                 </AccountNavLink>
               </li>
               <li>

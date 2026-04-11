@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
+import { type LoyaltyActivity, buildLoyaltyActivities } from "@lib/util/loyalty"
 import { revalidateTag } from "next/cache"
 import {
   getAuthHeaders,
@@ -9,6 +10,7 @@ import {
   getCacheTag,
   removeAuthToken,
 } from "./cookies"
+import { listOrders } from "./orders"
 
 type LoyaltyPointsResponse = {
   points: number
@@ -27,6 +29,18 @@ const isUnauthorizedError = (error: unknown) => {
       : String(error ?? "")
 
   return message.toLowerCase().includes("unauthorized")
+}
+
+export const listLoyaltyActivities = async (
+  limit: number = 20
+): Promise<LoyaltyActivity[]> => {
+  try {
+    const orders = await listOrders(limit, 0)
+
+    return buildLoyaltyActivities(orders ?? [])
+  } catch {
+    return []
+  }
 }
 
 export const retrieveLoyaltyPoints = async (): Promise<number | null> => {

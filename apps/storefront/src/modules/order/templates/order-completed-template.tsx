@@ -1,7 +1,9 @@
 import { Heading } from "@medusajs/ui"
 import { cookies as nextCookies } from "next/headers"
 
+import { retrieveLoyaltyPoints } from "@lib/data/loyalty"
 import { getI18n } from "@lib/i18n/server"
+import { getOrderLoyaltySummary } from "@lib/util/loyalty"
 import CartTotals from "@modules/common/components/cart-totals"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
@@ -18,8 +20,10 @@ type OrderCompletedTemplateProps = {
 export default async function OrderCompletedTemplate({
   order,
 }: OrderCompletedTemplateProps) {
-  const { messages } = await getI18n()
+  const { messages, t } = await getI18n()
   const cookies = await nextCookies()
+  const loyaltySummary = getOrderLoyaltySummary(order)
+  const loyaltyBalance = await retrieveLoyaltyPoints()
 
   const isOnboarding = cookies.get("_medusa_onboarding")?.value === "true"
 
@@ -39,6 +43,34 @@ export default async function OrderCompletedTemplate({
             <span>{messages.order.placedSuccessfully}</span>
           </Heading>
           <OrderDetails order={order} showStatus />
+          {loyaltySummary.hasLoyaltyActivity && (
+            <div className="rm-panel-soft flex flex-col gap-3 p-5">
+              <Heading level="h2" className="text-2xl-semi">
+                {messages.order.loyaltySummary}
+              </Heading>
+              {loyaltySummary.earnedPoints > 0 && (
+                <p className="text-base-regular text-ui-fg-base">
+                  {t(messages.order.loyaltyEarned, {
+                    points: `${loyaltySummary.earnedPoints} ${messages.common.pointsAbbreviation}`,
+                  })}
+                </p>
+              )}
+              {loyaltySummary.redeemedPoints > 0 && (
+                <p className="text-base-regular text-ui-fg-base">
+                  {t(messages.order.loyaltyRedeemed, {
+                    points: `${loyaltySummary.redeemedPoints} ${messages.common.pointsAbbreviation}`,
+                  })}
+                </p>
+              )}
+              {typeof loyaltyBalance === "number" && (
+                <p className="text-small-regular text-ui-fg-subtle">
+                  {t(messages.order.loyaltyCurrentBalance, {
+                    points: `${loyaltyBalance} ${messages.common.pointsAbbreviation}`,
+                  })}
+                </p>
+              )}
+            </div>
+          )}
           <Heading level="h2" className="flex flex-row text-3xl-regular">
             {messages.common.summary}
           </Heading>
