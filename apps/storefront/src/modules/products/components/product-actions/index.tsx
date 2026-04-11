@@ -41,6 +41,7 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [isPorto, setIsPorto] = useState(false)
   const countryCode = useParams().countryCode as string
 
   useEffect(() => {
@@ -49,6 +50,10 @@ export default function ProductActions({
       setOptions(variantOptions ?? {})
     }
   }, [product.variants])
+
+  useEffect(() => {
+    setIsPorto(document.documentElement.getAttribute("data-theme") === "porto")
+  }, [])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -122,6 +127,40 @@ export default function ProductActions({
 
   const inView = useIntersection(actionsRef, "0px")
 
+  const orderCutoff = useMemo(() => {
+    const now = new Date()
+    const cutoff = new Date(now)
+    cutoff.setHours(18, 0, 0, 0)
+
+    if (cutoff.getTime() <= now.getTime()) {
+      cutoff.setDate(cutoff.getDate() + 1)
+    }
+
+    const diffMs = cutoff.getTime() - now.getTime()
+    const hours = Math.floor(diffMs / (1000 * 60 * 60))
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+
+    return `${hours}h ${minutes}m`
+  }, [])
+
+  const stockLabel = useMemo(() => {
+    if (!selectedVariant) {
+      return messages.common.selectVariant
+    }
+
+    if (!inStock) {
+      return messages.common.outOfStock
+    }
+
+    const inventory = selectedVariant.inventory_quantity ?? 0
+
+    if (inventory > 0 && inventory < 8) {
+      return `Only ${inventory} left`
+    }
+
+    return "In stock"
+  }, [inStock, messages.common.outOfStock, messages.common.selectVariant, selectedVariant])
+
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
@@ -140,9 +179,31 @@ export default function ProductActions({
   return (
     <>
       <div
-        className="flex flex-col gap-y-5 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6"
+        className={`flex flex-col gap-y-5 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6 ${
+          isPorto ? "rounded-[2px] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.05)]" : ""
+        }`}
         ref={actionsRef}
       >
+        {isPorto ? (
+          <div className="grid gap-3 rounded-[2px] border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] p-4 small:grid-cols-2">
+            <div className="grid gap-1">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                Order cutoff
+              </span>
+              <span className="text-base font-semibold text-[var(--pi-text)]">
+                {orderCutoff} left
+              </span>
+            </div>
+            <div className="grid gap-1">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                Availability
+              </span>
+              <span className="text-base font-semibold text-[var(--pi-text)]">
+                {stockLabel}
+              </span>
+            </div>
+          </div>
+        ) : null}
         <div>
           {(product.variants?.length ?? 0) > 1 && (
             <div className="flex flex-col gap-y-4">
@@ -178,7 +239,9 @@ export default function ProductActions({
               !isValidVariant
             }
             variant="primary"
-            className="theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)]"
+            className={`theme-solid-button !h-11 !flex-1 !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)] ${
+              isPorto ? "!rounded-[2px]" : "!rounded-none"
+            }`}
             isLoading={isAdding}
             data-testid="add-product-button"
           >
@@ -192,6 +255,18 @@ export default function ProductActions({
             <WishlistButton variantId={selectedVariant.id} />
           )}
         </div>
+        {isPorto ? (
+          <div className="grid gap-2 border-t border-[var(--pi-border)] pt-4 text-sm text-[var(--pi-muted)]">
+            <div className="flex items-center justify-between gap-3">
+              <span>Bulk quote ready</span>
+              <span className="text-[var(--pi-text)]">{(product.variants ?? []).length} variants</span>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span>Fulfillment window</span>
+              <span className="text-[var(--pi-text)]">{inStock ? "Ships next business day" : "Restock in progress"}</span>
+            </div>
+          </div>
+        ) : null}
         <MobileActions
           product={product}
           variant={selectedVariant}

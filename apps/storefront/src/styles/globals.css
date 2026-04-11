@@ -151,6 +151,30 @@
     --pi-body-font: var(--pi-font-sans);
   }
 
+  :root[data-theme="porto"] {
+    --pi-font-sans: "Hind", "Open Sans", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Oswald", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --pi-bg: #ffffff;
+    --pi-surface: #f5f7fa;
+    --pi-surface-soft: #e7f3f9;
+    --pi-surface-emphasis: #d8eaf5;
+    --pi-text: #16202c;
+    --pi-muted: #546579;
+    --pi-muted-soft: #75889d;
+    --pi-border: #d6e0ea;
+    --pi-border-strong: #8eb5cf;
+    --pi-primary: #0088cc;
+    --pi-primary-hover: #006fa7;
+    --pi-primary-active: #005581;
+    --pi-accent: #e7f3f9;
+    --pi-focus: #0088cc;
+    --pi-shell-bg: #ffffff;
+    --pi-nav-bg: rgba(255, 255, 255, 0.96);
+    --pi-footer-bg: #f5f7fa;
+    --pi-heading-font: var(--pi-font-serif);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
   :root[data-theme="minimal"] {
     --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
     --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;

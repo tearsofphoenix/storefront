@@ -56,6 +56,7 @@ export default async function PaginatedProducts({
     return null
   }
   const theme = getStorefrontThemePresentation()
+  const isPorto = theme.themePresetKey === "porto"
   const isDawn = theme.themePresetKey === "dawn"
 
   let {
@@ -71,9 +72,26 @@ export default async function PaginatedProducts({
 
   return (
     <>
+      {isPorto ? (
+        <div className="mb-4 flex flex-col gap-3 border-t border-[var(--pi-border)] pt-4 small:flex-row small:items-center small:justify-between">
+          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+            <span>{count} live results</span>
+            <span>Dense grid</span>
+            <span>Fast compare</span>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+            <span className="rounded-[2px] border border-[var(--pi-border)] px-2 py-1">2</span>
+            <span className="rounded-[2px] border border-[var(--pi-primary)] bg-[var(--pi-surface-soft)] px-2 py-1 text-[var(--pi-primary)]">
+              5
+            </span>
+          </div>
+        </div>
+      ) : null}
       <ul
         className={
-          isDawn
+          isPorto
+            ? "grid w-full grid-cols-2 gap-4 border-t border-[var(--pi-border)] pt-5 small:grid-cols-3 medium:grid-cols-4 xl:grid-cols-5"
+            : isDawn
             ? "grid w-full grid-cols-2 gap-x-5 gap-y-10 border-t border-[var(--pi-border)] pt-8 small:grid-cols-3"
             : "grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
         }

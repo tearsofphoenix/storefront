@@ -11,6 +11,7 @@ import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { isStorefrontPluginEnabled } from "@lib/util/plugin-manifest"
 import { buildChatbotProductContext } from "@lib/util/chatbot-product-context"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 import { PayloadContentBlock } from "types/payload"
@@ -46,6 +47,8 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     product,
     selectedVariantId,
   })
+  const theme = getStorefrontThemePresentation()
+  const isPorto = theme.themePresetKey === "porto"
   const hasInlineCommerceCallout = Boolean(
     contentBlocks?.some((block) => block.blockType === "commerce-callout")
   )
@@ -58,11 +61,51 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           className="content-container py-12 small:py-14"
           data-testid="product-container"
         >
-          <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">
+          <div
+            className={
+              isPorto
+                ? "grid gap-8 small:grid-cols-[minmax(0,1.12fr)_minmax(360px,0.88fr)] small:items-start"
+                : "grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start"
+            }
+          >
             <div className="min-w-0">
               <ImageGallery images={images} />
             </div>
-            <div className="grid gap-8 small:sticky small:top-20">
+            <div
+              className={
+                isPorto
+                  ? "grid gap-6 small:sticky small:top-24"
+                  : "grid gap-8 small:sticky small:top-20"
+              }
+            >
+              {isPorto ? (
+                <div className="grid gap-3 rounded-[2px] border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] p-4 small:grid-cols-3">
+                  <div className="grid gap-1">
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                      Variants
+                    </span>
+                    <span className="text-lg font-semibold text-[var(--pi-text)]">
+                      {(product.variants ?? []).length}
+                    </span>
+                  </div>
+                  <div className="grid gap-1">
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                      Gallery
+                    </span>
+                    <span className="text-lg font-semibold text-[var(--pi-text)]">
+                      {images.length} frames
+                    </span>
+                  </div>
+                  <div className="grid gap-1">
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                      Collection
+                    </span>
+                    <span className="text-lg font-semibold text-[var(--pi-text)]">
+                      {product.collection?.title ?? "General"}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
               <ProductInfo product={product} />
               <Suspense
                 fallback={

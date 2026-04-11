@@ -16,6 +16,7 @@ export default async function RelatedProducts({
 }: RelatedProductsProps) {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isPorto = theme.themePresetKey === "porto"
   const isDawn = theme.themePresetKey === "dawn"
   const region = await getRegion(countryCode)
 
@@ -55,31 +56,43 @@ export default async function RelatedProducts({
     <div className="product-page-constraint">
       <div
         className={
-          isDawn
+          isPorto
+            ? "mb-10 flex flex-col gap-3 text-left"
+            : isDawn
             ? "mb-8 flex flex-col gap-2 text-left"
             : "mb-16 flex flex-col items-center text-center"
         }
       >
         <span className="text-base-regular text-gray-600 mb-6">
-          {isDawn ? "Recently viewed" : messages.product.relatedProductsHeading}
+          {isDawn
+            ? "Recently viewed"
+            : isPorto
+            ? "Recommended for fast reorder"
+            : messages.product.relatedProductsHeading}
         </span>
         <p
           className={
-            isDawn
+            isPorto
+              ? "max-w-3xl text-[2.1rem] leading-[0.98] text-[var(--pi-text)]"
+              : isDawn
               ? "max-w-2xl text-[1.95rem] leading-[1.08]"
               : "text-2xl-regular text-ui-fg-base max-w-lg"
           }
-          style={isDawn ? { fontFamily: "var(--pi-heading-font)" } : undefined}
+          style={isDawn || isPorto ? { fontFamily: "var(--pi-heading-font)" } : undefined}
         >
           {isDawn
             ? "Keep browsing products you recently explored."
+            : isPorto
+            ? "Compare high-demand items with dense cards, quick stock snapshots, and faster shortlist decisions."
             : messages.product.relatedProductsDescription}
         </p>
       </div>
 
       <ul
         className={
-          isDawn
+          isPorto
+            ? "grid grid-cols-2 gap-4 small:grid-cols-3 medium:grid-cols-4 xl:grid-cols-5"
+            : isDawn
             ? "no-scrollbar flex snap-x gap-6 overflow-x-auto pb-2"
             : "grid grid-cols-2 small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
         }
