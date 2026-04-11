@@ -12,6 +12,7 @@ import MedusaCTA from "@modules/layout/components/medusa-cta"
 export default async function Footer() {
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isMotion = theme.themePresetKey === "motion"
   const { collections } = await listCollections({
     fields: "*products",
   })
@@ -26,7 +27,13 @@ export default async function Footer() {
       }}
     >
       <div className="content-container flex flex-col w-full">
-        <div className="grid gap-12 py-16 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+        <div
+          className={
+            isMotion
+              ? "grid gap-12 py-16 small:grid-cols-[1.3fr_0.7fr_0.7fr_0.7fr]"
+              : "grid gap-12 py-16 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]"
+          }
+        >
           <div className="grid gap-6">
             <LocalizedClientLink
               href="/"
@@ -49,6 +56,11 @@ export default async function Footer() {
               {theme.footerNote ||
                 messages.footer.fallbackNote}
             </Text>
+            {isMotion ? (
+              <div className="inline-flex w-fit rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-white/70">
+                Story-led storefront
+              </div>
+            ) : null}
           </div>
           <div className="grid gap-8 text-small-regular small:col-span-3 small:grid-cols-3">
             <div className="flex flex-col gap-y-3">
@@ -136,16 +148,6 @@ export default async function Footer() {
                   >
                     {messages.account.termsOfUse}
                   </LocalizedClientLink>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="transition-colors"
-                  >
-                    {messages.common.documentation}
-                  </a>
                 </li>
               </ul>
             </div>

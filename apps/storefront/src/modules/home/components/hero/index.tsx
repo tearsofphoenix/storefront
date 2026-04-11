@@ -6,6 +6,7 @@ import {
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
+import MotionHero from "./motion-hero"
 import type { CSSProperties, ReactNode } from "react"
 
 type HeroProps = {
@@ -66,6 +67,26 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isMotion = theme.themePresetKey === "motion"
+
+  if (isMotion) {
+    return (
+      <MotionHero
+        eyebrow={theme.heroEyebrow}
+        heading={theme.heroHeading}
+        subheading={theme.heroSubheading}
+        ctaLabel={
+          collection
+            ? t(messages.home.shopCollection, { name: collection.title })
+            : theme.ctaLabel
+        }
+        ctaHref={primaryHref}
+        secondaryLabel={secondaryLabel}
+        secondaryHref={secondaryHref}
+        videoSrc="https://cdn.coverr.co/videos/coverr-fashion-model-on-podium-1579/1080p.mp4"
+      />
+    )
+  }
 
   return (
     <section
