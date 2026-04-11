@@ -14,7 +14,6 @@ import PrestigeMegaMenu from "@modules/layout/components/prestige-mega-menu"
 import PrestigeNavState from "@modules/layout/components/prestige-nav-state"
 import PrestigeSearchOverlay from "@modules/layout/components/prestige-search-overlay"
 import SideMenu from "@modules/layout/components/side-menu"
-import ThemeSwitcher from "@modules/layout/components/theme-switcher"
 
 export default async function Nav() {
   const [regions, locales, currentLocale, categories] = await Promise.all([
@@ -101,7 +100,6 @@ export default async function Nav() {
                 closeLabel={messages.common.close}
                 categories={megaMenuCategories}
               />
-              <ThemeSwitcher className="hidden small:flex" />
               <div className="small:hidden">
                 <LocalizedClientLink
                   className="prestige-nav-link inline-flex items-center text-[11px] uppercase tracking-[0.16em]"
@@ -202,7 +200,6 @@ export default async function Nav() {
           </div>
 
           <div className="flex flex-1 basis-0 items-center justify-end gap-x-4">
-            <ThemeSwitcher className="hidden small:flex" />
             <div className="small:hidden">
               <LocalizedClientLink
                 className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
