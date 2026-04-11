@@ -28,6 +28,12 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
     [images]
   )
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [isTurbo, setIsTurbo] = useState(false)
+
+  useEffect(() => {
+    setIsTurbo(document.documentElement.getAttribute("data-theme") === "turbo")
+  }, [])
 
   useEffect(() => {
     if (selectedIndex > galleryImages.length - 1) {
@@ -44,7 +50,12 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   }
 
   return (
-    <div className="grid gap-4 small:grid-cols-[88px_minmax(0,1fr)] small:items-start">
+    <>
+      <div
+        className={clx("grid gap-4 small:grid-cols-[88px_minmax(0,1fr)] small:items-start", {
+          "small:grid-cols-[104px_minmax(0,1fr)]": isTurbo,
+        })}
+      >
       <div className="order-2 flex gap-3 overflow-x-auto pb-1 small:order-1 small:flex-col small:overflow-visible">
         {galleryImages.map((image, index) => (
           <button
@@ -74,7 +85,15 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           </button>
         ))}
       </div>
-      <Container className="order-1 relative aspect-[4/5] w-full overflow-hidden border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] small:order-2">
+      <button
+        type="button"
+        onClick={() => {
+          if (isTurbo) {
+            setLightboxOpen(true)
+          }
+        }}
+        className="order-1 relative block aspect-[4/5] w-full overflow-hidden border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] text-left small:order-2"
+      >
         <Image
           src={selectedImage.url}
           alt={messages.product.productImageAlt}
@@ -84,8 +103,34 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           unoptimized={shouldUnoptimizeImage(selectedImage.url)}
           className="object-cover"
         />
-      </Container>
-    </div>
+        {isTurbo ? (
+          <span className="absolute right-3 top-3 rounded-[4px] bg-white/88 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--pi-text)]">
+            Zoom
+          </span>
+        ) : null}
+      </button>
+      </div>
+      {isTurbo && lightboxOpen ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <div
+            className="relative h-[min(88vh,960px)] w-[min(92vw,1200px)] overflow-hidden rounded-[8px] bg-black"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Image
+              src={selectedImage.url}
+              alt={messages.product.productImageAlt}
+              fill
+              sizes="100vw"
+              unoptimized={shouldUnoptimizeImage(selectedImage.url)}
+              className="object-contain"
+            />
+          </div>
+        </div>
+      ) : null}
+    </>
   )
 }
 

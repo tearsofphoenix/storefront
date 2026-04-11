@@ -151,6 +151,30 @@
     --pi-body-font: var(--pi-font-sans);
   }
 
+  :root[data-theme="turbo"] {
+    --pi-font-sans: "Proxima Nova", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Proxima Nova", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --pi-bg: #ffffff;
+    --pi-surface: #f8fafc;
+    --pi-surface-soft: #eff6ff;
+    --pi-surface-emphasis: #dbeafe;
+    --pi-text: #0f172a;
+    --pi-muted: #475569;
+    --pi-muted-soft: #64748b;
+    --pi-border: #dbe2ea;
+    --pi-border-strong: #94a3b8;
+    --pi-primary: #3b82f6;
+    --pi-primary-hover: #2563eb;
+    --pi-primary-active: #1d4ed8;
+    --pi-accent: #dbeafe;
+    --pi-focus: #2563eb;
+    --pi-shell-bg: #ffffff;
+    --pi-nav-bg: rgba(255, 255, 255, 0.96);
+    --pi-footer-bg: #f8fafc;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
   :root[data-theme="minimal"] {
     --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
     --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;

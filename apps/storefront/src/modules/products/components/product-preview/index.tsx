@@ -1,5 +1,6 @@
 import { Text } from "@medusajs/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
@@ -26,6 +27,52 @@ export default async function ProductPreview({
   const { cheapestPrice } = getProductPrice({
     product,
   })
+  const theme = getStorefrontThemePresentation()
+  const isTurbo = theme.themePresetKey === "turbo"
+
+  if (isTurbo) {
+    return (
+      <LocalizedClientLink href={`/products/${product.handle}`} className="group">
+        <div data-testid="product-wrapper" className="grid gap-3">
+          <Thumbnail
+            thumbnail={product.thumbnail}
+            images={product.images}
+            alt={product.title ?? ""}
+            size="full"
+            isFeatured={isFeatured}
+            className="bg-[var(--pi-surface)] p-0 shadow-none transition duration-200 group-hover:scale-[1.02]"
+            style={{
+              background: "var(--pi-surface)",
+              border: "1px solid var(--pi-border)",
+              borderRadius: 6,
+              boxShadow: "none",
+            }}
+          />
+          <div className="grid gap-1.5">
+            <div className="flex items-start justify-between gap-4">
+              <Text
+                className="text-sm font-semibold leading-5"
+                data-testid="product-title"
+                style={{
+                  color: "var(--pi-text)",
+                  fontFamily: "var(--pi-heading-font)",
+                }}
+              >
+                {product.title}
+              </Text>
+              <div className="flex items-center gap-x-2 whitespace-nowrap text-right">
+                {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2 text-[11px] uppercase tracking-[0.14em]">
+              <span className="text-[var(--pi-muted-soft)]">Fast ship</span>
+              <span className="text-[var(--pi-primary)]">Quick browse</span>
+            </div>
+          </div>
+        </div>
+      </LocalizedClientLink>
+    )
+  }
 
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group">
