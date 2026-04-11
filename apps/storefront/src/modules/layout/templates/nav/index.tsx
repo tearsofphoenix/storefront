@@ -12,7 +12,6 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import EmpireMegaMenu from "@modules/layout/components/empire-mega-menu"
 import SideMenu from "@modules/layout/components/side-menu"
-import ThemeSwitcher from "@modules/layout/components/theme-switcher"
 
 export default async function Nav() {
   const [regions, locales, currentLocale, categories] = await Promise.all([
@@ -108,7 +107,6 @@ export default async function Nav() {
                   {messages.common.account}
                 </LocalizedClientLink>
               </div>
-              <ThemeSwitcher className="hidden small:flex" />
               <Suspense
                 fallback={
                   <LocalizedClientLink
@@ -216,7 +214,6 @@ export default async function Nav() {
           </div>
 
           <div className="flex flex-1 basis-0 items-center justify-end gap-x-4">
-            <ThemeSwitcher className="hidden small:flex" />
             <div className="small:hidden">
               <LocalizedClientLink
                 className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
