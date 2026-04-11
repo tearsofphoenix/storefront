@@ -1,4 +1,5 @@
 import { listProducts } from "@lib/data/products"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import ProductActions from "@modules/products/components/product-actions"
 
@@ -12,6 +13,7 @@ export default async function ProductActionsWrapper({
   id: string
   region: HttpTypes.StoreRegion
 }) {
+  const theme = getStorefrontThemePresentation()
   const product = await listProducts({
     queryParams: { id: [id] },
     regionId: region.id,
@@ -21,5 +23,11 @@ export default async function ProductActionsWrapper({
     return null
   }
 
-  return <ProductActions product={product} region={region} />
+  return (
+    <ProductActions
+      product={product}
+      region={region}
+      themePresetKey={theme.themePresetKey}
+    />
+  )
 }

@@ -104,25 +104,25 @@
   }
 
   :root[data-theme="warehouse"] {
-    --pi-font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
-    --pi-font-serif: "IBM Plex Serif", "Book Antiqua", Georgia, serif;
+    --pi-font-sans: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Roboto", "Helvetica Neue", Arial, sans-serif;
     --pi-bg: #f6f7f9;
     --pi-surface: #eef2f7;
-    --pi-surface-soft: #e6ecf5;
-    --pi-surface-emphasis: #d7e2f0;
-    --pi-text: #111827;
-    --pi-muted: #4b5563;
-    --pi-muted-soft: #5f6a79;
-    --pi-border: #d5dde8;
-    --pi-border-strong: #9cb0ca;
-    --pi-primary: #0f4c81;
-    --pi-primary-hover: #0d3d67;
-    --pi-primary-active: #092b48;
-    --pi-accent: #e6ecf5;
-    --pi-focus: #0d3d67;
-    --pi-shell-bg: #f6f7f9;
-    --pi-nav-bg: rgba(246, 247, 249, 0.95);
-    --pi-footer-bg: #eef2f7;
+    --pi-surface-soft: #f8f8f8;
+    --pi-surface-emphasis: #ececec;
+    --pi-text: #0f1111;
+    --pi-muted: #454b52;
+    --pi-muted-soft: #676d73;
+    --pi-border: #d7d7d7;
+    --pi-border-strong: #9f9f9f;
+    --pi-primary: #e47911;
+    --pi-primary-hover: #cb6400;
+    --pi-primary-active: #ad4e00;
+    --pi-accent: #ffd814;
+    --pi-focus: #e47911;
+    --pi-shell-bg: #ffffff;
+    --pi-nav-bg: rgba(255, 255, 255, 0.95);
+    --pi-footer-bg: #f8f8f8;
     --pi-heading-font: var(--pi-font-sans);
     --pi-body-font: var(--pi-font-sans);
   }
@@ -471,6 +471,15 @@
   .theme-solid-button:active {
     background: var(--pi-primary-active);
     border-color: var(--pi-primary-active);
+  }
+
+  .empire-nav-link {
+    color: var(--pi-text);
+    transition: color 150ms ease;
+  }
+
+  .empire-nav-link:hover {
+    color: var(--pi-primary);
   }
 
   .contrast-btn {

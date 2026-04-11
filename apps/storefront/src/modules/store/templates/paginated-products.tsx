@@ -1,5 +1,6 @@
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -21,6 +22,7 @@ export default async function PaginatedProducts({
   categoryId,
   productsIds,
   countryCode,
+  viewMode = "grid",
 }: {
   sortBy?: SortOptions
   page: number
@@ -28,6 +30,7 @@ export default async function PaginatedProducts({
   categoryId?: string
   productsIds?: string[]
   countryCode: string
+  viewMode?: "grid" | "list"
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -54,6 +57,8 @@ export default async function PaginatedProducts({
   if (!region) {
     return null
   }
+  const theme = getStorefrontThemePresentation()
+  const isEmpire = theme.themePresetKey === "warehouse"
 
   let {
     response: { products, count },
@@ -69,13 +74,30 @@ export default async function PaginatedProducts({
   return (
     <>
       <ul
-        className="grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
+        className={
+          isEmpire && viewMode === "list"
+            ? "grid w-full grid-cols-1 gap-y-5 border-t border-[var(--pi-border)] pt-8"
+            : isEmpire
+            ? "grid w-full grid-cols-2 gap-x-4 gap-y-8 border-t border-[var(--pi-border)] pt-8 small:grid-cols-3"
+            : "grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
+        }
         data-testid="products-list"
       >
         {products.map((p) => {
           return (
-            <li key={p.id}>
-              <ProductPreview product={p} region={region} />
+            <li
+              key={p.id}
+              className={
+                isEmpire && viewMode === "list"
+                  ? "rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-4"
+                  : undefined
+              }
+            >
+              <ProductPreview
+                product={p}
+                region={region}
+                layout={isEmpire && viewMode === "list" ? "list" : "default"}
+              />
             </li>
           )
         })}

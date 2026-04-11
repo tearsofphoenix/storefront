@@ -3,6 +3,7 @@
 import { addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { useI18n } from "@lib/i18n/use-i18n"
+import { StorefrontThemePresetKey } from "@lib/util/theme-presets"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
@@ -19,6 +20,7 @@ type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  themePresetKey?: StorefrontThemePresetKey
 }
 
 const optionsAsKeymap = (
@@ -33,6 +35,7 @@ const optionsAsKeymap = (
 export default function ProductActions({
   product,
   disabled,
+  themePresetKey,
 }: ProductActionsProps) {
   const { messages } = useI18n()
   const router = useRouter()
@@ -41,7 +44,9 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
+  const isEmpire = themePresetKey === "warehouse"
 
   useEffect(() => {
     if (product.variants?.length === 1) {
@@ -130,7 +135,7 @@ export default function ProductActions({
 
     await addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
+      quantity,
       countryCode,
     })
 
@@ -168,6 +173,28 @@ export default function ProductActions({
         <ProductPrice product={product} variant={selectedVariant} />
 
         <div className="flex items-center gap-3">
+          {isEmpire ? (
+            <div className="inline-flex h-11 items-center rounded-[20px] border border-[var(--pi-border)] bg-[#fff] px-2">
+              <button
+                type="button"
+                onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                className="h-8 w-8 text-base text-[var(--pi-text)]"
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <span className="inline-flex min-w-8 justify-center text-sm font-medium">
+                {quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuantity((current) => Math.min(99, current + 1))}
+                className="h-8 w-8 text-base text-[var(--pi-text)]"
+              >
+                +
+              </button>
+            </div>
+          ) : null}
           <Button
             onClick={handleAddToCart}
             disabled={
@@ -178,7 +205,11 @@ export default function ProductActions({
               !isValidVariant
             }
             variant="primary"
-            className="theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)]"
+            className={
+              isEmpire
+                ? "theme-solid-button !h-11 !flex-1 !rounded-[20px] !border-[#ffd814] !bg-[#ffd814] !text-[#0f1111] hover:!border-[#f7ca00] hover:!bg-[#f7ca00]"
+                : "theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)]"
+            }
             isLoading={isAdding}
             data-testid="add-product-button"
           >

@@ -66,6 +66,81 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isEmpire = theme.themePresetKey === "warehouse"
+
+  if (isEmpire) {
+    return (
+      <section className="border-y border-[var(--pi-border)] bg-[var(--pi-bg)]">
+        <div className="content-container grid gap-5 py-8 small:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] small:py-10">
+          <div className="grid gap-5 rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-5 small:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+            <div className="grid gap-4">
+              <span className="theme-eyebrow !rounded-[4px] !bg-white !px-3 !py-1 !text-[10px] !tracking-[0.12em]">
+                Popular departments
+              </span>
+              <h1
+                className="max-w-[13ch] text-[clamp(2rem,4.8vw,3.8rem)] leading-[0.98]"
+                style={{ fontFamily: "var(--pi-heading-font)" }}
+              >
+                {theme.heroHeading}
+              </h1>
+              <p className="max-w-[30rem] text-sm leading-6 text-[var(--pi-muted)] small:text-base">
+                {theme.heroSubheading}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <ActionLink
+                  href={primaryHref}
+                  className="theme-solid-button !rounded-[20px] !border-[#ffd814] !bg-[#ffd814] !text-[#0f1111]"
+                >
+                  {collection
+                    ? t(messages.home.shopCollection, { name: collection.title })
+                    : theme.ctaLabel}
+                </ActionLink>
+                <ActionLink
+                  href={secondaryHref}
+                  className="theme-outline-button !rounded-[20px] !border-[var(--pi-border-strong)]"
+                >
+                  {secondaryLabel}
+                </ActionLink>
+              </div>
+            </div>
+            <div>
+              <Thumbnail
+                thumbnail={primaryProduct?.thumbnail}
+                images={primaryProduct?.images}
+                alt={primaryProduct?.title ?? ""}
+                size="full"
+                isFeatured
+                className="h-full bg-[var(--pi-surface)] p-0"
+                style={{
+                  border: "1px solid var(--pi-border)",
+                  borderRadius: 4,
+                }}
+              />
+            </div>
+          </div>
+          <aside className="grid gap-3 rounded-[4px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-4">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+              Quick access
+            </span>
+            <div className="grid gap-2">
+              {products.slice(0, 5).map((product) => (
+                <LocalizedClientLink
+                  key={product.id}
+                  href={`/products/${product.handle}`}
+                  className="flex items-center justify-between rounded-[4px] border border-[var(--pi-border)] bg-[#fff] px-3 py-2 text-sm text-[var(--pi-text)] transition-colors hover:border-[var(--pi-border-strong)]"
+                >
+                  <span className="truncate">{product.title}</span>
+                  <span className="text-[11px] uppercase tracking-[0.12em] text-[var(--pi-muted)]">
+                    View
+                  </span>
+                </LocalizedClientLink>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section
