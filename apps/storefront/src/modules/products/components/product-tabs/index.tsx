@@ -1,6 +1,7 @@
 "use client"
 
 import { useI18n } from "@lib/i18n/use-i18n"
+import { useEffect, useState } from "react"
 import Back from "@modules/common/icons/back"
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
@@ -24,6 +25,38 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
       component: <ShippingInfoTab />,
     },
   ]
+  const [isFlatsome, setIsFlatsome] = useState(false)
+  const [activeTab, setActiveTab] = useState(tabs[0].label)
+
+  useEffect(() => {
+    setIsFlatsome(document.documentElement.getAttribute("data-theme") === "flatsome")
+  }, [])
+
+  if (isFlatsome) {
+    return (
+      <div className="w-full">
+        <div className="flex flex-wrap gap-2 border-b border-[var(--pi-border)] pb-3">
+          {tabs.map((tab) => (
+            <button
+              key={tab.label}
+              type="button"
+              onClick={() => setActiveTab(tab.label)}
+              className={`rounded-[3px] px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === tab.label
+                  ? "bg-[var(--pi-primary)] text-white"
+                  : "bg-[var(--pi-surface)] text-[var(--pi-text)]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="pt-2">
+          {tabs.find((tab) => tab.label === activeTab)?.component}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full">

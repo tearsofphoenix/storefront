@@ -28,7 +28,59 @@ export default async function ProductPreview({
     product,
   })
   const theme = getStorefrontThemePresentation()
+  const isFlatsome = theme.themePresetKey === "flatsome"
   const isDawn = theme.themePresetKey === "dawn"
+
+  if (isFlatsome) {
+    return (
+      <div className="group grid gap-3">
+        <div className="relative overflow-hidden border border-[var(--pi-border)] bg-[var(--pi-surface)]">
+          <LocalizedClientLink href={`/products/${product.handle}`} className="block">
+            <Thumbnail
+              thumbnail={product.thumbnail}
+              images={product.images}
+              alt={product.title ?? ""}
+              size="full"
+              isFeatured={isFeatured}
+              className="bg-[var(--pi-surface)] p-0 shadow-none transition duration-200 group-hover:scale-[1.02]"
+              style={{
+                border: "none",
+                borderRadius: 0,
+                boxShadow: "none",
+              }}
+            />
+          </LocalizedClientLink>
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 translate-y-full opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+            <LocalizedClientLink
+              href={`/products/${product.handle}`}
+              className="flex h-10 items-center justify-center rounded-[3px] bg-[var(--pi-primary)] text-[11px] font-semibold uppercase tracking-[0.14em] text-white"
+            >
+              Quick view
+            </LocalizedClientLink>
+          </div>
+        </div>
+        <div className="grid gap-1.5">
+          <LocalizedClientLink
+            href={`/products/${product.handle}`}
+            className="text-sm font-medium leading-6 text-[var(--pi-text)]"
+            data-testid="product-title"
+          >
+            {product.title}
+          </LocalizedClientLink>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex gap-1.5">
+              <span className="h-3.5 w-3.5 rounded-full bg-[#2e6ecf]" />
+              <span className="h-3.5 w-3.5 rounded-full bg-[#7c3aed]" />
+              <span className="h-3.5 w-3.5 rounded-full bg-[#ef4444]" />
+            </div>
+            <div className="flex items-center gap-x-2 whitespace-nowrap text-right">
+              {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (isDawn) {
     return (

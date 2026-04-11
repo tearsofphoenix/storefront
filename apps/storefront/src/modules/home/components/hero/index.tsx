@@ -69,10 +69,87 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isFlatsome = theme.themePresetKey === "flatsome"
   const isDawn = theme.themePresetKey === "dawn"
   const heroImage = normalizeImageUrl(
     primaryProduct?.thumbnail || primaryProduct?.images?.[0]?.url
   )
+
+  if (isFlatsome) {
+    return (
+      <section className="border-y border-[var(--pi-border)] bg-[var(--pi-bg)]">
+        <div className="content-container grid gap-5 py-8 small:grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)] small:py-10">
+          <div className="relative overflow-hidden rounded-[3px] border border-[var(--pi-border)] bg-[var(--pi-surface)]">
+            {heroImage ? (
+              <Image
+                src={heroImage}
+                alt={primaryProduct?.title ?? theme.brandName}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                unoptimized={shouldUnoptimizeImage(heroImage)}
+                className="object-cover object-center"
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(17,24,39,0.68)_0%,rgba(17,24,39,0.24)_60%,rgba(17,24,39,0.06)_100%)]" />
+            <div className="relative z-[1] grid min-h-[420px] content-end gap-5 p-6 small:min-h-[520px] small:p-8">
+              <span className="inline-flex w-fit rounded-[3px] border border-white/25 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-white">
+                {theme.heroEyebrow}
+              </span>
+              <h1
+                className="max-w-[12ch] text-[clamp(2.3rem,5.4vw,4.6rem)] leading-[0.95] text-white"
+                style={{ fontFamily: "var(--pi-heading-font)" }}
+              >
+                {theme.heroHeading}
+              </h1>
+              <div className="flex flex-wrap gap-3">
+                <ActionLink
+                  href={primaryHref}
+                  className="theme-solid-button !rounded-[3px] !border-[var(--pi-primary)] !bg-[var(--pi-primary)]"
+                >
+                  {collection
+                    ? t(messages.home.shopCollection, { name: collection.title })
+                    : theme.ctaLabel}
+                </ActionLink>
+                <ActionLink
+                  href={secondaryHref}
+                  className="theme-outline-button !rounded-[3px] !border-white/55 !bg-white/10 !text-white hover:!border-white hover:!bg-white hover:!text-[var(--pi-text)]"
+                >
+                  {secondaryLabel}
+                </ActionLink>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-5 small:grid-rows-2">
+            <div className="grid gap-4 rounded-[3px] border border-[var(--pi-border)] bg-[var(--pi-surface)] p-5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                Builder blocks
+              </span>
+              <div className="grid grid-cols-2 gap-3">
+                {products.slice(0, 4).map((product) => (
+                  <LocalizedClientLink
+                    key={product.id}
+                    href={`/products/${product.handle}`}
+                    className="rounded-[3px] border border-[var(--pi-border)] bg-white px-3 py-3 text-sm text-[var(--pi-text)] transition-colors hover:border-[var(--pi-primary)]"
+                  >
+                    {product.title}
+                  </LocalizedClientLink>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[3px] border border-[var(--pi-border)] bg-[linear-gradient(135deg,#f5f9ff_0%,#dbeafe_100%)] p-5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--pi-muted-soft)]">
+                Promo banner
+              </span>
+              <p className="mt-3 max-w-[18ch] text-[2rem] leading-[1.02] text-[var(--pi-text)]">
+                Build faster with reusable storefront rows.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   if (isDawn) {
     return (
