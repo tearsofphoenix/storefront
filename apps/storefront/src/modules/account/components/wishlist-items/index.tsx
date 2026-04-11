@@ -14,6 +14,14 @@ const WishlistItems = ({ items }: WishlistItemsProps) => {
   const router = useRouter()
   const { messages } = useI18n()
 
+  const isMeaningfulVariantTitle = (title?: string) => {
+    if (!title) {
+      return false
+    }
+
+    return title.trim().toLowerCase() !== "default variant"
+  }
+
   const handleRemove = async (itemId: string) => {
     await removeWishlistItem(itemId)
     router.refresh()
@@ -39,7 +47,7 @@ const WishlistItems = ({ items }: WishlistItemsProps) => {
             <h3 className="text-base-semi">
               {item.product_variant?.product?.title ?? "Unknown product"}
             </h3>
-            {item.product_variant?.title && (
+            {isMeaningfulVariantTitle(item.product_variant?.title) && (
               <span className="text-small-regular text-ui-fg-subtle">
                 {item.product_variant.title}
               </span>
