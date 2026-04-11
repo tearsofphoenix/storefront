@@ -7,6 +7,7 @@ import {
   getAuthHeaders,
   getCacheOptions,
   getCacheTag,
+  removeAuthToken,
 } from "./cookies"
 
 export type WishlistItem = {
@@ -29,6 +30,32 @@ export type Wishlist = {
   customer_id: string
   sales_channel_id: string
   items: WishlistItem[]
+}
+
+const isUnauthorizedError = (error: unknown) => {
+  const status = (error as any)?.response?.status ?? (error as any)?.status
+
+  if (status === 401) {
+    return true
+  }
+
+  const message =
+    typeof (error as any)?.message === "string"
+      ? (error as any).message
+      : String(error ?? "")
+
+  return message.toLowerCase().includes("unauthorized")
+}
+
+const handleWishlistError = async (
+  error: unknown
+): Promise<null> => {
+  if (isUnauthorizedError(error)) {
+    await removeAuthToken()
+    return null
+  }
+
+  medusaError(error)
 }
 
 // Retrieve the authenticated customer's wishlist
@@ -54,7 +81,7 @@ export const retrieveWishlist =
         cache: "force-cache",
       })
       .then(({ wishlist }) => wishlist)
-      .catch(() => null)
+      .catch(handleWishlistError)
   }
 
 // Create a wishlist for the authenticated customer
@@ -74,7 +101,11 @@ export const createWishlist =
         headers,
       })
       .then(({ wishlist }) => wishlist)
-      .catch(medusaError)
+      .catch(handleWishlistError)
+
+    if (!wishlist) {
+      return null
+    }
 
     const cacheTag = await getCacheTag("wishlists")
     revalidateTag(cacheTag)
@@ -109,7 +140,11 @@ export const addVariantToWishlist = async (
       body: { variant_id: variantId },
     })
     .then(({ wishlist }) => wishlist)
-    .catch(medusaError)
+    .catch(handleWishlistError)
+
+  if (!result) {
+    return null
+  }
 
   const cacheTag = await getCacheTag("wishlists")
   revalidateTag(cacheTag)
@@ -138,7 +173,11 @@ export const removeWishlistItem = async (
       }
     )
     .then(({ wishlist }) => wishlist)
-    .catch(medusaError)
+    .catch(handleWishlistError)
+
+  if (!result) {
+    return null
+  }
 
   const cacheTag = await getCacheTag("wishlists")
   revalidateTag(cacheTag)
