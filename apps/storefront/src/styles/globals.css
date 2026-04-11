@@ -80,25 +80,26 @@
   }
 
   :root[data-theme="impulse"] {
-    --pi-font-sans: "Archivo", "Inter", "Helvetica Neue", Arial, sans-serif;
-    --pi-font-serif: "Merriweather", Georgia, serif;
-    --pi-bg: #fff8f5;
-    --pi-surface: #ffece3;
-    --pi-surface-soft: #ffe3d5;
-    --pi-surface-emphasis: #ffd5c0;
-    --pi-text: #271718;
-    --pi-muted: #6e4a3b;
-    --pi-muted-soft: #895f4f;
-    --pi-border: #f0c7b0;
-    --pi-border-strong: #e08b5f;
-    --pi-primary: #d9480f;
-    --pi-primary-hover: #c63d09;
-    --pi-primary-active: #a63007;
-    --pi-accent: #ffe3d5;
-    --pi-focus: #c63d09;
-    --pi-shell-bg: #fff8f5;
-    --pi-nav-bg: rgba(255, 248, 245, 0.94);
-    --pi-footer-bg: #ffece3;
+    --pi-font-sans: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Futura PT", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --pi-bg: #ffffff;
+    --pi-surface: #f5f5f5;
+    --pi-surface-soft: #f0f0f0;
+    --pi-surface-emphasis: #e7e7e7;
+    --pi-text: #1c1c1c;
+    --pi-muted: #4f4f4f;
+    --pi-muted-soft: #686868;
+    --pi-border: #dedede;
+    --pi-border-strong: #b9b9b9;
+    --pi-primary: #e8283a;
+    --pi-primary-hover: #d91d32;
+    --pi-primary-active: #be1a2b;
+    --pi-accent: #ff6b35;
+    --pi-focus: #d91d32;
+    --pi-shell-bg: #ffffff;
+    --pi-nav-bg: rgba(255, 255, 255, 0.94);
+    --pi-footer-bg: #f5f5f5;
+    --pi-button-text: #ffffff;
     --pi-heading-font: var(--pi-font-sans);
     --pi-body-font: var(--pi-font-sans);
   }
@@ -471,6 +472,32 @@
   .theme-solid-button:active {
     background: var(--pi-primary-active);
     border-color: var(--pi-primary-active);
+  }
+
+  .impulse-nav-link {
+    color: var(--pi-text);
+    transition: color 180ms ease;
+  }
+
+  .impulse-nav-link:hover {
+    color: var(--pi-primary);
+  }
+
+  .impulse-marquee-track {
+    animation: impulse-marquee 26s linear infinite;
+  }
+
+  .impulse-logo-track {
+    animation: impulse-marquee 22s linear infinite;
+  }
+
+  @keyframes impulse-marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   .contrast-btn {

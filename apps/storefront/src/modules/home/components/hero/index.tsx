@@ -1,11 +1,13 @@
 import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
+import { normalizeImageUrl } from "@lib/util/normalize-image-url"
 import {
   getStorefrontThemePresentation,
 } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
+import ImpulseHero from "./impulse-hero"
 import type { CSSProperties, ReactNode } from "react"
 
 type HeroProps = {
@@ -66,6 +68,31 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isImpulse = theme.themePresetKey === "impulse"
+
+  if (isImpulse) {
+    return (
+      <ImpulseHero
+        eyebrow={theme.heroEyebrow}
+        heading={theme.heroHeading}
+        subheading={theme.heroSubheading}
+        ctaLabel={
+          collection
+            ? t(messages.home.shopCollection, { name: collection.title })
+            : theme.ctaLabel
+        }
+        ctaHref={primaryHref}
+        secondaryLabel={secondaryLabel}
+        secondaryHref={secondaryHref}
+        slides={products.map((product) => ({
+          id: product.id,
+          title: product.title,
+          handle: product.handle || null,
+          image: normalizeImageUrl(product.thumbnail || product.images?.[0]?.url),
+        }))}
+      />
+    )
+  }
 
   return (
     <section

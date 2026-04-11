@@ -11,6 +11,7 @@ import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { isStorefrontPluginEnabled } from "@lib/util/plugin-manifest"
 import { buildChatbotProductContext } from "@lib/util/chatbot-product-context"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 import { PayloadContentBlock } from "types/payload"
@@ -46,6 +47,8 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     product,
     selectedVariantId,
   })
+  const theme = getStorefrontThemePresentation()
+  const isImpulse = theme.themePresetKey === "impulse"
   const hasInlineCommerceCallout = Boolean(
     contentBlocks?.some((block) => block.blockType === "commerce-callout")
   )
@@ -55,7 +58,11 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       <ChatbotContextSync productContext={chatbotProductContext} />
       {!hasInlineCommerceCallout ? (
         <div
-          className="content-container py-12 small:py-14"
+          className={
+            isImpulse
+              ? "content-container py-12 pb-20 small:py-14 small:pb-24"
+              : "content-container py-12 small:py-14"
+          }
           data-testid="product-container"
         >
           <div className="grid gap-10 small:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] small:items-start">

@@ -3,6 +3,7 @@
 import { addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { useI18n } from "@lib/i18n/use-i18n"
+import { StorefrontThemePresetKey } from "@lib/util/theme-presets"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
@@ -19,6 +20,7 @@ type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  themePresetKey?: StorefrontThemePresetKey
 }
 
 const optionsAsKeymap = (
@@ -33,6 +35,7 @@ const optionsAsKeymap = (
 export default function ProductActions({
   product,
   disabled,
+  themePresetKey,
 }: ProductActionsProps) {
   const { messages } = useI18n()
   const router = useRouter()
@@ -41,7 +44,9 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [countdown, setCountdown] = useState(20 * 60)
   const countryCode = useParams().countryCode as string
+  const isImpulse = themePresetKey === "impulse"
 
   useEffect(() => {
     if (product.variants?.length === 1) {
@@ -49,6 +54,25 @@ export default function ProductActions({
       setOptions(variantOptions ?? {})
     }
   }, [product.variants])
+
+  useEffect(() => {
+    if (!isImpulse) {
+      return
+    }
+
+    const timer = window.setInterval(() => {
+      setCountdown((current) => {
+        if (current <= 1) {
+          return 20 * 60
+        }
+        return current - 1
+      })
+    }, 1000)
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [isImpulse])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -121,6 +145,9 @@ export default function ProductActions({
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
+  const countdownLabel = `${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
+    countdown % 60
+  ).padStart(2, "0")}`
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
@@ -142,6 +169,7 @@ export default function ProductActions({
       <div
         className="flex flex-col gap-y-5 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6"
         ref={actionsRef}
+        id="product-actions-panel"
       >
         <div>
           {(product.variants?.length ?? 0) > 1 && (
@@ -204,6 +232,54 @@ export default function ProductActions({
           optionsDisabled={!!disabled || isAdding}
         />
       </div>
+
+      {isImpulse && !inView ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--pi-border)] bg-[rgba(255,255,255,0.96)] px-4 py-3 backdrop-blur-md">
+          <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p
+                className="truncate text-sm font-medium"
+                style={{ fontFamily: "var(--pi-heading-font)" }}
+              >
+                {product.title}
+              </p>
+              <p className="text-xs text-[var(--pi-muted)]">
+                Deal ends in{" "}
+                <span className="font-semibold text-[#d9480f]">
+                  {countdownLabel}
+                </span>
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <a
+                href="#product-actions-panel"
+                className="theme-outline-button !h-10 !rounded-[2px] !px-4 !text-xs !uppercase !tracking-[0.12em]"
+              >
+                Choose options
+              </a>
+              <Button
+                onClick={handleAddToCart}
+                disabled={
+                  !inStock ||
+                  !selectedVariant ||
+                  !!disabled ||
+                  isAdding ||
+                  !isValidVariant
+                }
+                variant="primary"
+                className="theme-solid-button !h-10 !rounded-[2px] !border-[#e8283a] !bg-[#e8283a] !px-4 !text-xs !uppercase !tracking-[0.12em]"
+                isLoading={isAdding}
+              >
+                {!selectedVariant
+                  ? messages.common.selectVariant
+                  : !inStock
+                  ? messages.common.outOfStock
+                  : messages.common.addToCart}
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   )
 }
