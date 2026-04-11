@@ -320,6 +320,12 @@ export const messages = {
       digitalProducts: "Digital products",
       digitalProductsDescription:
         "View the digital products you've purchased and download them.",
+      wishlists: "Wishlists",
+      wishlistsDescription: "View and manage your saved items.",
+      noWishlistItems: "Your wishlist is empty.",
+      addedToWishlist: "Added to wishlist",
+      removeFromWishlist: "Remove from wishlist",
+      addToWishlist: "Add to wishlist",
     },
     order: {
       tracking: "Tracking: {tracking}",
@@ -631,6 +637,12 @@ export const messages = {
       digitalProducts: "Produits numériques",
       digitalProductsDescription:
         "Consultez les produits numériques achetés et téléchargez-les.",
+      wishlists: "Listes de souhaits",
+      wishlistsDescription: "Consultez et gérez vos articles sauvegardés.",
+      noWishlistItems: "Votre liste de souhaits est vide.",
+      addedToWishlist: "Ajouté à la liste de souhaits",
+      removeFromWishlist: "Retirer de la liste de souhaits",
+      addToWishlist: "Ajouter à la liste de souhaits",
     },
     order: {
       tracking: "Suivi : {tracking}",
@@ -924,6 +936,12 @@ export const messages = {
       ordersDescription: "查看你最近與歷史訂單。",
       digitalProducts: "數位商品",
       digitalProductsDescription: "查看你已購買的數位商品並下載。",
+      wishlists: "收藏清單",
+      wishlistsDescription: "查看和管理你收藏的商品。",
+      noWishlistItems: "你的收藏清單是空的。",
+      addedToWishlist: "已加入收藏",
+      removeFromWishlist: "從收藏清單移除",
+      addToWishlist: "加入收藏",
     },
     order: {
       tracking: "物流追蹤：{tracking}",

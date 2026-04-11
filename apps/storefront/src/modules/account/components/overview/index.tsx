@@ -5,6 +5,7 @@ import ChevronDown from "@modules/common/icons/chevron-down"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
+import { retrieveWishlist } from "@lib/data/wishlist"
 
 type OverviewProps = {
   customer: HttpTypes.StoreCustomer | null
@@ -13,6 +14,8 @@ type OverviewProps = {
 
 const Overview = async ({ customer, orders }: OverviewProps) => {
   const { messages, t } = await getI18n()
+  const wishlist = await retrieveWishlist()
+  const wishlistItemCount = wishlist?.items?.length || 0
 
   return (
     <div data-testid="overview-page-wrapper">
@@ -36,7 +39,7 @@ const Overview = async ({ customer, orders }: OverviewProps) => {
         </div>
         <div className="flex flex-col border-t border-[var(--rm-border)] py-8">
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
-            <div className="mb-6 grid gap-4 small:grid-cols-2">
+            <div className="mb-6 grid gap-4 small:grid-cols-3">
               <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
                 <h3 className="text-large-semi">{messages.account.profile}</h3>
                 <div className="flex items-end gap-x-2">
@@ -65,6 +68,22 @@ const Overview = async ({ customer, orders }: OverviewProps) => {
                   </span>
                   <span className="uppercase text-base-regular text-ui-fg-subtle">
                     {messages.account.saved}
+                  </span>
+                </div>
+              </div>
+
+              <div className="rm-panel-soft flex flex-col gap-y-4 p-5">
+                <h3 className="text-large-semi">Wishlist</h3>
+                <div className="flex items-end gap-x-2">
+                  <span
+                    className="text-3xl-semi leading-none"
+                    data-testid="wishlist-count"
+                    data-value={wishlistItemCount}
+                  >
+                    {wishlistItemCount}
+                  </span>
+                  <span className="uppercase text-base-regular text-ui-fg-subtle">
+                    {wishlistItemCount === 1 ? "item" : "items"}
                   </span>
                 </div>
               </div>

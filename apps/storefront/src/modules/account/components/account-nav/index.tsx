@@ -9,6 +9,7 @@ import ChevronDown from "@modules/common/icons/chevron-down"
 import User from "@modules/common/icons/user"
 import MapPin from "@modules/common/icons/map-pin"
 import Package from "@modules/common/icons/package"
+import HeartIcon from "@modules/common/icons/heart"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import { signout } from "@lib/data/customer"
@@ -91,6 +92,19 @@ const AccountNav = ({
                   </LocalizedClientLink>
                 </li>
                 <li>
+                  <LocalizedClientLink
+                    href="/account/wishlists"
+                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
+                    data-testid="wishlists-link"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <HeartIcon className="w-5 h-5" />
+                      <span>{messages.account.wishlists}</span>
+                    </div>
+                    <ChevronDown className="transform -rotate-90" />
+                  </LocalizedClientLink>
+                </li>
+                <li>
                   <button
                     type="button"
                     className="flex w-full items-center justify-between px-5 py-4"
@@ -152,6 +166,15 @@ const AccountNav = ({
                   data-testid="orders-link"
                 >
                   {messages.account.orders}
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/wishlists"
+                  route={route!}
+                  data-testid="wishlists-link"
+                >
+                  {messages.account.wishlists}
                 </AccountNavLink>
               </li>
               <li className="text-grey-700">

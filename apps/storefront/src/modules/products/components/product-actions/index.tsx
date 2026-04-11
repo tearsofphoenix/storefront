@@ -12,6 +12,7 @@ import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
+import WishlistButton from "@modules/wishlist/components/wishlist-button"
 import { useRouter } from "next/navigation"
 
 type ProductActionsProps = {
@@ -166,26 +167,31 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        <Button
-          onClick={handleAddToCart}
-          disabled={
-            !inStock ||
-            !selectedVariant ||
-            !!disabled ||
-            isAdding ||
-            !isValidVariant
-          }
-          variant="primary"
-          className="theme-solid-button !h-11 !w-full !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
-          isLoading={isAdding}
-          data-testid="add-product-button"
-        >
-          {!selectedVariant && !options
-            ? messages.common.selectVariant
-            : !inStock || !isValidVariant
-            ? messages.common.outOfStock
-            : messages.common.addToCart}
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={handleAddToCart}
+            disabled={
+              !inStock ||
+              !selectedVariant ||
+              !!disabled ||
+              isAdding ||
+              !isValidVariant
+            }
+            variant="primary"
+            className="theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
+            isLoading={isAdding}
+            data-testid="add-product-button"
+          >
+            {!selectedVariant && !options
+              ? messages.common.selectVariant
+              : !inStock || !isValidVariant
+              ? messages.common.outOfStock
+              : messages.common.addToCart}
+          </Button>
+          {selectedVariant?.id && (
+            <WishlistButton variantId={selectedVariant.id} />
+          )}
+        </div>
         <MobileActions
           product={product}
           variant={selectedVariant}
