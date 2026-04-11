@@ -1,11 +1,14 @@
 import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
+import { normalizeImageUrl } from "@lib/util/normalize-image-url"
+import { shouldUnoptimizeImage } from "@lib/util/should-unoptimize-image"
 import {
   getStorefrontThemePresentation,
 } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
+import Image from "next/image"
 import type { CSSProperties, ReactNode } from "react"
 
 type HeroProps = {
@@ -66,6 +69,64 @@ export default async function Hero({ collection, region }: HeroProps) {
     : theme.ctaHref
   const secondaryHref = theme.secondaryCtaHref || "/store"
   const secondaryLabel = theme.secondaryCtaLabel || messages.home.browseCatalog
+  const isDawn = theme.themePresetKey === "dawn"
+  const heroImage = normalizeImageUrl(
+    primaryProduct?.thumbnail || primaryProduct?.images?.[0]?.url
+  )
+
+  if (isDawn) {
+    return (
+      <section className="relative isolate min-h-[72dvh] overflow-hidden border-y border-[var(--pi-border)]">
+        <div className="absolute inset-0">
+          {heroImage ? (
+            <Image
+              src={heroImage}
+              alt={primaryProduct?.title ?? theme.brandName}
+              fill
+              priority
+              sizes="100vw"
+              unoptimized={shouldUnoptimizeImage(heroImage)}
+              className="object-cover object-center"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-black/34" />
+        </div>
+        <div className="content-container relative z-[1] grid min-h-[72dvh] items-end py-14 small:items-center small:py-20">
+          <div className="grid max-w-[39rem] gap-5">
+            <span className="inline-flex w-fit border border-white/35 bg-black/20 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
+              {theme.heroEyebrow}
+            </span>
+            <h1
+              className="max-w-[12ch] text-[clamp(2.3rem,5.8vw,4.6rem)] leading-[0.98] text-white"
+              style={{ fontFamily: "var(--pi-heading-font)" }}
+            >
+              {theme.heroHeading}
+            </h1>
+            <p className="max-w-[34rem] text-base leading-7 text-white/90 small:text-lg">
+              {theme.heroSubheading}
+            </p>
+
+            <div className="flex flex-wrap gap-3 pt-1">
+              <ActionLink
+                href={primaryHref}
+                className="theme-solid-button !rounded-none !border-[#121212] !bg-[#121212] !px-6"
+              >
+                {collection
+                  ? t(messages.home.shopCollection, { name: collection.title })
+                  : theme.ctaLabel}
+              </ActionLink>
+              <ActionLink
+                href={secondaryHref}
+                className="theme-outline-button !rounded-none !border-white !bg-transparent !text-white hover:!bg-white hover:!text-[#121212]"
+              >
+                {secondaryLabel}
+              </ActionLink>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section

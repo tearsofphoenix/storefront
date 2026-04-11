@@ -1,5 +1,6 @@
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -54,6 +55,8 @@ export default async function PaginatedProducts({
   if (!region) {
     return null
   }
+  const theme = getStorefrontThemePresentation()
+  const isDawn = theme.themePresetKey === "dawn"
 
   let {
     response: { products, count },
@@ -69,7 +72,11 @@ export default async function PaginatedProducts({
   return (
     <>
       <ul
-        className="grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
+        className={
+          isDawn
+            ? "grid w-full grid-cols-2 gap-x-5 gap-y-10 border-t border-[var(--pi-border)] pt-8 small:grid-cols-3"
+            : "grid w-full grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--pi-border)] pt-8 small:grid-cols-4"
+        }
         data-testid="products-list"
       >
         {products.map((p) => {

@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { getI18n } from "@lib/i18n/server"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
@@ -17,6 +18,8 @@ const StoreTemplate = async ({
   countryCode: string
 }) => {
   const { messages } = await getI18n()
+  const theme = getStorefrontThemePresentation()
+  const isDawn = theme.themePresetKey === "dawn"
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
@@ -27,7 +30,15 @@ const StoreTemplate = async ({
         style={{ borderColor: "var(--pi-border)" }}
       >
         <div className="grid gap-2">
-          <h1 className="text-[1.9rem] font-semibold small:text-[2.3rem]" data-testid="store-page-title">
+          <h1
+            className={
+              isDawn
+                ? "text-[2.2rem] leading-[1.04] small:text-[2.8rem]"
+                : "text-[1.9rem] font-semibold small:text-[2.3rem]"
+            }
+            data-testid="store-page-title"
+            style={isDawn ? { fontFamily: "var(--pi-heading-font)" } : undefined}
+          >
             {messages.common.allProducts}
           </h1>
           <p className="max-w-[32rem] text-sm leading-6 small:text-base" style={{ color: "var(--pi-muted)" }}>

@@ -137,16 +137,6 @@ export default async function Footer() {
                     {messages.account.termsOfUse}
                   </LocalizedClientLink>
                 </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="transition-colors"
-                  >
-                    {messages.common.documentation}
-                  </a>
-                </li>
               </ul>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
 } from "@lib/util/theme-manifest"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
+import DawnSearch from "@modules/layout/components/dawn-search"
 import SideMenu from "@modules/layout/components/side-menu"
 import ThemeSwitcher from "@modules/layout/components/theme-switcher"
 
@@ -20,6 +21,103 @@ export default async function Nav() {
   ])
   const { messages } = await getI18n()
   const theme = getStorefrontThemePresentation()
+  const isDawn = theme.themePresetKey === "dawn"
+
+  if (isDawn) {
+    return (
+      <div className="sticky inset-x-0 top-0 z-50">
+        {theme.announcement ? (
+          <div
+            className="border-b px-4 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+            style={{
+              background: "var(--pi-surface)",
+              borderColor: "var(--pi-border)",
+              color: "var(--pi-muted-soft)",
+            }}
+          >
+            {theme.announcement}
+          </div>
+        ) : null}
+        <header
+          className="relative mx-auto border-b bg-[var(--pi-nav-bg)]"
+          style={{
+            borderColor: "var(--pi-border)",
+          }}
+        >
+          <nav
+            className="content-container grid min-h-[74px] grid-cols-[1fr_auto_1fr] items-center gap-3 text-sm"
+            style={{
+              color: "var(--pi-muted)",
+              fontFamily: "var(--pi-body-font)",
+            }}
+          >
+            <div className="flex items-center gap-4">
+              <div className="small:hidden">
+                <SideMenu
+                  regions={regions}
+                  locales={locales}
+                  currentLocale={currentLocale}
+                  brandName={theme.brandName}
+                  primaryColor={theme.primaryColor}
+                  navBackground="var(--pi-nav-bg)"
+                />
+              </div>
+              <div className="hidden items-center gap-x-7 small:flex">
+                <LocalizedClientLink
+                  className="text-[12px] uppercase tracking-[0.12em]"
+                  href="/store"
+                  style={{ color: "var(--pi-text)" }}
+                >
+                  {messages.common.store}
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  className="text-[12px] uppercase tracking-[0.12em]"
+                  href="/account"
+                  data-testid="nav-account-link"
+                  style={{ color: "var(--pi-text)" }}
+                >
+                  {messages.common.account}
+                </LocalizedClientLink>
+              </div>
+            </div>
+
+            <LocalizedClientLink
+              href="/"
+              className="justify-self-center text-[12px] font-semibold uppercase tracking-[0.2em]"
+              style={{
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
+              }}
+              data-testid="nav-store-link"
+            >
+              {theme.brandName}
+            </LocalizedClientLink>
+
+            <div className="flex items-center justify-end gap-1 small:gap-3">
+              <DawnSearch />
+              <ThemeSwitcher className="hidden small:flex" />
+              <Suspense
+                fallback={
+                  <LocalizedClientLink
+                    className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] uppercase tracking-[0.12em]"
+                    href="/cart"
+                    data-testid="nav-cart-link"
+                    style={{
+                      color: "var(--pi-text)",
+                    }}
+                  >
+                    {messages.common.cart} (0)
+                  </LocalizedClientLink>
+                }
+              >
+                <CartButton />
+              </Suspense>
+            </div>
+          </nav>
+        </header>
+      </div>
+    )
+  }
 
   return (
     <div className="sticky inset-x-0 top-0 z-50">

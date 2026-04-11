@@ -1,5 +1,6 @@
 import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
+import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -12,6 +13,8 @@ export default async function ProductRail({
   region: HttpTypes.StoreRegion
 }) {
   const { messages } = await getI18n()
+  const theme = getStorefrontThemePresentation()
+  const isDawn = theme.themePresetKey === "dawn"
   const {
     response: { products: pricedProducts },
   } = await listProducts({
@@ -25,6 +28,44 @@ export default async function ProductRail({
 
   if (!pricedProducts) {
     return null
+  }
+
+  if (isDawn) {
+    return (
+      <section
+        className="content-container border-t py-14 small:py-18"
+        style={{ borderColor: "var(--pi-border)" }}
+      >
+        <div className="mb-8 grid gap-3 border-b pb-7">
+          <h2
+            className="text-[2rem] leading-[1.06] text-[var(--pi-text)] small:text-[2.4rem]"
+            style={{ fontFamily: "var(--pi-heading-font)" }}
+          >
+            Featured collection
+          </h2>
+          <p className="max-w-[38rem] text-sm text-[var(--pi-muted)] small:text-base">
+            {collection.title}
+          </p>
+          <LocalizedClientLink
+            href="/store"
+            className="theme-outline-button !mt-1 !w-fit !rounded-none"
+          >
+            {messages.common.browseAllProducts}
+          </LocalizedClientLink>
+        </div>
+
+        <ul
+          className="grid grid-cols-2 gap-x-6 gap-y-10 small:grid-cols-3"
+          data-testid="featured-products-list"
+        >
+          {pricedProducts.map((product) => (
+            <li key={product.id}>
+              <ProductPreview product={product} region={region} isFeatured />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
   }
 
   return (
