@@ -30,22 +30,245 @@
     font-display: swap;
   }
 
-  :root {
-    --rm-font-sans: reMarkableSans, Helvetica, sans-serif;
-    --rm-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;
-    --rm-bg: #fcfbf8;
-    --rm-surface: #f9f6f1;
-    --rm-surface-soft: #f3efe7;
-    --rm-surface-emphasis: #ede8de;
-    --rm-text: #211e1c;
-    --rm-muted: #584f4b;
-    --rm-muted-soft: #6e635e;
-    --rm-border: #d9d2c4;
-    --rm-border-strong: #6e635e;
-    --rm-primary: #2559f4;
-    --rm-primary-hover: #1142d4;
-    --rm-primary-active: #003bb2;
-    --rm-focus: #003bb2;
+  :root,
+  :root[data-theme="dawn"] {
+    --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
+    --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;
+    --pi-bg: #fcfbf8;
+    --pi-surface: #f9f6f1;
+    --pi-surface-soft: #f3efe7;
+    --pi-surface-emphasis: #ede8de;
+    --pi-text: #211e1c;
+    --pi-muted: #584f4b;
+    --pi-muted-soft: #6e635e;
+    --pi-border: #d9d2c4;
+    --pi-border-strong: #6e635e;
+    --pi-primary: #2559f4;
+    --pi-primary-hover: #1142d4;
+    --pi-primary-active: #003bb2;
+    --pi-accent: #f3efe7;
+    --pi-focus: #003bb2;
+    --pi-shell-bg: #fcfbf8;
+    --pi-nav-bg: rgba(252, 251, 248, 0.94);
+    --pi-footer-bg: #f9f6f1;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="prestige"] {
+    --pi-font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Iowan Old Style", "Times New Roman", serif;
+    --pi-bg: #fbf8f5;
+    --pi-surface: #f4ede7;
+    --pi-surface-soft: #efe4db;
+    --pi-surface-emphasis: #e4d6ca;
+    --pi-text: #1f1a17;
+    --pi-muted: #64554d;
+    --pi-muted-soft: #7a6a61;
+    --pi-border: #d9cec5;
+    --pi-border-strong: #9f8d81;
+    --pi-primary: #1f4a3d;
+    --pi-primary-hover: #173a31;
+    --pi-primary-active: #0e2b23;
+    --pi-accent: #efe4db;
+    --pi-focus: #173a31;
+    --pi-shell-bg: #fbf8f5;
+    --pi-nav-bg: rgba(251, 248, 245, 0.94);
+    --pi-footer-bg: #f4ede7;
+    --pi-heading-font: var(--pi-font-serif);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="impulse"] {
+    --pi-font-sans: "Archivo", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Merriweather", Georgia, serif;
+    --pi-bg: #fff8f5;
+    --pi-surface: #ffece3;
+    --pi-surface-soft: #ffe3d5;
+    --pi-surface-emphasis: #ffd5c0;
+    --pi-text: #271718;
+    --pi-muted: #6e4a3b;
+    --pi-muted-soft: #895f4f;
+    --pi-border: #f0c7b0;
+    --pi-border-strong: #e08b5f;
+    --pi-primary: #d9480f;
+    --pi-primary-hover: #c63d09;
+    --pi-primary-active: #a63007;
+    --pi-accent: #ffe3d5;
+    --pi-focus: #c63d09;
+    --pi-shell-bg: #fff8f5;
+    --pi-nav-bg: rgba(255, 248, 245, 0.94);
+    --pi-footer-bg: #ffece3;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="warehouse"] {
+    --pi-font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "IBM Plex Serif", "Book Antiqua", Georgia, serif;
+    --pi-bg: #f6f7f9;
+    --pi-surface: #eef2f7;
+    --pi-surface-soft: #e6ecf5;
+    --pi-surface-emphasis: #d7e2f0;
+    --pi-text: #111827;
+    --pi-muted: #4b5563;
+    --pi-muted-soft: #5f6a79;
+    --pi-border: #d5dde8;
+    --pi-border-strong: #9cb0ca;
+    --pi-primary: #0f4c81;
+    --pi-primary-hover: #0d3d67;
+    --pi-primary-active: #092b48;
+    --pi-accent: #e6ecf5;
+    --pi-focus: #0d3d67;
+    --pi-shell-bg: #f6f7f9;
+    --pi-nav-bg: rgba(246, 247, 249, 0.95);
+    --pi-footer-bg: #eef2f7;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="motion"] {
+    --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
+    --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;
+    --pi-bg: #f3f5ef;
+    --pi-surface: #e8eddc;
+    --pi-surface-soft: #dde4ce;
+    --pi-surface-emphasis: #d2dbc0;
+    --pi-text: #1f2717;
+    --pi-muted: #4d5c3f;
+    --pi-muted-soft: #627455;
+    --pi-border: #c8d4b6;
+    --pi-border-strong: #95a87b;
+    --pi-primary: #35663f;
+    --pi-primary-hover: #2a5232;
+    --pi-primary-active: #213f27;
+    --pi-accent: #dde4ce;
+    --pi-focus: #2a5232;
+    --pi-shell-bg: #f3f5ef;
+    --pi-nav-bg: rgba(243, 245, 239, 0.95);
+    --pi-footer-bg: #e8eddc;
+    --pi-heading-font: var(--pi-font-serif);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="minimal"] {
+    --pi-font-sans: reMarkableSans, Helvetica, sans-serif;
+    --pi-font-serif: reMarkableSerif, "Book Antiqua", Georgia, serif;
+    --pi-bg: #ffffff;
+    --pi-surface: #fafafa;
+    --pi-surface-soft: #f3f3f3;
+    --pi-surface-emphasis: #ececec;
+    --pi-text: #171717;
+    --pi-muted: #4b5563;
+    --pi-muted-soft: #6b7280;
+    --pi-border: #e5e7eb;
+    --pi-border-strong: #9ca3af;
+    --pi-primary: #111827;
+    --pi-primary-hover: #0f172a;
+    --pi-primary-active: #020617;
+    --pi-accent: #f3f4f6;
+    --pi-focus: #0f172a;
+    --pi-shell-bg: #ffffff;
+    --pi-nav-bg: rgba(255, 255, 255, 0.95);
+    --pi-footer-bg: #fafafa;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="food-restaurant"] {
+    --pi-font-sans: "Avenir Next", "Segoe UI", Arial, sans-serif;
+    --pi-font-serif: "Merriweather", Georgia, serif;
+    --pi-bg: #fff7f0;
+    --pi-surface: #ffecd9;
+    --pi-surface-soft: #ffe0c1;
+    --pi-surface-emphasis: #ffd2a9;
+    --pi-text: #2e1a10;
+    --pi-muted: #7a4f32;
+    --pi-muted-soft: #966547;
+    --pi-border: #f5c8a0;
+    --pi-border-strong: #d48c52;
+    --pi-primary: #c65d1a;
+    --pi-primary-hover: #a94d13;
+    --pi-primary-active: #873d0f;
+    --pi-accent: #ffe0c1;
+    --pi-focus: #a94d13;
+    --pi-shell-bg: #fff7f0;
+    --pi-nav-bg: rgba(255, 247, 240, 0.95);
+    --pi-footer-bg: #ffecd9;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="electronics-pro"] {
+    --pi-font-sans: "IBM Plex Sans", "Inter", Arial, sans-serif;
+    --pi-font-serif: "IBM Plex Serif", "Book Antiqua", Georgia, serif;
+    --pi-bg: #f4f7fb;
+    --pi-surface: #eaf0f8;
+    --pi-surface-soft: #dfe8f3;
+    --pi-surface-emphasis: #cedbed;
+    --pi-text: #0e1726;
+    --pi-muted: #3f5670;
+    --pi-muted-soft: #547193;
+    --pi-border: #bfd0e4;
+    --pi-border-strong: #7f9fc4;
+    --pi-primary: #1a66ff;
+    --pi-primary-hover: #0050e0;
+    --pi-primary-active: #003fb3;
+    --pi-accent: #dfe8f3;
+    --pi-focus: #0050e0;
+    --pi-shell-bg: #f4f7fb;
+    --pi-nav-bg: rgba(244, 247, 251, 0.95);
+    --pi-footer-bg: #eaf0f8;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="kids-family"] {
+    --pi-font-sans: "Quicksand", "Trebuchet MS", Arial, sans-serif;
+    --pi-font-serif: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+    --pi-bg: #fff8fd;
+    --pi-surface: #fff0fa;
+    --pi-surface-soft: #ffe6f7;
+    --pi-surface-emphasis: #ffd7f1;
+    --pi-text: #462244;
+    --pi-muted: #7c4c79;
+    --pi-muted-soft: #986794;
+    --pi-border: #f4c9ec;
+    --pi-border-strong: #df95cf;
+    --pi-primary: #ff5ca8;
+    --pi-primary-hover: #e04b94;
+    --pi-primary-active: #bf3d7b;
+    --pi-accent: #ffe6f7;
+    --pi-focus: #e04b94;
+    --pi-shell-bg: #fff8fd;
+    --pi-nav-bg: rgba(255, 248, 253, 0.95);
+    --pi-footer-bg: #fff0fa;
+    --pi-heading-font: var(--pi-font-sans);
+    --pi-body-font: var(--pi-font-sans);
+  }
+
+  :root[data-theme="home-living"] {
+    --pi-font-sans: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+    --pi-font-serif: "Lora", "Book Antiqua", Georgia, serif;
+    --pi-bg: #f7f3ee;
+    --pi-surface: #efe8de;
+    --pi-surface-soft: #e6ddd2;
+    --pi-surface-emphasis: #dacdbf;
+    --pi-text: #2f2822;
+    --pi-muted: #66584a;
+    --pi-muted-soft: #7d6d5d;
+    --pi-border: #d5c8b9;
+    --pi-border-strong: #aa977f;
+    --pi-primary: #7a5c3e;
+    --pi-primary-hover: #664b31;
+    --pi-primary-active: #4f3a26;
+    --pi-accent: #e6ddd2;
+    --pi-focus: #664b31;
+    --pi-shell-bg: #f7f3ee;
+    --pi-nav-bg: rgba(247, 243, 238, 0.95);
+    --pi-footer-bg: #efe8de;
+    --pi-heading-font: var(--pi-font-serif);
+    --pi-body-font: var(--pi-font-sans);
   }
 
   html {
@@ -53,9 +276,9 @@
   }
 
   body {
-    font-family: var(--rm-font-sans);
-    background: var(--rm-bg);
-    color: var(--rm-text);
+    font-family: var(--pi-body-font);
+    background: var(--pi-bg);
+    color: var(--pi-text);
     letter-spacing: 0;
   }
 
@@ -65,30 +288,30 @@
   h4,
   h5,
   h6 {
-    font-family: var(--rm-font-sans);
+    font-family: var(--pi-heading-font);
     letter-spacing: -0.015em;
-    color: var(--rm-text);
+    color: var(--pi-text);
   }
 
   button,
   input,
   textarea,
   select {
-    font-family: var(--rm-font-sans);
+    font-family: var(--pi-body-font);
   }
 
   a {
-    color: var(--rm-text);
+    color: var(--pi-text);
   }
 
   *:focus-visible {
-    outline: 2px solid var(--rm-focus);
+    outline: 2px solid var(--pi-focus);
     outline-offset: 1px;
   }
 
   ::selection {
     background: #e9f2ff;
-    color: var(--rm-text);
+    color: var(--pi-text);
   }
 }
 
@@ -145,35 +368,35 @@
   }
 
   .rm-card {
-    border: 1px solid var(--rm-border);
+    border: 1px solid var(--pi-border);
     border-radius: 0;
-    background: var(--rm-surface);
+    background: var(--pi-surface);
     box-shadow: none;
   }
 
   .rm-panel {
-    border: 1px solid var(--rm-border);
+    border: 1px solid var(--pi-border);
     border-radius: 0;
-    background: var(--rm-surface);
+    background: var(--pi-surface);
     box-shadow: none;
   }
 
   .rm-card-soft {
-    border: 1px solid var(--rm-border);
+    border: 1px solid var(--pi-border);
     border-radius: 0;
-    background: var(--rm-surface-soft);
+    background: var(--pi-surface-soft);
     box-shadow: none;
   }
 
   .rm-panel-soft {
-    border: 1px solid var(--rm-border);
+    border: 1px solid var(--pi-border);
     border-radius: 0;
-    background: var(--rm-surface-soft);
+    background: var(--pi-surface-soft);
     box-shadow: none;
   }
 
   .rm-field {
-    border: 1px solid var(--rm-border);
+    border: 1px solid var(--pi-border);
     border-radius: 0;
     background: #fff;
     box-shadow: none;
@@ -181,8 +404,8 @@
 
   .theme-section-panel {
     border-radius: 0;
-    background: var(--rm-surface-soft);
-    border: 1px solid var(--rm-border);
+    background: var(--pi-surface-soft);
+    border: 1px solid var(--pi-border);
     box-shadow: none;
   }
 
@@ -192,14 +415,14 @@
     align-items: center;
     gap: 0.35rem;
     border-radius: 0;
-    border: 1px solid var(--rm-border);
-    background: var(--rm-surface);
+    border: 1px solid var(--pi-border);
+    background: var(--pi-surface);
     padding: 0.35rem 0.75rem;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--rm-muted-soft);
+    color: var(--pi-muted-soft);
   }
 
   .theme-outline-button,
@@ -224,40 +447,40 @@
   }
 
   .theme-outline-button {
-    border: 1px solid var(--rm-border-strong);
+    border: 1px solid var(--pi-border-strong);
     background: transparent;
-    color: var(--rm-text);
+    color: var(--pi-text);
   }
 
   .theme-outline-button:hover {
-    background: var(--rm-surface-soft);
-    border-color: var(--rm-text);
+    background: var(--pi-surface-soft);
+    border-color: var(--pi-text);
   }
 
   .theme-solid-button {
-    border: 1px solid var(--rm-primary);
-    background: var(--rm-primary);
+    border: 1px solid var(--pi-primary);
+    background: var(--pi-primary);
     color: #fff;
   }
 
   .theme-solid-button:hover {
-    background: var(--rm-primary-hover);
-    border-color: var(--rm-primary-hover);
+    background: var(--pi-primary-hover);
+    border-color: var(--pi-primary-hover);
   }
 
   .theme-solid-button:active {
-    background: var(--rm-primary-active);
-    border-color: var(--rm-primary-active);
+    background: var(--pi-primary-active);
+    border-color: var(--pi-primary-active);
   }
 
   .contrast-btn {
     @apply px-4 py-2 transition-colors duration-200 ease-in;
-    border: 1px solid var(--rm-border-strong);
-    color: var(--rm-text);
+    border: 1px solid var(--pi-border-strong);
+    color: var(--pi-text);
   }
 
   .contrast-btn:hover {
-    background: var(--rm-text);
+    background: var(--pi-text);
     color: #fff;
   }
 

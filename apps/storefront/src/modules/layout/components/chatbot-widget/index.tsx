@@ -423,12 +423,12 @@ const ChatbotWidget = () => {
     <>
       {isOpen && (
         <div
-          className="fixed right-4 z-50 w-[calc(100vw-2rem)] max-w-[396px] overflow-hidden border border-[var(--rm-border)] bg-white shadow-none small:right-6"
+          className="fixed right-4 z-50 w-[calc(100vw-2rem)] max-w-[396px] overflow-hidden border border-[var(--pi-border)] bg-white shadow-none small:right-6"
           style={{
             bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.75rem)",
           }}
         >
-          <div className="flex items-center justify-between border-b border-[var(--rm-border)] bg-[var(--rm-surface)] px-4 py-3">
+          <div className="flex items-center justify-between border-b border-[var(--pi-border)] bg-[var(--pi-surface)] px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-[#111827]">
                 {settings.title || messages.chatbot.title}
@@ -458,7 +458,7 @@ const ChatbotWidget = () => {
           </div>
 
           {activeProductContext && (
-            <div className="border-b border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-4 py-3">
+            <div className="border-b border-[var(--pi-border)] bg-[var(--pi-surface-soft)] px-4 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
                 {messages.chatbot.currentProduct}
               </p>
@@ -467,19 +467,19 @@ const ChatbotWidget = () => {
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {activeProductContext.selected_variant_title && (
-                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--pi-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.selectedVariant}:{" "}
                     {activeProductContext.selected_variant_title}
                   </span>
                 )}
                 {activeProductContext.price_label && (
-                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--pi-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.price}: {activeProductContext.price_label}
                   </span>
                 )}
                 {typeof activeProductContext.selected_variant_in_stock ===
                   "boolean" && (
-                  <span className="border border-[var(--rm-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
+                  <span className="border border-[var(--pi-border)] bg-white px-2.5 py-1 text-[11px] text-[#4b5563]">
                     {messages.chatbot.availability}:{" "}
                     {activeProductContext.selected_variant_in_stock
                       ? messages.chatbot.inStock
@@ -505,8 +505,8 @@ const ChatbotWidget = () => {
                   <div
                     className={`max-w-[88%] border px-4 py-3 text-sm leading-6 ${
                       isAssistant
-                        ? "border-[var(--rm-border)] bg-[var(--rm-surface-soft)] text-[#111827]"
-                        : "border-[var(--rm-text)] bg-[var(--rm-text)] text-white"
+                        ? "border-[var(--pi-border)] bg-[var(--pi-surface-soft)] text-[#111827]"
+                        : "border-[var(--pi-text)] bg-[var(--pi-text)] text-white"
                     }`}
                   >
                     {isAssistant && message.isStreaming ? (
@@ -532,7 +532,7 @@ const ChatbotWidget = () => {
                         {message.sources.map((source) => (
                           <span
                             key={`${message.id}-${source.type}-${source.label}`}
-                            className="border border-[var(--rm-border)] bg-white px-2 py-1 text-[11px] text-[#4b5563]"
+                            className="border border-[var(--pi-border)] bg-white px-2 py-1 text-[11px] text-[#4b5563]"
                           >
                             {source.label}
                           </span>
@@ -551,7 +551,7 @@ const ChatbotWidget = () => {
 
             {isSubmitting && !chatMessages.some((message) => message.isStreaming) && (
               <div className="flex justify-start">
-                <div className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-4 py-3 text-sm text-[#6b7280]">
+                <div className="border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] px-4 py-3 text-sm text-[#6b7280]">
                   {messages.chatbot.thinking}
                 </div>
               </div>
@@ -565,7 +565,7 @@ const ChatbotWidget = () => {
           </div>
 
           {chatMessages.length <= 1 && settings.suggested_questions.length > 0 && (
-            <div className="border-t border-[var(--rm-border)] px-4 py-3">
+            <div className="border-t border-[var(--pi-border)] px-4 py-3">
               <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#6b7280]">
                 {messages.chatbot.suggested}
               </p>
@@ -584,7 +584,7 @@ const ChatbotWidget = () => {
                       })
                       void sendMessage(question)
                     }}
-                    className="border border-[var(--rm-border)] px-3 py-1.5 text-xs text-[#111827] transition-colors hover:border-[var(--rm-border-strong)] hover:bg-[var(--rm-surface-soft)]"
+                    className="border border-[var(--pi-border)] px-3 py-1.5 text-xs text-[#111827] transition-colors hover:border-[var(--pi-border-strong)] hover:bg-[var(--pi-surface-soft)]"
                   >
                     {question}
                   </button>
@@ -593,7 +593,7 @@ const ChatbotWidget = () => {
             </div>
           )}
 
-          <div className="border-t border-[var(--rm-border)] p-4">
+          <div className="border-t border-[var(--pi-border)] p-4">
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -604,7 +604,7 @@ const ChatbotWidget = () => {
                 }
               }}
               placeholder={settings.placeholder_text || messages.chatbot.placeholder}
-              className="min-h-[92px] w-full border border-[var(--rm-border)] px-3 py-3 text-sm outline-none transition-colors focus:border-[var(--rm-border-strong)]"
+              className="min-h-[92px] w-full border border-[var(--pi-border)] px-3 py-3 text-sm outline-none transition-colors focus:border-[var(--pi-border-strong)]"
               disabled={isSubmitting || isStreamingResponse}
             />
             <div className="mt-3 flex items-center justify-between">
@@ -630,7 +630,7 @@ const ChatbotWidget = () => {
       <button
         type="button"
         onClick={handleToggle}
-        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 border border-[var(--rm-text)] bg-[var(--rm-text)] px-4 py-3 text-sm font-medium text-white shadow-none transition-colors hover:border-[var(--rm-primary)] hover:bg-[var(--rm-primary)] small:right-6"
+        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 border border-[var(--pi-text)] bg-[var(--pi-text)] px-4 py-3 text-sm font-medium text-white shadow-none transition-colors hover:border-[var(--pi-primary)] hover:bg-[var(--pi-primary)] small:right-6"
         style={{
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
         }}

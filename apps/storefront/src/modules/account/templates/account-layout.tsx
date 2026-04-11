@@ -24,7 +24,7 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
           <div>{customer && <AccountNav customer={customer} />}</div>
           <div className="flex-1">{children}</div>
         </div>
-        <div className="mt-10 flex flex-col gap-8 border-t border-[var(--rm-border)] pt-8 small:flex-row small:items-end small:justify-between">
+        <div className="mt-10 flex flex-col gap-8 border-t border-[var(--pi-border)] pt-8 small:flex-row small:items-end small:justify-between">
           <div>
             <h3 className="mb-4 text-xl font-semibold text-grey-90">
               {messages.account.gotQuestions}

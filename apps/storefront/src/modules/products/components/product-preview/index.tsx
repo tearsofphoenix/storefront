@@ -1,6 +1,5 @@
 import { Text } from "@medusajs/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
-import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
@@ -24,7 +23,6 @@ export default async function ProductPreview({
   //   return null
   // }
 
-  const theme = getStorefrontThemePresentation()
   const { cheapestPrice } = getProductPrice({
     product,
   })
@@ -40,8 +38,8 @@ export default async function ProductPreview({
           isFeatured={isFeatured}
           className="bg-[#f7f7fa] p-0 shadow-none transition-opacity duration-200 group-hover:opacity-90"
           style={{
-            background: "var(--rm-surface-soft)",
-            border: "1px solid var(--rm-border)",
+            background: "var(--pi-surface-soft)",
+            border: "1px solid var(--pi-border)",
             borderRadius: 0,
             boxShadow: "none",
           }}
@@ -52,8 +50,8 @@ export default async function ProductPreview({
               className="text-sm font-medium leading-6"
               data-testid="product-title"
               style={{
-                color: "var(--rm-text)",
-                fontFamily: theme.headingFontFamily,
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
               }}
             >
               {product.title}

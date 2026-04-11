@@ -40,7 +40,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                 {messages.common.paymentDetails}
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
-                <Container className="flex h-7 w-fit items-center border border-[var(--rm-border)] bg-white p-2 shadow-none">
+                <Container className="flex h-7 w-fit items-center border border-[var(--pi-border)] bg-white p-2 shadow-none">
                   {paymentInfoMap[payment.provider_id]?.icon}
                 </Container>
                 <Text data-testid="payment-amount">

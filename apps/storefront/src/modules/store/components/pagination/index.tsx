@@ -35,8 +35,8 @@ export function Pagination({
       className={clx(
         "inline-flex h-10 min-w-10 items-center justify-center border px-3 text-sm font-medium transition-colors",
         {
-          "border-[var(--rm-text)] bg-[var(--rm-text)] text-white": isCurrent,
-          "border-[var(--rm-border)] bg-white text-grey-60 hover:border-[var(--rm-border-strong)] hover:text-grey-90":
+          "border-[var(--pi-text)] bg-[var(--pi-text)] text-white": isCurrent,
+          "border-[var(--pi-border)] bg-white text-grey-60 hover:border-[var(--pi-border-strong)] hover:text-grey-90":
             !isCurrent,
         }
       )}

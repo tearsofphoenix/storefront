@@ -3,9 +3,6 @@ import {
   type StorefrontPluginHighlight,
 } from "@lib/util/plugin-manifest"
 import { getI18n } from "@lib/i18n/server"
-import {
-  getStorefrontThemePresentation,
-} from "@lib/util/theme-manifest"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const HighlightAction = ({
@@ -39,7 +36,6 @@ const HighlightAction = ({
 
 const StorefrontPluginHighlights = async () => {
   const { messages } = await getI18n()
-  const theme = getStorefrontThemePresentation()
   const highlights = getStorefrontPluginHighlights()
 
   if (!highlights.length) {
@@ -55,8 +51,8 @@ const StorefrontPluginHighlights = async () => {
         <h3
           className="text-2xl small:text-3xl"
           style={{
-            color: "#111827",
-            fontFamily: theme.headingFontFamily,
+            color: "var(--pi-text)",
+            fontFamily: "var(--pi-heading-font)",
           }}
         >
           {messages.product.activePluginCapabilities}
@@ -66,7 +62,7 @@ const StorefrontPluginHighlights = async () => {
         {highlights.map((highlight) => (
           <article
             key={highlight.pluginId}
-            className="bg-[#f3ede2] p-6"
+            className="bg-[var(--pi-surface-soft)] p-6"
           >
             <div className="grid gap-3">
               <span className="theme-eyebrow">
@@ -76,8 +72,8 @@ const StorefrontPluginHighlights = async () => {
                 <h4
                   className="text-xl"
                   style={{
-                    color: "#111827",
-                    fontFamily: theme.headingFontFamily,
+                    color: "var(--pi-text)",
+                    fontFamily: "var(--pi-heading-font)",
                   }}
                 >
                   {highlight.title}
@@ -85,8 +81,8 @@ const StorefrontPluginHighlights = async () => {
                 <p
                   className="text-base leading-7"
                   style={{
-                    color: "#4b5563",
-                    fontFamily: theme.bodyFontFamily,
+                    color: "var(--pi-muted)",
+                    fontFamily: "var(--pi-body-font)",
                   }}
                 >
                   {highlight.description}

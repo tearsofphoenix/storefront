@@ -47,7 +47,7 @@ const Item: React.FC<AccordionItemProps> = ({
     <AccordionPrimitive.Item
       {...props}
       className={clx(
-        "group border-t border-[var(--rm-border)] py-3 last:mb-0 last:border-b last:border-[var(--rm-border)]",
+        "group border-t border-[var(--pi-border)] py-3 last:mb-0 last:border-b last:border-[var(--pi-border)]",
         className
       )}
     >
@@ -89,7 +89,7 @@ Accordion.Item = Item
 
 const MorphingTrigger = () => {
   return (
-    <div className="group relative border border-[var(--rm-border)] bg-[#fff] p-[6px] text-grey-90 transition-colors hover:border-[var(--rm-border-strong)]">
+    <div className="group relative border border-[var(--pi-border)] bg-[#fff] p-[6px] text-grey-90 transition-colors hover:border-[var(--pi-border-strong)]">
       <div className="h-5 w-5">
         <span className="absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] bg-grey-70 duration-300 group-radix-state-open:rotate-90" />
         <span className="absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] bg-grey-70 duration-300 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90" />

@@ -89,7 +89,7 @@ const CartDropdown = ({
             data-testid="nav-cart-link"
             style={{
               background: "transparent",
-              color: "var(--rm-text)",
+              color: "var(--pi-text)",
             }}
           >{`${messages.common.cart} (${totalItems})`}</LocalizedClientLink>
         </PopoverButton>
@@ -108,14 +108,14 @@ const CartDropdown = ({
             className="absolute right-0 top-[calc(100%+10px)] hidden w-[420px] border text-ui-fg-base small:block"
             data-testid="nav-cart-dropdown"
             style={{
-              borderColor: "var(--rm-border)",
-              background: "var(--rm-bg)",
+              borderColor: "var(--pi-border)",
+              background: "var(--pi-bg)",
               boxShadow: "none",
             }}
           >
             <div
               className="flex items-center justify-center border-b p-4"
-              style={{ borderColor: "var(--rm-border)" }}
+              style={{ borderColor: "var(--pi-border)" }}
             >
               <h3 className="text-large-semi">{messages.common.cart}</h3>
             </div>
@@ -191,7 +191,7 @@ const CartDropdown = ({
                 </div>
                 <div
                   className="flex flex-col gap-y-4 border-t p-4 text-small-regular"
-                  style={{ borderColor: "var(--rm-border)" }}
+                  style={{ borderColor: "var(--pi-border)" }}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-ui-fg-base font-semibold">

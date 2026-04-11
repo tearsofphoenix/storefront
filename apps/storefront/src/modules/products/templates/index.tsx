@@ -85,7 +85,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           className={
             hasInlineCommerceCallout
               ? "pt-0"
-              : "mt-16 border-t border-[var(--rm-border)] pt-12"
+              : "mt-16 border-t border-[var(--pi-border)] pt-12"
           }
         >
           <BlockRenderer
@@ -97,7 +97,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           />
         </div>
       ) : null}
-      <div className="content-container mt-14 border-t border-[var(--rm-border)] pt-10">
+      <div className="content-container mt-14 border-t border-[var(--pi-border)] pt-10">
         <ProductTabs product={product} />
       </div>
       {isStorefrontPluginEnabled("reviews") ? (
@@ -112,7 +112,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         <StorefrontPluginHighlights />
       </div>
       <div
-        className="content-container my-16 border-t border-[var(--rm-border)] pt-10 small:my-24"
+        className="content-container my-16 border-t border-[var(--pi-border)] pt-10 small:my-24"
         data-testid="related-products-container"
       >
         <Suspense fallback={<SkeletonRelatedProducts />}>

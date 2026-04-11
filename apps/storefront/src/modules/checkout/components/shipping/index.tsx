@@ -438,7 +438,7 @@ const Shipping: React.FC<ShippingProps> = ({
             <div data-testid="delivery-options-container">
               <div className="pt-2 md:pt-0">
                 {!hasAnyDeliveryOptions && (
-                  <div className="border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] px-6 py-5">
+                  <div className="border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] px-6 py-5">
                     <Text className="txt-medium-plus text-ui-fg-base">
                       {messages.common.shippingMethodUnavailable}
                     </Text>
@@ -466,9 +466,9 @@ const Shipping: React.FC<ShippingProps> = ({
                       className={clx(
                         "mb-2 flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                         {
-                          "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
+                          "border-[var(--pi-border-strong)] bg-[var(--pi-surface-soft)]":
                             showPickupOptions === PICKUP_OPTION_ON,
-                          "border-[var(--rm-border)] bg-white":
+                          "border-[var(--pi-border)] bg-white":
                             showPickupOptions !== PICKUP_OPTION_ON,
                         }
                       )}
@@ -510,9 +510,9 @@ const Shipping: React.FC<ShippingProps> = ({
                           className={clx(
                             "flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                             {
-                              "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
+                              "border-[var(--pi-border-strong)] bg-[var(--pi-surface-soft)]":
                                 option.id === shippingMethodId,
-                              "border-[var(--rm-border)] bg-white":
+                              "border-[var(--pi-border)] bg-white":
                                 option.id !== shippingMethodId,
                               "cursor-not-allowed":
                                 isDisabled,
@@ -549,7 +549,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           ECPAY_PROVIDER_IDS.has(option.provider_id ?? "") && (
                           <div className="w-full mt-2 pl-8 pr-4 mb-2">
                             {selectedShippingMethodData?.CVSStoreID && (
-                              <div className="mb-4 border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] p-4">
+                              <div className="mb-4 border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] p-4">
                                 <Text className="mb-1 font-semibold text-ui-fg-base">
                                   {String(selectedShippingMethodData.CVSStoreName)} (
                                   {String(selectedShippingMethodData.CVSStoreID)})
@@ -623,9 +623,9 @@ const Shipping: React.FC<ShippingProps> = ({
                           className={clx(
                             "mb-2 flex cursor-pointer items-center justify-between border px-6 py-4 text-small-regular transition-colors",
                             {
-                              "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
+                              "border-[var(--pi-border-strong)] bg-[var(--pi-surface-soft)]":
                                 option.id === shippingMethodId,
-                              "border-[var(--rm-border)] bg-white":
+                              "border-[var(--pi-border)] bg-white":
                                 option.id !== shippingMethodId,
                               "cursor-not-allowed":
                                 option.insufficient_inventory,

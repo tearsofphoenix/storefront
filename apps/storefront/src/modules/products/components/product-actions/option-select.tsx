@@ -38,9 +38,9 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               className={clx(
                 "flex h-10 min-w-[56px] items-center justify-center border px-4 text-sm transition-colors",
                 {
-                  "border-[var(--rm-text)] bg-[var(--rm-text)] text-white":
+                  "border-[var(--pi-text)] bg-[var(--pi-text)] text-white":
                     v === current,
-                  "border-[var(--rm-border)] bg-[#fff] text-grey-70 hover:border-[var(--rm-border-strong)] hover:text-grey-90":
+                  "border-[var(--pi-border)] bg-[#fff] text-grey-70 hover:border-[var(--pi-border-strong)] hover:text-grey-90":
                     v !== current,
                 }
               )}

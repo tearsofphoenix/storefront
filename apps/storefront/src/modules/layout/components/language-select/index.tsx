@@ -149,7 +149,7 @@ const LanguageSelect = ({
         >
           <ListboxOptions
             className="mt-3 max-h-[220px] w-full overflow-y-auto border bg-white text-small-regular uppercase text-black no-scrollbar"
-            style={{ borderColor: "var(--rm-border)", boxShadow: "none" }}
+            style={{ borderColor: "var(--pi-border)", boxShadow: "none" }}
             static
           >
             {options.map((o) => (
@@ -157,7 +157,7 @@ const LanguageSelect = ({
                 key={o.code}
                 value={o}
                 className="flex cursor-pointer items-center gap-x-2 px-3 py-2 transition-colors"
-                style={{ color: "var(--rm-text)" }}
+                style={{ color: "var(--pi-text)" }}
               >
                 {o.countryCode ? (
                   /* @ts-ignore */

@@ -1,9 +1,5 @@
 import { listProducts } from "@lib/data/products"
 import { getI18n } from "@lib/i18n/server"
-import {
-  getStorefrontThemePresentation,
-  toRgba,
-} from "@lib/util/theme-manifest"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -15,7 +11,6 @@ export default async function ProductRail({
   collection: HttpTypes.StoreCollection
   region: HttpTypes.StoreRegion
 }) {
-  const theme = getStorefrontThemePresentation()
   const { messages } = await getI18n()
   const {
     response: { products: pricedProducts },
@@ -33,18 +28,18 @@ export default async function ProductRail({
   }
 
   return (
-    <section className="content-container border-t py-14 small:py-20" style={{ borderColor: "var(--rm-border)" }}>
+    <section className="content-container border-t py-14 small:py-20" style={{ borderColor: "var(--pi-border)" }}>
       <div className="mb-8 flex items-end justify-between gap-6 pb-8">
         <div className="grid gap-1">
           <h2
             className="text-[1.9rem] font-semibold small:text-[2.3rem]"
-            style={{ fontFamily: theme.headingFontFamily }}
+            style={{ fontFamily: "var(--pi-heading-font)" }}
           >
             Featured
           </h2>
           <p
             className="text-sm small:text-base"
-            style={{ fontFamily: theme.bodyFontFamily }}
+            style={{ fontFamily: "var(--pi-body-font)" }}
           >
             {collection.title}
           </p>
@@ -52,7 +47,7 @@ export default async function ProductRail({
         <LocalizedClientLink
           href="/store"
           className="hidden items-center gap-2 border-b border-transparent text-[12px] font-medium uppercase tracking-[0.12em] transition-colors small:inline-flex"
-          style={{ color: "var(--rm-muted)" }}
+          style={{ color: "var(--pi-muted)" }}
         >
           {messages.common.browseAllProducts}
         </LocalizedClientLink>

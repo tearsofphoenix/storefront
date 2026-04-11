@@ -65,7 +65,7 @@ const Modal = ({
                     "max-w-xl": size === "medium",
                     "max-w-3xl": size === "large",
                     "bg-transparent shadow-none": search,
-                    "border border-[var(--rm-border)] bg-white shadow-none": !search,
+                    "border border-[var(--pi-border)] bg-white shadow-none": !search,
                   }
                 )}
               >
@@ -89,7 +89,7 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <button
           onClick={close}
           data-testid="close-modal-button"
-          className="border border-[var(--rm-border)] p-2"
+          className="border border-[var(--pi-border)] p-2"
         >
           <X size={20} />
         </button>

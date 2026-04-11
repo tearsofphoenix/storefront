@@ -44,7 +44,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
       <div className="mb-1 text-large-semi uppercase">
         #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
-      <div className="flex items-center divide-x divide-[var(--rm-border)] text-small-regular text-ui-fg-base">
+      <div className="flex items-center divide-x divide-[var(--pi-border)] text-small-regular text-ui-fg-base">
         <span className="pr-2" data-testid="order-created-at">
           {new Date(order.created_at).toDateString()}
         </span>
@@ -128,7 +128,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           <Button
             data-testid="order-details-link"
             variant="secondary"
-            className="!rounded-none !border-[var(--rm-border)] !bg-white"
+            className="!rounded-none !border-[var(--pi-border)] !bg-white"
           >
             {messages.account.seeDetails}
           </Button>

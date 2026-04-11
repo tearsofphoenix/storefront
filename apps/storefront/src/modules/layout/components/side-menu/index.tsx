@@ -9,6 +9,7 @@ import { Locale } from "@lib/data/locales"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ThemeSwitcher from "../theme-switcher"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 
@@ -19,8 +20,6 @@ type SideMenuProps = {
   brandName?: string
   primaryColor?: string
   navBackground?: string
-  headingFontFamily?: string
-  bodyFontFamily?: string
 }
 
 const SideMenu = ({
@@ -29,9 +28,7 @@ const SideMenu = ({
   currentLocale,
   brandName,
   primaryColor: _primaryColor,
-  navBackground = "var(--rm-bg)",
-  headingFontFamily = "reMarkableSans, Helvetica, sans-serif",
-  bodyFontFamily = "reMarkableSans, Helvetica, sans-serif",
+  navBackground = "var(--pi-bg)",
 }: SideMenuProps) => {
   const countryToggleState = useToggleState()
   const languageToggleState = useToggleState()
@@ -60,7 +57,7 @@ const SideMenu = ({
                   className="relative flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors ease-out duration-200 focus:outline-none"
                   style={{
                     background: "transparent",
-                    color: "var(--rm-text)",
+                    color: "var(--pi-text)",
                   }}
                 >
                   {messages.common.menu}
@@ -91,15 +88,15 @@ const SideMenu = ({
                     className="flex h-full w-full flex-col overflow-hidden rounded-none border-r px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:max-h-none sm:border"
                     style={{
                       background: navBackground,
-                      borderColor: "var(--rm-border)",
+                      borderColor: "var(--pi-border)",
                       boxShadow: "none",
-                      color: "var(--rm-text)",
-                      fontFamily: bodyFontFamily,
+                      color: "var(--pi-text)",
+                      fontFamily: "var(--pi-body-font)",
                     }}
                   >
                     <div
                       className="flex items-start justify-between gap-4 border-b pb-5"
-                      style={{ borderColor: "var(--rm-border)" }}
+                      style={{ borderColor: "var(--pi-border)" }}
                     >
                       <LocalizedClientLink
                         href="/"
@@ -107,8 +104,8 @@ const SideMenu = ({
                         data-testid="home-link"
                         className="min-w-0 text-[0.68rem] uppercase tracking-[0.16em]"
                         style={{
-                          color: "var(--rm-muted-soft)",
-                          fontFamily: headingFontFamily,
+                          color: "var(--pi-muted-soft)",
+                          fontFamily: "var(--pi-heading-font)",
                         }}
                       >
                         {resolvedBrandName}
@@ -118,8 +115,8 @@ const SideMenu = ({
                         onClick={close}
                         className="flex h-11 w-11 items-center justify-center border transition-colors"
                         style={{
-                          borderColor: "var(--rm-border)",
-                          background: "var(--rm-surface)",
+                          borderColor: "var(--pi-border)",
+                          background: "var(--pi-surface)",
                         }}
                       >
                         <XMark />
@@ -136,8 +133,8 @@ const SideMenu = ({
                                 onClick={close}
                                 data-testid={testId}
                                 style={{
-                                  color: "var(--rm-text)",
-                                  fontFamily: headingFontFamily,
+                                  color: "var(--pi-text)",
+                                  fontFamily: "var(--pi-heading-font)",
                                 }}
                               >
                                 {label}
@@ -151,14 +148,14 @@ const SideMenu = ({
                         <div
                           className="overflow-hidden border"
                           style={{
-                            borderColor: "var(--rm-border)",
-                            background: "var(--rm-surface)",
+                            borderColor: "var(--pi-border)",
+                            background: "var(--pi-surface)",
                           }}
                         >
                           {!!locales?.length && (
                             <div
                               className="flex items-start justify-between gap-3 border-b px-4 py-3.5"
-                              style={{ borderColor: "var(--rm-border)" }}
+                              style={{ borderColor: "var(--pi-border)" }}
                               onMouseEnter={languageToggleState.open}
                               onMouseLeave={languageToggleState.close}
                             >
@@ -198,9 +195,10 @@ const SideMenu = ({
                             />
                           </div>
                         </div>
+                        <ThemeSwitcher className="mt-4 justify-between" />
                         <Text
                           className="mt-4 text-[11px] leading-5"
-                          style={{ color: "var(--rm-muted-soft)" }}
+                          style={{ color: "var(--pi-muted-soft)" }}
                         >
                           © {new Date().getFullYear()} {resolvedBrandName}.{" "}
                           {messages.common.rightsReserved}

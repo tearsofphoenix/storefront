@@ -187,3 +187,36 @@
 ### 残余风险
 
 - 当前线上商品样本返回的 `variant.metadata` 仍为空，说明插件路径尚未被真实数据覆盖；相关兼容逻辑已通过类型和构建验证，但还未在带 metadata 图片的真实商品上做浏览器级回归。
+
+## 2026-04-11 10 Theme 底座与 `--pi` 变量迁移验证
+
+- 日期：2026-04-11 15:45:00 +0800
+- 执行者：Codex
+
+### 已完成验证
+
+1. `bun run lint` 通过（仅存在项目既有 warning，无新增 error）。
+2. `bun run build` 通过（Next.js 15 构建成功，路由产物正常输出）。
+3. 全项目源码中已无 `--rm-` 变量引用（主题变量统一迁移为 `--pi-*`）。
+4. 10 套主题已可通过 `data-theme` 生效，且支持 cookie 持久化切换：
+   - `dawn`
+   - `prestige`
+   - `impulse`
+   - `warehouse`
+   - `motion`
+   - `minimal`
+   - `food-restaurant`
+   - `electronics-pro`
+   - `kids-family`
+   - `home-living`
+
+### 功能性结论
+
+- 主题系统从单一变量集升级为 10 套可切换预设，核心布局（shell/nav/footer）与主要模块字体/颜色已绑定 `--pi-*` 语义变量。
+- 根布局会读取 `storefront_theme` cookie 输出 `data-theme`，刷新后主题保持一致。
+- 导航栏与侧边菜单均提供 Theme Switcher，可直接在界面切换主题并触发 SSR 刷新。
+
+### 残余风险
+
+- 当前 `lint` 的 warning 为历史遗留项（如 `no-img-element` 与部分 `react-hooks/exhaustive-deps`），本次未扩大范围。
+- 本次实现的是主题底座与关键模块改造，垂类主题专属 Section（如 Food 预约流程、Home 场景热区）仍需在后续阶段继续实现。

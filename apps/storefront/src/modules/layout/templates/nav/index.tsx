@@ -10,6 +10,7 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
+import ThemeSwitcher from "@modules/layout/components/theme-switcher"
 
 export default async function Nav() {
   const [regions, locales, currentLocale] = await Promise.all([
@@ -26,9 +27,9 @@ export default async function Nav() {
         <div
           className="border-b px-4 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
           style={{
-            background: "var(--rm-surface)",
-            borderColor: "var(--rm-border)",
-            color: "var(--rm-muted-soft)",
+            background: "var(--pi-surface)",
+            borderColor: "var(--pi-border)",
+            color: "var(--pi-muted-soft)",
           }}
         >
           {theme.announcement}
@@ -37,15 +38,15 @@ export default async function Nav() {
       <header
         className="relative mx-auto border-b backdrop-blur-md"
         style={{
-          borderColor: "var(--rm-border)",
-          background: theme.navBackground,
+          borderColor: "var(--pi-border)",
+          background: "var(--pi-nav-bg)",
         }}
       >
         <nav
           className="content-container flex min-h-[74px] items-center justify-between gap-4 text-sm"
           style={{
-            color: "var(--rm-muted)",
-            fontFamily: theme.bodyFontFamily,
+            color: "var(--pi-muted)",
+            fontFamily: "var(--pi-body-font)",
           }}
         >
           <div className="flex flex-1 basis-0 items-center gap-4">
@@ -56,17 +57,15 @@ export default async function Nav() {
                 currentLocale={currentLocale}
                 brandName={theme.brandName}
                 primaryColor={theme.primaryColor}
-                navBackground={theme.navBackground}
-                headingFontFamily={theme.headingFontFamily}
-                bodyFontFamily={theme.bodyFontFamily}
+                navBackground="var(--pi-nav-bg)"
               />
             </div>
             <LocalizedClientLink
               href="/"
               className="truncate text-[11px] font-semibold uppercase tracking-[0.18em] text-grey-90"
               style={{
-                color: "var(--rm-text)",
-                fontFamily: theme.headingFontFamily,
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
               }}
               data-testid="nav-store-link"
             >
@@ -78,7 +77,7 @@ export default async function Nav() {
             <LocalizedClientLink
               className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
               href="/store"
-              style={{ color: "var(--rm-muted)" }}
+              style={{ color: "var(--pi-muted)" }}
             >
               {messages.common.store}
             </LocalizedClientLink>
@@ -86,18 +85,19 @@ export default async function Nav() {
               className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
               href="/account"
               data-testid="nav-account-link"
-              style={{ color: "var(--rm-muted)" }}
+              style={{ color: "var(--pi-muted)" }}
             >
               {messages.common.account}
             </LocalizedClientLink>
           </div>
 
           <div className="flex flex-1 basis-0 items-center justify-end gap-x-4">
+            <ThemeSwitcher className="hidden small:flex" />
             <div className="small:hidden">
               <LocalizedClientLink
                 className="inline-flex items-center border-b border-transparent px-0 py-2 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors"
                 href="/account"
-                style={{ color: "var(--rm-muted)" }}
+                style={{ color: "var(--pi-muted)" }}
               >
                 {messages.common.account}
               </LocalizedClientLink>
@@ -109,7 +109,7 @@ export default async function Nav() {
                   href="/cart"
                   data-testid="nav-cart-link"
                   style={{
-                    color: "var(--rm-text)",
+                    color: "var(--pi-text)",
                   }}
                 >
                   {messages.common.cart} (0)

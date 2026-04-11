@@ -39,7 +39,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
 
   if (!selectedImage) {
     return (
-      <Container className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--rm-border)] bg-[var(--rm-surface-soft)]" />
+      <Container className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--pi-border)] bg-[var(--pi-surface-soft)]" />
     )
   }
 
@@ -54,14 +54,14 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
             className={clx(
               "shrink-0 border p-1 transition-colors",
               {
-                "border-[var(--rm-border-strong)] bg-[var(--rm-surface-emphasis)]":
+                "border-[var(--pi-border-strong)] bg-[var(--pi-surface-emphasis)]":
                   index === selectedIndex,
-                "border-[var(--rm-border)] bg-[var(--rm-surface)]":
+                "border-[var(--pi-border)] bg-[var(--pi-surface)]":
                   index !== selectedIndex,
               }
             )}
           >
-            <div className="relative aspect-square w-16 overflow-hidden border border-[var(--rm-border)] bg-[#fff] small:w-[78px]">
+            <div className="relative aspect-square w-16 overflow-hidden border border-[var(--pi-border)] bg-[#fff] small:w-[78px]">
               <Image
                 src={image.url}
                 alt={`${messages.product.productThumbnailAlt} ${index + 1}`}
@@ -74,7 +74,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           </button>
         ))}
       </div>
-      <Container className="order-1 relative aspect-[4/5] w-full overflow-hidden border border-[var(--rm-border)] bg-[var(--rm-surface-soft)] small:order-2">
+      <Container className="order-1 relative aspect-[4/5] w-full overflow-hidden border border-[var(--pi-border)] bg-[var(--pi-surface-soft)] small:order-2">
         <Image
           src={selectedImage.url}
           alt={messages.product.productImageAlt}

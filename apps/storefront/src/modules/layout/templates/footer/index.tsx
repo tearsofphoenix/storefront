@@ -20,7 +20,10 @@ export default async function Footer() {
   return (
     <footer
       className="w-full border-t"
-      style={{ borderColor: "var(--rm-border)", background: "var(--rm-surface)" }}
+      style={{
+        borderColor: "var(--pi-border)",
+        background: "var(--pi-footer-bg)",
+      }}
     >
       <div className="content-container flex flex-col w-full">
         <div className="grid gap-12 py-16 small:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
@@ -29,8 +32,8 @@ export default async function Footer() {
               href="/"
               className="text-[11px] font-semibold uppercase tracking-[0.16em]"
               style={{
-                color: "var(--rm-text)",
-                fontFamily: theme.headingFontFamily,
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
               }}
             >
               {theme.brandName}
@@ -39,8 +42,8 @@ export default async function Footer() {
               className="text-base-regular"
               style={{
                 maxWidth: 420,
-                color: "var(--rm-muted)",
-                fontFamily: theme.bodyFontFamily,
+                color: "var(--pi-muted)",
+                fontFamily: "var(--pi-body-font)",
               }}
             >
               {theme.footerNote ||
@@ -51,7 +54,7 @@ export default async function Footer() {
             <div className="flex flex-col gap-y-3">
               <span
                 className="text-[11px] font-semibold uppercase tracking-[0.14em]"
-                style={{ fontFamily: theme.headingFontFamily }}
+                style={{ fontFamily: "var(--pi-heading-font)" }}
               >
                 {messages.common.categories}
               </span>
@@ -65,7 +68,7 @@ export default async function Footer() {
                         className="text-sm transition-colors"
                         href={`/categories/${category.handle}`}
                         data-testid="category-link"
-                        style={{ color: "var(--rm-muted)" }}
+                        style={{ color: "var(--pi-muted)" }}
                       >
                         {category.name}
                       </LocalizedClientLink>
@@ -76,7 +79,7 @@ export default async function Footer() {
             <div className="flex flex-col gap-y-3">
               <span
                 className="text-[11px] font-semibold uppercase tracking-[0.14em]"
-                style={{ fontFamily: theme.headingFontFamily }}
+                style={{ fontFamily: "var(--pi-heading-font)" }}
               >
                 {messages.common.collections}
               </span>
@@ -86,7 +89,7 @@ export default async function Footer() {
                     <LocalizedClientLink
                       className="text-sm transition-colors"
                       href={`/collections/${collection.handle}`}
-                      style={{ color: "var(--rm-muted)" }}
+                      style={{ color: "var(--pi-muted)" }}
                     >
                       {collection.title}
                     </LocalizedClientLink>
@@ -97,11 +100,11 @@ export default async function Footer() {
             <div className="flex flex-col gap-y-3">
               <span
                 className="text-[11px] font-semibold uppercase tracking-[0.14em]"
-                style={{ fontFamily: theme.headingFontFamily }}
+                style={{ fontFamily: "var(--pi-heading-font)" }}
               >
                 {messages.common.storefront}
               </span>
-              <ul className="grid grid-cols-1 gap-2 text-sm" style={{ color: "var(--rm-muted)" }}>
+              <ul className="grid grid-cols-1 gap-2 text-sm" style={{ color: "var(--pi-muted)" }}>
                 <li>
                   <LocalizedClientLink
                     href="/store"
@@ -150,7 +153,7 @@ export default async function Footer() {
         </div>
         <div
           className="flex w-full flex-col gap-4 border-t py-5 text-ui-fg-muted small:flex-row small:items-center small:justify-between"
-          style={{ borderColor: "var(--rm-border)" }}
+          style={{ borderColor: "var(--pi-border)" }}
         >
           <div className="grid gap-2">
             <Text className="txt-compact-small">

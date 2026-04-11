@@ -43,9 +43,9 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
       className={clx(
         "mb-2 flex cursor-pointer flex-col gap-y-2 border px-6 py-4 text-small-regular transition-colors",
         {
-          "border-[var(--rm-border-strong)] bg-[var(--rm-surface-soft)]":
+          "border-[var(--pi-border-strong)] bg-[var(--pi-surface-soft)]":
             selectedPaymentOptionId === paymentProviderId,
-          "border-[var(--rm-border)] bg-[#fff]": selectedPaymentOptionId !== paymentProviderId,
+          "border-[var(--pi-border)] bg-[#fff]": selectedPaymentOptionId !== paymentProviderId,
         }
       )}
     >
@@ -145,7 +145,7 @@ export const StripeCardContainer = ({
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 {messages.common.email}
               </Text>
-              <div className="border border-[var(--rm-border)] bg-white px-4 py-3">
+              <div className="border border-[var(--pi-border)] bg-white px-4 py-3">
                 <LinkAuthenticationElement options={linkOptions} />
               </div>
             </div>
@@ -153,7 +153,7 @@ export const StripeCardContainer = ({
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 {messages.common.enterYourPaymentDetails}
               </Text>
-              <div className="border border-[var(--rm-border)] bg-white px-4 py-3">
+              <div className="border border-[var(--pi-border)] bg-white px-4 py-3">
                 <PaymentElement
                   options={paymentOptions}
                   onChange={(event) => {

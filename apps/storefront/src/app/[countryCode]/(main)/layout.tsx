@@ -3,7 +3,6 @@ import { Metadata } from "next"
 import { listCartOptions, retrieveCart } from "@lib/data/cart"
 import { retrieveCustomer } from "@lib/data/customer"
 import { getBaseURL } from "@lib/util/env"
-import { getStorefrontThemePresentation } from "@lib/util/theme-manifest"
 import { StoreCartShippingOption } from "@medusajs/types"
 import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import Footer from "@modules/layout/templates/footer"
@@ -21,7 +20,6 @@ export const dynamic = "force-dynamic"
 export default async function PageLayout(props: { children: React.ReactNode }) {
   const customer = await retrieveCustomer()
   const cart = await retrieveCart()
-  const theme = getStorefrontThemePresentation()
   let shippingOptions: StoreCartShippingOption[] = []
 
   if (cart) {
@@ -35,8 +33,8 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <div
         style={{
           minHeight: "100vh",
-          background: theme.shellBackground,
-          color: "var(--rm-text)",
+          background: "var(--pi-shell-bg)",
+          color: "var(--pi-text)",
         }}
       >
         <Nav />

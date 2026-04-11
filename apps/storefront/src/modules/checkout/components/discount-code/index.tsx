@@ -80,7 +80,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
             <>
               <div className="flex w-full gap-x-2">
                 <Input
-                  className="size-full !rounded-none !border-[var(--rm-border)] !bg-white"
+                  className="size-full !rounded-none !border-[var(--pi-border)] !bg-white"
                   id="promotion-input"
                   name="code"
                   type="text"
@@ -89,7 +89,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                 />
                 <SubmitButton
                   variant="secondary"
-                  className="!rounded-none !border-[var(--rm-border)] !bg-white"
+                  className="!rounded-none !border-[var(--pi-border)] !bg-white"
                   data-testid="discount-apply-button"
                 >
                   {messages.common.apply}

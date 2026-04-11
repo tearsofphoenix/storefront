@@ -217,7 +217,7 @@ function FreeShippingPopup({
         </Button>
       </div>
 
-      <div className="w-[400px] border border-[var(--rm-text)] bg-[var(--rm-text)] p-6 text-white">
+      <div className="w-[400px] border border-[var(--pi-text)] bg-[var(--pi-text)] p-6 text-white">
         <div className="pb-4">
           <div className="space-y-3">
             <div className="flex justify-between text-[15px] text-neutral-400">

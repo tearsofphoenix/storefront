@@ -15,8 +15,8 @@ export default async function CheckoutLayout({
   const theme = getStorefrontThemePresentation()
 
   return (
-    <div className="relative w-full bg-[var(--rm-bg)] small:min-h-screen">
-      <div className="border-b border-[var(--rm-border)] bg-[var(--rm-surface)]">
+    <div className="relative w-full bg-[var(--pi-bg)] small:min-h-screen">
+      <div className="border-b border-[var(--pi-border)] bg-[var(--pi-surface)]">
         <nav className="content-container flex min-h-[64px] items-center justify-between">
           <LocalizedClientLink
             href="/cart"
@@ -35,7 +35,7 @@ export default async function CheckoutLayout({
             href="/"
             className="text-sm font-semibold uppercase tracking-[0.14em] text-grey-90"
             data-testid="store-link"
-            style={{ fontFamily: theme.headingFontFamily }}
+            style={{ fontFamily: "var(--pi-heading-font)" }}
           >
             {theme.brandName}
           </LocalizedClientLink>

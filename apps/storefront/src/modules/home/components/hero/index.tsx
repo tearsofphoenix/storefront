@@ -71,8 +71,8 @@ export default async function Hero({ collection, region }: HeroProps) {
     <section
       className="border-y"
       style={{
-        background: "var(--rm-bg)",
-        borderColor: "var(--rm-border)",
+        background: "var(--pi-bg)",
+        borderColor: "var(--pi-border)",
       }}
     >
       <div className="content-container grid gap-12 py-16 small:grid-cols-[0.95fr_1.05fr] small:items-center small:py-24">
@@ -81,13 +81,13 @@ export default async function Hero({ collection, region }: HeroProps) {
             className="theme-section-panel overflow-hidden"
             style={{
               borderRadius: 0,
-              borderColor: "var(--rm-border)",
-              background: "var(--rm-surface-soft)",
+              borderColor: "var(--pi-border)",
+              background: "var(--pi-surface-soft)",
             }}
           >
             <div
               className="px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em]"
-              style={{ color: "var(--rm-muted-soft)" }}
+              style={{ color: "var(--pi-muted-soft)" }}
             >
               {collection ? collection.title : theme.brandName}
             </div>
@@ -98,10 +98,10 @@ export default async function Hero({ collection, region }: HeroProps) {
                 alt={primaryProduct?.title ?? ""}
                 size="full"
                 isFeatured
-                className="bg-[#fcfbf8] p-0 shadow-none"
+                className="bg-[var(--pi-surface)] p-0 shadow-none"
                 style={{
                   borderRadius: 0,
-                  border: "1px solid var(--rm-border)",
+                  border: "1px solid var(--pi-border)",
                   boxShadow: "none",
                 }}
               />
@@ -117,11 +117,8 @@ export default async function Hero({ collection, region }: HeroProps) {
             <h1
               className="max-w-[12ch] text-4xl leading-[1.05] small:text-6xl"
               style={{
-                color: "var(--rm-text)",
-                fontFamily:
-                  theme.headingStyle === "serif"
-                    ? "var(--rm-font-serif)"
-                    : "var(--rm-font-sans)",
+                color: "var(--pi-text)",
+                fontFamily: "var(--pi-heading-font)",
               }}
             >
               {theme.heroHeading}
@@ -129,8 +126,8 @@ export default async function Hero({ collection, region }: HeroProps) {
             <p
               className="max-w-[34rem] text-base leading-7 text-grey-60 small:text-lg"
               style={{
-                color: "var(--rm-muted)",
-                fontFamily: theme.bodyFontFamily,
+                color: "var(--pi-muted)",
+                fontFamily: "var(--pi-body-font)",
               }}
             >
               {theme.heroSubheading}
@@ -138,14 +135,7 @@ export default async function Hero({ collection, region }: HeroProps) {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <ActionLink
-              href={primaryHref}
-              className="theme-solid-button"
-              style={{
-                background: theme.buttonFillColor,
-                color: theme.buttonTextColor,
-              }}
-            >
+            <ActionLink href={primaryHref} className="theme-solid-button">
               {collection
                 ? t(messages.home.shopCollection, { name: collection.title })
                 : theme.ctaLabel}
@@ -154,8 +144,8 @@ export default async function Hero({ collection, region }: HeroProps) {
               href={secondaryHref}
               className="theme-outline-button"
               style={{
-                borderColor: "var(--rm-border-strong)",
-                background: "var(--rm-surface)",
+                borderColor: "var(--pi-border-strong)",
+                background: "var(--pi-surface)",
               }}
             >
               {secondaryLabel}
@@ -163,10 +153,10 @@ export default async function Hero({ collection, region }: HeroProps) {
           </div>
 
           <div
-            className="grid gap-3 border bg-[#efe7d8] p-5 small:max-w-[34rem] small:grid-cols-3"
+            className="grid gap-3 border p-5 small:max-w-[34rem] small:grid-cols-3"
             style={{
-              borderColor: "var(--rm-border)",
-              background: "var(--rm-surface)",
+              borderColor: "var(--pi-border)",
+              background: "var(--pi-surface)",
               boxShadow: "none",
             }}
           >
@@ -182,15 +172,15 @@ export default async function Hero({ collection, region }: HeroProps) {
               <div key={metric.label} className="grid gap-1">
                 <span
                   className="text-[0.72rem] uppercase tracking-[0.16em]"
-                  style={{ color: "var(--rm-muted-soft)" }}
+                  style={{ color: "var(--pi-muted-soft)" }}
                 >
                   {metric.label}
                 </span>
                 <span
                   className="text-base"
                   style={{
-                    color: "var(--rm-text)",
-                    fontFamily: theme.bodyFontFamily,
+                    color: "var(--pi-text)",
+                    fontFamily: "var(--pi-body-font)",
                   }}
                 >
                   {metric.value}

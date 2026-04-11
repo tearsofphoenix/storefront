@@ -52,7 +52,7 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
             <span>{getAmount(order.tax_total)}</span>
           </div>
         </div>
-        <div className="my-4 h-px w-full border-b border-[var(--rm-border)]" />
+        <div className="my-4 h-px w-full border-b border-[var(--pi-border)]" />
         <div className="mb-2 flex items-center justify-between text-base-regular text-ui-fg-base">
           <span>{messages.common.total}</span>
           <span className="font-semibold">{getAmount(order.total)}</span>

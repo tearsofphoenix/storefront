@@ -72,7 +72,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           leaveTo="opacity-0"
         >
           <div
-            className="flex h-full w-full flex-col items-center justify-center gap-y-3 border-t border-[var(--rm-border)] bg-[var(--rm-surface)] p-4 text-large-regular"
+            className="flex h-full w-full flex-col items-center justify-center gap-y-3 border-t border-[var(--pi-border)] bg-[var(--pi-surface)] p-4 text-large-regular"
             data-testid="mobile-actions"
           >
             <div className="flex items-center gap-x-2">
@@ -106,7 +106,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               {!isSimple && <Button
                 onClick={open}
                 variant="secondary"
-                className="!w-full !rounded-none !border-[var(--rm-border)] !bg-[#fff]"
+                className="!w-full !rounded-none !border-[var(--pi-border)] !bg-[#fff]"
                 data-testid="mobile-actions-button"
               >
                 <div className="flex items-center justify-between w-full">
@@ -121,7 +121,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <Button
                 onClick={handleAddToCart}
                 disabled={!inStock || !variant}
-                className="!w-full !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
+                className="!w-full !rounded-none !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)]"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
@@ -167,13 +167,13 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   <div className="w-full flex justify-end pr-6">
                     <button
                       onClick={close}
-                      className="flex h-12 w-12 items-center justify-center border border-[var(--rm-border)] bg-[#fff] text-ui-fg-base"
+                      className="flex h-12 w-12 items-center justify-center border border-[var(--pi-border)] bg-[#fff] text-ui-fg-base"
                       data-testid="close-modal-button"
                     >
                       <X />
                     </button>
                   </div>
-                  <div className="border-t border-[var(--rm-border)] bg-[var(--rm-surface)] px-6 py-12">
+                  <div className="border-t border-[var(--pi-border)] bg-[var(--pi-surface)] px-6 py-12">
                     {(product.variants?.length ?? 0) > 1 && (
                       <div className="flex flex-col gap-y-6">
                         {(product.options || []).map((option) => {

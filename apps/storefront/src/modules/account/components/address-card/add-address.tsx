@@ -51,7 +51,7 @@ const AddAddress = ({
   return (
     <>
       <button
-        className="rm-panel-soft flex h-full min-h-[220px] w-full flex-col justify-between p-5 text-left transition-colors hover:border-[var(--rm-border-strong)]"
+        className="rm-panel-soft flex h-full min-h-[220px] w-full flex-col justify-between p-5 text-left transition-colors hover:border-[var(--pi-border-strong)]"
         onClick={open}
         data-testid="add-address-button"
       >
@@ -152,7 +152,7 @@ const AddAddress = ({
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10 !rounded-none !border-[var(--rm-border)] !bg-white"
+                className="h-10 !rounded-none !border-[var(--pi-border)] !bg-white"
                 data-testid="cancel-button"
               >
                 {messages.common.cancel}

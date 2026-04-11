@@ -24,13 +24,13 @@ const StoreTemplate = async ({
     <section className="content-container py-12 small:py-16" data-testid="category-container">
       <div
         className="mb-10 flex flex-col gap-4 border-b pb-8 small:flex-row small:items-end small:justify-between"
-        style={{ borderColor: "var(--rm-border)" }}
+        style={{ borderColor: "var(--pi-border)" }}
       >
         <div className="grid gap-2">
           <h1 className="text-[1.9rem] font-semibold small:text-[2.3rem]" data-testid="store-page-title">
             {messages.common.allProducts}
           </h1>
-          <p className="max-w-[32rem] text-sm leading-6 small:text-base" style={{ color: "var(--rm-muted)" }}>
+          <p className="max-w-[32rem] text-sm leading-6 small:text-base" style={{ color: "var(--pi-muted)" }}>
             {messages.store.catalogDescription}
           </p>
         </div>

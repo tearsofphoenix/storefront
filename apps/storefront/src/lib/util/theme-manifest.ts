@@ -1,3 +1,9 @@
+import {
+  getStorefrontThemePreset,
+  resolveThemePresetFromCandidates,
+  type StorefrontThemePresetKey,
+} from "./theme-presets"
+
 type StorefrontThemeManifestEntry = {
   id: string
   slug: string
@@ -20,16 +26,8 @@ type StorefrontThemeManifestEnvelope = {
   theme: StorefrontThemeManifestEntry | null
 }
 
-const DEFAULT_PRIMARY = "#2559f4"
-const DEFAULT_ACCENT = "#f3efe7"
-const DEFAULT_BODY_FONT_FAMILY =
-  'reMarkableSans, Helvetica, Arial, sans-serif'
-const DEFAULT_SANS_FONT_FAMILY =
-  'reMarkableSans, Helvetica, Arial, sans-serif'
-const DEFAULT_SERIF_FONT_FAMILY =
-  'reMarkableSerif, "Book Antiqua", Georgia, serif'
-
 export type StorefrontThemePresentation = {
+  themePresetKey: StorefrontThemePresetKey
   themeId: string | null
   themeName: string
   brandName: string
@@ -96,6 +94,14 @@ export function getActiveStorefrontTheme(): StorefrontThemeManifestEntry | null 
 export function getStorefrontThemePresentation(): StorefrontThemePresentation {
   const theme = getActiveStorefrontTheme()
   const config = theme?.config ?? {}
+  const themePresetKey = resolveThemePresetFromCandidates(
+    readStringValue(config.themePreset),
+    readStringValue(config.themeSlug),
+    theme?.slug,
+    theme?.name,
+    theme?.id
+  )
+  const themePreset = getStorefrontThemePreset(themePresetKey)
   const storefrontAssets = readRecord(theme?.assets?.storefront)
   const heroAssets = readRecord(storefrontAssets?.hero)
   const footerAssets = readRecord(storefrontAssets?.footer)
@@ -117,7 +123,7 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
   const headingStyle = normalizeSelectValue(
     config.headingStyle,
     ["sans", "serif"],
-    "sans"
+    themePreset.headingStyle
   )
   const panelRadiusStyle = normalizeSelectValue(
     config.panelRadius,
@@ -130,39 +136,28 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
       : panelRadiusStyle === "balanced"
       ? 14
       : 18
-  const defaultShellBackground =
-    surfaceStyle === "contrast"
-      ? "#fcfbf8"
-      : surfaceStyle === "glass"
-      ? "#fcfbf8"
-      : "#fcfbf8"
-  const defaultNavBackground =
-    surfaceStyle === "glass"
-      ? "rgba(252, 251, 248, 0.94)"
-      : surfaceStyle === "contrast"
-      ? "#fcfbf8"
-      : "#fcfbf8"
-  const defaultFooterBackground =
-    surfaceStyle === "contrast"
-      ? "#f9f6f1"
-      : surfaceStyle === "glass"
-      ? "#f9f6f1"
-      : "#f9f6f1"
-  const primaryColor = readColor(config.primaryColor, DEFAULT_PRIMARY)
-  const accentColor = readColor(config.accentColor, DEFAULT_ACCENT)
-  const buttonFillColor = readColor(config.buttonFillColor, "#111827")
+  const defaultShellBackground = themePreset.shellBackground
+  const defaultNavBackground = themePreset.navBackground
+  const defaultFooterBackground = themePreset.footerBackground
+  const primaryColor = readColor(config.primaryColor, themePreset.primaryColor)
+  const accentColor = readColor(config.accentColor, themePreset.accentColor)
+  const buttonFillColor = readColor(
+    config.buttonFillColor,
+    themePreset.buttonFillColor
+  )
   const buttonTextColor = readColor(
     config.buttonTextColor,
-    getReadableTextColor(buttonFillColor)
+    themePreset.buttonTextColor || getReadableTextColor(buttonFillColor)
   )
 
   return {
+    themePresetKey,
     themeId: theme?.id ?? null,
-    themeName: theme?.name ?? "Minimal Commerce",
+    themeName: theme?.name ?? themePreset.name,
     brandName: readString(config.brandName, "Panda AI Store"),
     heroEyebrow:
       readStringValue(heroAssets?.eyebrow) ??
-      `${theme?.name ?? "Minimal Commerce"} · storefront`,
+      `${theme?.name ?? themePreset.name} · storefront`,
     announcement: readString(config.announcement, ""),
     heroHeading: readString(
       config.heroHeading,
@@ -174,7 +169,7 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
     ),
     heroFeatureBullets: readStringArray(heroAssets?.featureBullets),
     heroMetrics: readMetricArray(heroAssets?.metrics) ?? [
-      { label: "Theme", value: theme?.name ?? "Minimal Commerce" },
+      { label: "Theme", value: theme?.name ?? themePreset.name },
       { label: "Layout", value: "Split hero" },
       { label: "Grid", value: "4-column catalog" },
       { label: "Focus", value: "Product detail" },
@@ -192,16 +187,16 @@ export function getStorefrontThemePresentation(): StorefrontThemePresentation {
     heroStyle,
     cardStyle,
     headingStyle,
-    headingFontFamily:
-      headingStyle === "serif"
-        ? DEFAULT_SERIF_FONT_FAMILY
-        : DEFAULT_SANS_FONT_FAMILY,
-    bodyFontFamily: readString(config.bodyFontFamily, DEFAULT_BODY_FONT_FAMILY),
+    headingFontFamily: readString(
+      config.headingFontFamily,
+      themePreset.headingFontFamily
+    ),
+    bodyFontFamily: readString(config.bodyFontFamily, themePreset.bodyFontFamily),
     panelRadiusStyle,
     panelRadius,
-    shellBackground: readColor(config.shellBackground, defaultShellBackground),
-    navBackground: readColor(config.navBackground, defaultNavBackground),
-    footerBackground: readColor(
+    shellBackground: readCssColor(config.shellBackground, defaultShellBackground),
+    navBackground: readCssColor(config.navBackground, defaultNavBackground),
+    footerBackground: readCssColor(
       config.footerBackground,
       defaultFooterBackground
     ),
@@ -304,6 +299,22 @@ function readColor(
     /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
     ? value
     : fallback
+}
+
+function readCssColor(
+  value: string | boolean | undefined,
+  fallback: string
+): string {
+  if (
+    typeof value === "string" &&
+    /^(#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})|rgb[a]?\(.+\)|hsl[a]?\(.+\)|var\(.+\))$/.test(
+      value.trim()
+    )
+  ) {
+    return value.trim()
+  }
+
+  return fallback
 }
 
 function normalizeSelectValue<T extends string>(

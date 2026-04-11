@@ -140,7 +140,7 @@ export default function ProductActions({
   return (
     <>
       <div
-        className="flex flex-col gap-y-5 border border-[var(--rm-border)] bg-[var(--rm-surface)] p-6"
+        className="flex flex-col gap-y-5 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-6"
         ref={actionsRef}
       >
         <div>
@@ -178,7 +178,7 @@ export default function ProductActions({
               !isValidVariant
             }
             variant="primary"
-            className="theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--rm-primary)] !bg-[var(--rm-primary)] !text-white hover:!border-[var(--rm-primary-hover)] hover:!bg-[var(--rm-primary-hover)]"
+            className="theme-solid-button !h-11 !flex-1 !rounded-none !border-[var(--pi-primary)] !bg-[var(--pi-primary)] !text-white hover:!border-[var(--pi-primary-hover)] hover:!bg-[var(--pi-primary-hover)]"
             isLoading={isAdding}
             data-testid="add-product-button"
           >

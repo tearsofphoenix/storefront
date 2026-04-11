@@ -69,7 +69,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
         className={clx(
           "rm-panel flex h-full min-h-[220px] w-full flex-col justify-between p-5 transition-colors",
           {
-            "border-[var(--rm-border-strong)]": isActive,
+            "border-[var(--pi-border-strong)]": isActive,
           }
         )}
         data-testid="address-container"
@@ -224,7 +224,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10 !rounded-none !border-[var(--rm-border)] !bg-white"
+                className="h-10 !rounded-none !border-[var(--pi-border)] !bg-white"
                 data-testid="cancel-button"
               >
                 {messages.common.cancel}

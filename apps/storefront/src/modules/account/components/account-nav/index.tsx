@@ -33,7 +33,7 @@ const AccountNav = ({
         {route !== `/${countryCode}/account` ? (
           <LocalizedClientLink
             href="/account"
-            className="flex items-center gap-x-2 border border-[var(--rm-border)] px-4 py-3 text-small-regular"
+            className="flex items-center gap-x-2 border border-[var(--pi-border)] px-4 py-3 text-small-regular"
             data-testid="account-main-link"
             >
               <>
@@ -47,11 +47,11 @@ const AccountNav = ({
               {t(messages.account.hello, { name: customer?.first_name ?? "" })}
             </div>
             <div className="text-base-regular">
-              <ul className="overflow-hidden border border-[var(--rm-border)]">
+              <ul className="overflow-hidden border border-[var(--pi-border)]">
                 <li>
                   <LocalizedClientLink
                     href="/account/profile"
-                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
                     data-testid="profile-link"
                   >
                     <>
@@ -66,7 +66,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/addresses"
-                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
                     data-testid="addresses-link"
                   >
                     <>
@@ -81,7 +81,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/orders"
-                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
                     data-testid="orders-link"
                   >
                     <div className="flex items-center gap-x-2">
@@ -94,7 +94,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/wishlists"
-                    className="flex items-center justify-between border-b border-[var(--rm-border)] px-5 py-4"
+                    className="flex items-center justify-between border-b border-[var(--pi-border)] px-5 py-4"
                     data-testid="wishlists-link"
                   >
                     <div className="flex items-center gap-x-2">
