@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 
+import * as WebBrowser from "expo-web-browser";
 import { sdk } from "@/lib/sdk";
 import type { HttpTypes } from "@medusajs/types";
 
@@ -38,6 +39,9 @@ type CustomerAddressInput = {
   isDefaultBilling?: boolean;
 };
 
+type GoogleAuthQuery = Record<string, string | string[] | undefined>;
+type GoogleAuthResult = "completed" | "pending_callback";
+
 type CustomerContextValue = {
   customer: HttpTypes.StoreCustomer | null;
   addresses: HttpTypes.StoreCustomerAddress[];
@@ -46,6 +50,8 @@ type CustomerContextValue = {
   error: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (redirectUrl: string) => Promise<GoogleAuthResult>;
+  completeGoogleLogin: (query: GoogleAuthQuery) => Promise<void>;
   register: (input: RegisterCustomerInput) => Promise<void>;
   logout: () => Promise<void>;
   refreshCustomer: () => Promise<void>;
@@ -60,6 +66,140 @@ type CustomerContextValue = {
 };
 
 const CustomerContext = createContext<CustomerContextValue | null>(null);
+
+const GOOGLE_AUTH_UNAVAILABLE = "GOOGLE_AUTH_UNAVAILABLE";
+const GOOGLE_AUTH_ERROR = "GOOGLE_AUTH_ERROR";
+const GOOGLE_AUTH_CANCELLED = "GOOGLE_AUTH_CANCELLED";
+
+type DecodedGoogleAuthToken = {
+  actor_id?: string | null;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  user_metadata?: {
+    email?: string;
+    first_name?: string;
+    last_name?: string;
+    given_name?: string;
+    family_name?: string;
+  };
+  app_metadata?: {
+    email?: string;
+    user_metadata?: {
+      email?: string;
+      first_name?: string;
+      last_name?: string;
+      given_name?: string;
+      family_name?: string;
+    };
+  };
+};
+
+function decodeBase64UrlValue(value: string) {
+  const normalized = value
+    .replaceAll("-", "+")
+    .replaceAll("_", "/")
+    .padEnd(Math.ceil(value.length / 4) * 4, "=");
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let buffer = 0;
+  let bits = 0;
+  const bytes: number[] = [];
+
+  for (const character of normalized) {
+    if (character === "=") {
+      break;
+    }
+
+    const index = alphabet.indexOf(character);
+
+    if (index < 0) {
+      continue;
+    }
+
+    buffer = (buffer << 6) | index;
+    bits += 6;
+
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((buffer >> bits) & 0xff);
+    }
+  }
+
+  return decodeURIComponent(
+    bytes.map((byte) => `%${byte.toString(16).padStart(2, "0")}`).join("")
+  );
+}
+
+function decodeGoogleAuthToken(token: string): DecodedGoogleAuthToken {
+  const payload = token.split(".")[1];
+
+  if (!payload) {
+    throw new Error(GOOGLE_AUTH_ERROR);
+  }
+
+  return JSON.parse(decodeBase64UrlValue(payload)) as DecodedGoogleAuthToken;
+}
+
+function getCustomerProfileFromGoogleToken(token: string) {
+  const decodedToken = decodeGoogleAuthToken(token);
+  const userMetadata = decodedToken.user_metadata;
+  const appUserMetadata = decodedToken.app_metadata?.user_metadata;
+  const email =
+    decodedToken.email ??
+    userMetadata?.email ??
+    decodedToken.app_metadata?.email ??
+    appUserMetadata?.email;
+
+  if (!email) {
+    throw new Error(GOOGLE_AUTH_ERROR);
+  }
+
+  return {
+    actorId: decodedToken.actor_id,
+    email,
+    first_name:
+      decodedToken.first_name ??
+      userMetadata?.first_name ??
+      userMetadata?.given_name ??
+      appUserMetadata?.first_name ??
+      appUserMetadata?.given_name,
+    last_name:
+      decodedToken.last_name ??
+      userMetadata?.last_name ??
+      userMetadata?.family_name ??
+      appUserMetadata?.last_name ??
+      appUserMetadata?.family_name,
+  };
+}
+
+function normalizeGoogleAuthQuery(query: GoogleAuthQuery) {
+  return Object.fromEntries(
+    Object.entries(query).flatMap(([key, value]) => {
+      const normalizedValue = Array.isArray(value) ? value[0] : value;
+
+      if (!normalizedValue) {
+        return [];
+      }
+
+      return [[key, normalizedValue]];
+    })
+  );
+}
+
+function getGoogleAuthErrorCode(error: unknown, fallback: string) {
+  if (error instanceof Error) {
+    if (
+      error.message === GOOGLE_AUTH_ERROR ||
+      error.message === GOOGLE_AUTH_UNAVAILABLE ||
+      error.message === GOOGLE_AUTH_CANCELLED
+    ) {
+      return error.message;
+    }
+  }
+
+  return fallback;
+}
 
 function mapAddressInputToPayload(input: CustomerAddressInput) {
   return {
@@ -269,6 +409,113 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
     [refreshCustomer, syncCartWithCustomer]
   );
 
+  const loginWithGoogle = useCallback(
+    async (redirectUrl: string) => {
+      setAuthLoading(true);
+      setError(null);
+
+      try {
+        const authResult = await sdk.auth.login("customer", "google", {
+          callback_url: redirectUrl,
+        });
+
+        if (typeof authResult === "string") {
+          await syncCartWithCustomer().catch(() => null);
+          await refreshCustomer();
+          return "completed" as GoogleAuthResult;
+        }
+
+        const sessionResult = await WebBrowser.openAuthSessionAsync(
+          authResult.location,
+          redirectUrl
+        );
+
+        if (sessionResult.type === "success") {
+          return "pending_callback" as GoogleAuthResult;
+        }
+
+        if (sessionResult.type === "cancel" || sessionResult.type === "dismiss") {
+          throw new Error(GOOGLE_AUTH_CANCELLED);
+        }
+
+        throw new Error(GOOGLE_AUTH_ERROR);
+      } catch (error) {
+        const message = getGoogleAuthErrorCode(error, GOOGLE_AUTH_UNAVAILABLE);
+        setError(message);
+        throw new Error(message);
+      } finally {
+        setAuthLoading(false);
+      }
+    },
+    [refreshCustomer, syncCartWithCustomer]
+  );
+
+  const completeGoogleLogin = useCallback(
+    async (query: GoogleAuthQuery) => {
+      setAuthLoading(true);
+      setError(null);
+
+      try {
+        const normalizedQuery = normalizeGoogleAuthQuery(query);
+
+        if (normalizedQuery.error) {
+          throw new Error(GOOGLE_AUTH_ERROR);
+        }
+
+        const callbackToken = await sdk.auth.callback(
+          "customer",
+          "google",
+          normalizedQuery
+        );
+        const customerProfile = getCustomerProfileFromGoogleToken(callbackToken);
+        let customerToken = callbackToken;
+
+        if (!customerProfile.actorId) {
+          await sdk.store.customer.create(
+            {
+              email: customerProfile.email,
+              first_name: customerProfile.first_name,
+              last_name: customerProfile.last_name,
+            },
+            {},
+            {
+              authorization: `Bearer ${callbackToken}`,
+            }
+          );
+
+          customerToken = await sdk.auth.refresh({
+            authorization: `Bearer ${callbackToken}`,
+          });
+        }
+
+        if (cart?.id) {
+          transferredCartIdRef.current = cart.id;
+
+          try {
+            await sdk.store.cart.transferCart(
+              cart.id,
+              {},
+              { authorization: `Bearer ${customerToken}` }
+            );
+            await refreshCart().catch(() => null);
+          } catch (transferError) {
+            transferredCartIdRef.current = null;
+            throw transferError;
+          }
+        }
+
+        await refreshCustomer();
+      } catch (error) {
+        const message = getGoogleAuthErrorCode(error, GOOGLE_AUTH_ERROR);
+        setError(message);
+        throw new Error(message);
+      } finally {
+        setAuthLoading(false);
+      }
+    },
+    [cart?.id, refreshCart, refreshCustomer]
+  );
+
   const register = useCallback(
     async ({ email, password, firstName, lastName, phone }: RegisterCustomerInput) => {
       setAuthLoading(true);
@@ -345,6 +592,8 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
         error,
         isAuthenticated: Boolean(customer),
         login,
+        loginWithGoogle,
+        completeGoogleLogin,
         register,
         logout,
         refreshCustomer,

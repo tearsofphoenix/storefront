@@ -18,6 +18,12 @@ function AppStack() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen
+        name="oauth/google"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="checkout"
         options={{
           headerShown: true,

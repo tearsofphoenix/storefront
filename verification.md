@@ -101,3 +101,17 @@
 - 修复结论：
   - Expo chatbot 在原生端现在改为使用 `sdk.client.fetch("/store/chatbot/message")` 发送普通 POST，请求成功后直接复用返回的 `message` / `parts` / `sources` / `handoff_message` 更新会话。
   - Web 端仍保留 `sdk.client.fetchStream(...)` 的流式体验，因此不会回退既有浏览器行为。
+
+## 2026-04-12 Expo account Google login completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，Google 登录的 context、callback route、登录页状态与 i18n 接入后未引入新的 Expo lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `customer-context` 新增的 `loginWithGoogle` / `completeGoogleLogin` 与 Medusa SDK `auth.login` / `auth.callback` / `auth.refresh` 的调用签名兼容。
+  - 新增的 `app/oauth/google.tsx` callback route 与 `app/_layout.tsx` 的路由注册一致。
+  - 登录页 `auth_error=google` 的错误映射，以及 `messages.ts` 中新增的 Google 登录文案在 `en-US`、`fr-FR`、`zh-Hant` 下结构一致。
+- 实现结论：
+  - Expo 账户登录页现在支持 Google 登录，并复用 web storefront 的 Medusa OAuth 完成逻辑：回调后解析 JWT、缺失 `actor_id` 时创建 customer、必要时刷新 token，然后刷新 customer 状态并迁移 cart。
+  - Google OAuth callback 现在落到真实的 Expo Router 路由 `/oauth/google`，避免深链回调命中不存在页面；Expo Go 下回调 URL 使用 `Constants.linkingUri`，development build / standalone 则继续使用 app scheme。
+  - 登录页新增 Google 登录按钮、重定向中状态、错误提示，以及 `GOOGLE_AUTH_*` 错误码到 i18n 文案的映射。
+- 未完成的自动化验证：
+  - 本地未执行完整 Google OAuth 端到端登录，因为这一步依赖外部 Google 授权页面与实际登录会话，不适合在当前无人工交互的本地自动化流程中伪造。
