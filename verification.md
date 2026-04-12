@@ -78,3 +78,14 @@
   - 首页顶部的商店名称不再使用硬编码文案，而是优先读取 Expo 环境与 manifest 中的真实站点名。
   - 首页顶部图片不再使用硬编码外链，而是优先取 `homepage-featured` 集合中的真实商品图片，并在缺失时回退到首个集合或首页首个商品。
   - Home tab 与 home stack 标题现在与实际 storefront branding 保持一致。
+
+## 2026-04-12 Expo chatbot tab completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，新增 chatbot tab、消息渲染组件、product-aware 入口与 i18n 文案后，Expo lint 仍保持通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `sdk.client.fetch("/store/chatbot/settings")` 与 `sdk.client.fetchStream("/store/chatbot/message")` 的聊天状态流在 Expo 页面中可正常通过编译。
+  - chatbot tab 路由、商品详情页跳转入口、消息 parts 渲染组件与新增 i18n 键的类型关系一致。
+- 功能结论：
+  - Expo tabs 现在新增了一个 AI chatbot 页面，使用与 web storefront 相同的 settings / message store routes 与流式协议。
+  - 聊天页支持 welcome message、suggested questions、reset、status/chunk/done/error 处理，以及 `text` / `product-list` / `product-detail` 三类消息 part 展示。
+  - 商品详情页新增“Ask AI about this product”入口，进入 chatbot tab 时会携带当前商品上下文，向现有 chatbot route 发送 `product_context` 以对齐 storefront 的 product-aware 支持。

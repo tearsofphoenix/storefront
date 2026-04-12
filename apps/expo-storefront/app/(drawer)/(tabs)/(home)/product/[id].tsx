@@ -11,7 +11,7 @@ import { getVariantMaxQuantity, isVariantInStock } from '@/lib/inventory';
 import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -22,6 +22,7 @@ export default function ProductDetailsScreen() {
   const { addToCart } = useCart();
   const { selectedRegion } = useRegion();
   const navigation = useNavigation();
+  const router = useRouter();
   const { locale, messages, t } = useI18n();
 
   const [product, setProduct] = useState<HttpTypes.StoreProduct | null>(null);
@@ -316,6 +317,20 @@ export default function ProductDetailsScreen() {
           disabled={!isInStock}
           style={styles.addButton}
         />
+        <Button
+          title={messages.chatbot.askAboutProduct}
+          variant="secondary"
+          onPress={() =>
+            router.push({
+              pathname: "/(drawer)/(tabs)/(chatbot)",
+              params: {
+                productId: product.id,
+                variantId: selectedVariant?.id,
+              },
+            })
+          }
+          style={styles.chatbotButton}
+        />
       </View>
       
       <Toast
@@ -429,6 +444,9 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginTop: 8,
+  },
+  chatbotButton: {
+    marginTop: 12,
   },
   errorText: {
     fontSize: 16,
