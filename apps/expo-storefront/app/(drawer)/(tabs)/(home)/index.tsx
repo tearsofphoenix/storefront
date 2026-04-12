@@ -5,13 +5,22 @@ import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
-import { getStorefrontSiteName } from '@/lib/storefront-branding';
+import {
+  getStorefrontSiteName,
+  setRuntimeStorefrontSiteName,
+} from '@/lib/storefront-branding';
 import type { HttpTypes } from '@medusajs/types';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 const DEFAULT_HOMEPAGE_COLLECTION_HANDLE = "homepage-featured";
+
+type StorefrontInfoResponse = {
+  store?: {
+    name?: string | null;
+  } | null;
+};
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -33,7 +42,11 @@ export default function HomeScreen() {
       setError(null);
 
       const productFields = '*images,*variants.calculated_price,+variants.inventory_quantity';
-      const [{ products: fetchedProducts }, featuredCollectionsResponse] = await Promise.all([
+      const storefrontInfoUrl = process.env.EXPO_PUBLIC_STOREFRONT_URL
+        ? `${process.env.EXPO_PUBLIC_STOREFRONT_URL.replace(/\/+$/, "")}/api/storefront/info`
+        : null;
+      const [{ products: fetchedProducts }, featuredCollectionsResponse, storefrontInfo] =
+        await Promise.all([
         sdk.store.product.list({
           region_id: selectedRegion?.id,
           fields: productFields,
@@ -43,7 +56,23 @@ export default function HomeScreen() {
           fields: "id,handle,title",
           limit: 1,
         }),
-      ]);
+          storefrontInfoUrl
+            ? fetch(storefrontInfoUrl, {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                },
+              })
+                .then(async (response) => {
+                  if (!response.ok) {
+                    return null;
+                  }
+
+                  return (await response.json()) as StorefrontInfoResponse;
+                })
+                .catch(() => null)
+            : Promise.resolve(null),
+        ]);
 
       let homepageCollection = featuredCollectionsResponse.collections[0] ?? null;
 
@@ -70,6 +99,7 @@ export default function HomeScreen() {
       }
 
       const featuredProduct = featuredProducts[0] ?? fetchedProducts[0] ?? null;
+      setRuntimeStorefrontSiteName(storefrontInfo?.store?.name);
 
       setProducts(fetchedProducts);
       setFeaturedCollectionTitle(homepageCollection?.title || null);

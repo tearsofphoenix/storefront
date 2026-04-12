@@ -11,6 +11,8 @@ type ThemeManifest = {
   } | null;
 };
 
+let runtimeStorefrontSiteName: string | null = null;
+
 function readExpoExtra() {
   return (Constants.expoConfig?.extra || {}) as Record<string, unknown>;
 }
@@ -54,13 +56,17 @@ function getBrandNameFromThemeManifest() {
   return readString(parsed?.theme?.config?.brandName);
 }
 
+export function setRuntimeStorefrontSiteName(value: unknown) {
+  runtimeStorefrontSiteName = readString(value);
+}
+
 export function getStorefrontSiteName() {
   const extra = readExpoExtra();
 
   return (
+    runtimeStorefrontSiteName ||
     readString(extra.EXPO_PUBLIC_STOREFRONT_SITE_NAME) ||
     getSiteNameFromPluginManifest() ||
-    getBrandNameFromThemeManifest() ||
-    readString(Constants.expoConfig?.name)
+    getBrandNameFromThemeManifest()
   );
 }

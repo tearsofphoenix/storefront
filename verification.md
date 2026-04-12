@@ -170,3 +170,15 @@
 - 配置注意：
   - 旧的 `https://estore.pandacat.ai/hk/account/google` 这类动态国家路径不应再注册到 Google Cloud Console，也不应再作为 Medusa Google callback 使用。
   - `panda://oauth/google` 不是 Google Cloud Console 的 redirect URI；它只作为 Expo app 内部 deep link，由 storefront mobile bridge 负责跳转过去。
+
+## 2026-04-13 Expo storefront name via storefront info API
+
+- `cd apps/storefront && bun run lint`: passed，新增 storefront info API 与服务端名称解析 util 后，storefront lint 通过。
+- `cd apps/expo-storefront && bun run lint`: passed，Expo 首页标题改为读取 storefront info API 后，Expo lint 通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认 runtime 标题更新、storefront info 响应类型与首页数据加载逻辑兼容。
+- 实现结论：
+  - 新增公开 API：`/api/storefront/info`，由 storefront 服务端统一解析店铺名称。
+  - 店铺名称来源优先级为：Payload `siteSettings.siteName` -> plugin manifest `seo.siteName` -> theme manifest `brandName`。
+  - Expo 首页现在会在加载商品与 featured collection 时并行请求该 API，并把返回的店铺名写入共享 branding helper。
+  - Expo home stack 与 tabs 继续复用同一个 branding helper，因此首页正文、导航标题与 tab 标题会一起显示真实店铺名。
+  - Expo 端已移除对 app name `Panda Commerce Mobile` 的最终标题回退，不再把 app name 当店铺名显示。
