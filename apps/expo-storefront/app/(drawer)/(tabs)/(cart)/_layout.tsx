@@ -6,11 +6,13 @@ import { TouchableOpacity } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 
 export default function CartStackLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const colors = Colors[colorScheme ?? 'light'];
+  const { messages } = useI18n();
 
   return (
     <Stack
@@ -21,7 +23,7 @@ export default function CartStackLayout() {
       <Stack.Screen 
         name="index"
         options={{
-          title: 'Cart',
+          title: messages.cart.title,
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}

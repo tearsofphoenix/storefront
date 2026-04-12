@@ -1,3 +1,5 @@
+import { normalizeLocale } from "@/lib/i18n/shared";
+
 /**
  * Format a price amount with currency code
  * Note: Medusa stores prices in major units (e.g., dollars, euros)
@@ -5,15 +7,15 @@
  */
 export function formatPrice(
   amount: number | undefined,
-  currencyCode: string | undefined
+  currencyCode: string | undefined,
+  locale: string = "en-US"
 ): string {
   if (amount === undefined || !currencyCode) {
-    return 'N/A';
+    return "--";
   }
 
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(normalizeLocale(locale), {
     style: 'currency',
     currency: currencyCode.toUpperCase(),
   }).format(amount);
 }
-

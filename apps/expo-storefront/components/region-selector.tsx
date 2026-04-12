@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/theme";
 import { useRegion } from "@/context/region-context";
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useI18n } from "@/lib/i18n/use-i18n";
 import type { HttpTypes } from "@medusajs/types";
 import React, { useMemo } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -20,6 +21,7 @@ export function RegionSelector({ onRegionChange }: RegionSelectorProps) {
   const { regions, selectedRegion, selectedCountryCode, setSelectedRegion } = useRegion();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
+  const { locale, messages } = useI18n();
 
   // Flatten countries from all regions
   const countries = useMemo(() => {
@@ -39,8 +41,10 @@ export function RegionSelector({ onRegionChange }: RegionSelectorProps) {
     });
     
     // Sort alphabetically by country name
-    return countryList.sort((a, b) => a.countryName.localeCompare(b.countryName));
-  }, [regions]);
+    return countryList.sort((a, b) =>
+      a.countryName.localeCompare(b.countryName, locale)
+    );
+  }, [locale, regions]);
 
   const handleSelectCountry = async (countryWithRegion: CountryWithRegion) => {
     setSelectedRegion(countryWithRegion.region, countryWithRegion.countryCode);
@@ -54,10 +58,12 @@ export function RegionSelector({ onRegionChange }: RegionSelectorProps) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={[styles.title, { color: colors.text }]}>Select Country</Text>
+      <Text style={[styles.title, { color: colors.text }]}>
+        {messages.common.selectCountry}
+      </Text>
       {countries.length === 0 ? (
         <Text style={[styles.emptyText, { color: colors.icon }]}>
-          No countries available
+          {messages.common.noCountriesAvailable}
         </Text>
       ) : (
         countries.map((country) => {
@@ -137,4 +143,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-

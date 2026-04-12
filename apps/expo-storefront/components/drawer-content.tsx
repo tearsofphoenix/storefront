@@ -1,6 +1,8 @@
 import { DrawerContentComponentProps, DrawerContentScrollView } from "@react-navigation/drawer";
 import React from "react";
 import { StyleSheet, View } from "react-native";
+
+import { LocaleSelector } from "./locale-selector";
 import { RegionSelector } from "./region-selector";
 
 export function DrawerContent(props: DrawerContentComponentProps) {
@@ -8,6 +10,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     <DrawerContentScrollView {...props}>
       <View style={styles.container}>
         <RegionSelector onRegionChange={() => props.navigation.closeDrawer()} />
+        <LocaleSelector onLocaleChange={() => props.navigation.closeDrawer()} />
       </View>
     </DrawerContentScrollView>
   );
@@ -18,4 +21,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

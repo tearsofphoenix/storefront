@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Colors } from '@/constants/theme';
 import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Keyboard,
@@ -54,6 +55,7 @@ export function DeliveryStep({
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { selectedRegion } = useRegion();
+  const { messages } = useI18n();
   const scrollViewRef = useRef<ScrollView>(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -95,12 +97,12 @@ export function DeliveryStep({
       >
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Contact Information
+            {messages.checkout.contactInformation}
           </Text>
 
           <TextInput
             style={[styles.input, { color: colors.text, borderColor: colors.icon + '30' }]}
-            placeholder="Email"
+            placeholder={messages.common.email}
             placeholderTextColor={colors.icon}
             value={email}
             onChangeText={onEmailChange}
@@ -110,7 +112,7 @@ export function DeliveryStep({
           />
 
           <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 20 }]}>
-            Shipping Address
+            {messages.checkout.shippingAddress}
           </Text>
 
           <AddressForm
@@ -133,7 +135,7 @@ export function DeliveryStep({
 
           <View style={styles.switchContainer}>
             <Text style={[styles.switchLabel, { color: colors.text }]}>
-              Use same address for billing
+              {messages.checkout.useSameForBilling}
             </Text>
             <Switch
               value={useSameForBilling}
@@ -144,7 +146,7 @@ export function DeliveryStep({
           {!useSameForBilling && (
             <>
               <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 20 }]}>
-                Billing Address
+                {messages.checkout.billingAddress}
               </Text>
 
               <AddressForm
@@ -171,7 +173,7 @@ export function DeliveryStep({
         {/* Button moved inside ScrollView for consistent behavior */}
         <View style={[styles.buttonContainer, { backgroundColor: colors.background }]}>
           <Button
-            title="Continue"
+            title={messages.common.continue}
             onPress={onNext}
             loading={loading}
             style={styles.button}
@@ -230,4 +232,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-

@@ -4,6 +4,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from '@/lib/format-price';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import { getPaymentProviderInfo } from '@/lib/payment-providers';
 import type { HttpTypes } from '@medusajs/types';
 import React from 'react';
@@ -30,20 +31,21 @@ export function PaymentStep({
 }: PaymentStepProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { locale, messages } = useI18n();
 
   return (
     <View style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.section}>
       <Text style={[styles.sectionTitle, { color: colors.text }]}>
-        Select Payment Method
+        {messages.checkout.selectPaymentMethod}
       </Text>
 
       {loading ? (
         <Loading />
       ) : paymentProviders.length === 0 ? (
         <Text style={[styles.emptyText, { color: colors.icon }]}>
-          No payment providers available
+          {messages.checkout.noPaymentProviders}
         </Text>
       ) : (
         paymentProviders.map((provider) => {
@@ -89,36 +91,47 @@ export function PaymentStep({
 
       <View style={[styles.summary, { borderColor: colors.icon + '30' }]}>
         <Text style={[styles.summaryTitle, { color: colors.text }]}>
-          Order Summary
+          {messages.common.orderSummary}
         </Text>
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.text }]}>Subtotal</Text>
+          <Text style={[styles.summaryLabel, { color: colors.text }]}>
+            {messages.common.subtotal}
+          </Text>
           <Text style={[styles.summaryValue, { color: colors.text }]}>
-            {formatPrice(cart.item_subtotal || 0, cart.currency_code)}
+            {formatPrice(cart.item_subtotal || 0, cart.currency_code, locale)}
           </Text>
         </View>
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.text }]}>Discount</Text>
+          <Text style={[styles.summaryLabel, { color: colors.text }]}>
+            {messages.common.discount}
+          </Text>
           <Text style={[styles.summaryValue, { color: colors.text }]}>
-            {(cart.discount_total || 0) > 0 ? '-' : ''}{formatPrice(cart.discount_total || 0, cart.currency_code)}
+            {(cart.discount_total || 0) > 0 ? '-' : ''}
+            {formatPrice(cart.discount_total || 0, cart.currency_code, locale)}
           </Text>
         </View>
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.text }]}>Shipping</Text>
+          <Text style={[styles.summaryLabel, { color: colors.text }]}>
+            {messages.common.shipping}
+          </Text>
           <Text style={[styles.summaryValue, { color: colors.text }]}>
-            {formatPrice(cart.shipping_total || 0, cart.currency_code)}
+            {formatPrice(cart.shipping_total || 0, cart.currency_code, locale)}
           </Text>
         </View>
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.text }]}>Tax</Text>
+          <Text style={[styles.summaryLabel, { color: colors.text }]}>
+            {messages.common.tax}
+          </Text>
           <Text style={[styles.summaryValue, { color: colors.text }]}>
-            {formatPrice(cart.tax_total || 0, cart.currency_code)}
+            {formatPrice(cart.tax_total || 0, cart.currency_code, locale)}
           </Text>
         </View>
         <View style={[styles.summaryRow, styles.totalRow, { borderTopColor: colors.border }]}>
-          <Text style={[styles.totalLabel, { color: colors.text }]}>Total</Text>
+          <Text style={[styles.totalLabel, { color: colors.text }]}>
+            {messages.common.total}
+          </Text>
           <Text style={[styles.totalValue, { color: colors.tint }]}>
-            {formatPrice(cart.total, cart.currency_code)}
+            {formatPrice(cart.total || 0, cart.currency_code, locale)}
           </Text>
         </View>
       </View>
@@ -128,13 +141,13 @@ export function PaymentStep({
       <View style={[styles.buttonContainer, { backgroundColor: colors.background, borderTopColor: colors.icon + '30' }]}>
         <View style={styles.buttonRow}>
           <Button
-            title="Back"
+            title={messages.common.back}
             variant="secondary"
             onPress={onBack}
             style={styles.halfButton}
           />
           <Button
-            title="Place Order"
+            title={messages.checkout.placeOrder}
             onPress={onPlaceOrder}
             loading={loading}
             disabled={!selectedPaymentProvider}
@@ -235,4 +248,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

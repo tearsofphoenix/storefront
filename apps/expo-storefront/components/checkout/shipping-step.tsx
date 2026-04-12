@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from '@/lib/format-price';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import type { HttpTypes } from '@medusajs/types';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -28,20 +29,21 @@ export function ShippingStep({
 }: ShippingStepProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { locale, messages } = useI18n();
 
   return (
     <View style={styles.container}>
       <View style={styles.contentWrapper}>
         <View style={styles.section}>
       <Text style={[styles.sectionTitle, { color: colors.text }]}>
-        Select Shipping Method
+        {messages.checkout.selectShippingMethod}
       </Text>
 
       {loading ? (
         <Loading />
       ) : shippingOptions.length === 0 ? (
         <Text style={[styles.emptyText, { color: colors.icon }]}>
-          No shipping options available
+          {messages.checkout.noShippingOptions}
         </Text>
       ) : (
         shippingOptions.map((option) => (
@@ -77,7 +79,7 @@ export function ShippingStep({
                 {option.name}
               </Text>
               <Text style={[styles.optionPrice, { color: colors.text }]}>
-                {formatPrice(option.amount, currencyCode)}
+                {formatPrice(option.amount, currencyCode, locale)}
               </Text>
             </View>
             {selectedShippingOption === option.id && (
@@ -92,13 +94,13 @@ export function ShippingStep({
       <View style={[styles.buttonContainer, { backgroundColor: colors.background, borderTopColor: colors.icon + '30' }]}>
         <View style={styles.buttonRow}>
           <Button
-            title="Back"
+            title={messages.common.back}
             variant="secondary"
             onPress={onBack}
             style={styles.halfButton}
           />
           <Button
-            title="Continue"
+            title={messages.common.continue}
             onPress={onNext}
             loading={loading}
             disabled={!selectedShippingOption}
@@ -163,4 +165,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

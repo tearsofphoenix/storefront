@@ -1,6 +1,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import type { HttpTypes } from '@medusajs/types';
 import { Picker } from '@react-native-picker/picker';
 import React, { useRef, useState } from 'react';
@@ -51,6 +52,7 @@ export function AddressForm({
 }: AddressFormProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const { messages } = useI18n();
   const [showPicker, setShowPicker] = useState(false);
   const [tempCountryCode, setTempCountryCode] = useState(countryCode);
 
@@ -66,7 +68,7 @@ export function AddressForm({
   );
   const selectedCountryName = selectedCountry
     ? selectedCountry.display_name || selectedCountry.name || selectedCountry.iso_2 || selectedCountry.id
-    : 'Select Country';
+    : messages.common.selectCountry;
 
   const handleDone = () => {
     onCountryCodeChange(tempCountryCode);
@@ -89,7 +91,7 @@ export function AddressForm({
             styles.halfInput,
             { color: colors.text, borderColor: colors.icon + '30' },
           ]}
-          placeholder="First Name"
+          placeholder={messages.common.firstName}
           placeholderTextColor={colors.icon}
           value={firstName}
           onChangeText={onFirstNameChange}
@@ -103,7 +105,7 @@ export function AddressForm({
             styles.halfInput,
             { color: colors.text, borderColor: colors.icon + '30' },
           ]}
-          placeholder="Last Name"
+          placeholder={messages.common.lastName}
           placeholderTextColor={colors.icon}
           value={lastName}
           onChangeText={onLastNameChange}
@@ -115,7 +117,7 @@ export function AddressForm({
       <TextInput
         ref={addressRef}
         style={[styles.input, { color: colors.text, borderColor: colors.icon + '30' }]}
-        placeholder="Address"
+        placeholder={messages.common.address}
         placeholderTextColor={colors.icon}
         value={address}
         onChangeText={onAddressChange}
@@ -131,7 +133,7 @@ export function AddressForm({
             styles.halfInput,
             { color: colors.text, borderColor: colors.icon + '30' },
           ]}
-          placeholder="City"
+          placeholder={messages.common.city}
           placeholderTextColor={colors.icon}
           value={city}
           onChangeText={onCityChange}
@@ -145,7 +147,7 @@ export function AddressForm({
               styles.halfInput,
               { color: colors.text, borderColor: colors.icon + '30' },
             ]}
-            placeholder="Postal Code"
+            placeholder={messages.common.postalCode}
             placeholderTextColor={colors.icon}
             value={postalCode}
             onChangeText={onPostalCodeChange}
@@ -192,11 +194,17 @@ export function AddressForm({
           >
             <View style={[styles.modalHeader, { borderBottomColor: colors.icon + '30' }]}>
               <TouchableOpacity onPress={handleCancel}>
-                <Text style={[styles.modalButton, { color: colors.tint }]}>Cancel</Text>
+                <Text style={[styles.modalButton, { color: colors.tint }]}>
+                  {messages.common.cancel}
+                </Text>
               </TouchableOpacity>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>Select Country</Text>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {messages.common.selectCountry}
+              </Text>
               <TouchableOpacity onPress={handleDone}>
-                <Text style={[styles.modalButton, { color: colors.tint }]}>Done</Text>
+                <Text style={[styles.modalButton, { color: colors.tint }]}>
+                  {messages.common.done}
+                </Text>
               </TouchableOpacity>
             </View>
             <Picker
@@ -213,7 +221,11 @@ export function AddressForm({
               style={[styles.picker, Platform.OS === 'android' && { color: colors.text }]}
               itemStyle={Platform.OS === 'ios' ? styles.pickerItemIOS : undefined}
             >
-              <Picker.Item label="Select Country" value="" enabled={false} />
+              <Picker.Item
+                label={messages.common.selectCountry}
+                value=""
+                enabled={false}
+              />
               {countries.map((country) => {
                 const code = country.iso_2 || country.id;
                 const name = country.display_name || country.name || country.iso_2 || country.id;
@@ -227,7 +239,7 @@ export function AddressForm({
       <TextInput
         ref={phoneRef}
         style={[styles.input, { color: colors.text, borderColor: colors.icon + '30' }]}
-        placeholder="Phone Number"
+        placeholder={messages.common.phone}
         placeholderTextColor={colors.icon}
         value={phone}
         onChangeText={onPhoneChange}
@@ -295,4 +307,3 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
-

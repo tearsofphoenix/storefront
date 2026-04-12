@@ -6,7 +6,39 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import { CartProvider } from '@/context/cart-context';
+import { CustomerProvider } from '@/context/customer-context';
 import { RegionProvider } from '@/context/region-context';
+import { I18nProvider } from '@/lib/i18n/provider';
+import { useI18n } from '@/lib/i18n/use-i18n';
+
+function AppStack() {
+  const { messages } = useI18n();
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="checkout"
+        options={{
+          headerShown: true,
+          title: messages.checkout.title,
+          presentation: 'card',
+          headerBackButtonDisplayMode: "minimal",
+        }}
+      />
+      <Stack.Screen
+        name="order-confirmation/[id]"
+        options={{
+          headerShown: true,
+          title: messages.order.confirmedTitle,
+          headerLeft: () => null,
+          gestureEnabled: false,
+          headerBackVisible: false,
+        }}
+      />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -14,33 +46,16 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <RegionProvider>
-          <CartProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="checkout"
-                options={{
-                  headerShown: true,
-                  title: 'Checkout',
-                  presentation: 'card',
-                  headerBackButtonDisplayMode: "minimal",
-                }}
-              />
-              <Stack.Screen
-                name="order-confirmation/[id]"
-                options={{
-                  headerShown: true,
-                  title: 'Order Confirmed',
-                  headerLeft: () => null,
-                  gestureEnabled: false,
-                  headerBackVisible: false,
-                }}
-              />
-            </Stack>
-            <StatusBar style="auto" />
-          </CartProvider>
-        </RegionProvider>
+        <I18nProvider>
+          <RegionProvider>
+            <CartProvider>
+              <CustomerProvider>
+                <AppStack />
+                <StatusBar style="auto" />
+              </CustomerProvider>
+            </CartProvider>
+          </RegionProvider>
+        </I18nProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

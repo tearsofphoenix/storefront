@@ -2,6 +2,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from "@/lib/format-price";
+import { useI18n } from "@/lib/i18n/use-i18n";
 import type { HttpTypes } from "@medusajs/types";
 import { Image } from "expo-image";
 import React from "react";
@@ -17,6 +18,7 @@ interface CartItemProps {
 export const CartItem = React.memo(function CartItem({ item, currencyCode, onUpdateQuantity, onRemove }: CartItemProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
+  const { locale } = useI18n();
 
   const thumbnail = item.thumbnail || item.variant?.product?.thumbnail;
   const total = item.subtotal || 0;
@@ -39,7 +41,7 @@ export const CartItem = React.memo(function CartItem({ item, currencyCode, onUpd
             </Text>
           )}
           <Text style={[styles.price, { color: colors.text }]}>
-            {formatPrice(total, currencyCode)}
+            {formatPrice(total, currencyCode, locale)}
           </Text>
         </View>
         <View style={styles.actions}>
@@ -135,4 +137,3 @@ const styles = StyleSheet.create({
     padding: 4,
   },
 });
-

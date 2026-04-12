@@ -2,6 +2,7 @@ import { Colors } from "@/constants/theme";
 import { useRegion } from "@/context/region-context";
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from "@/lib/format-price";
+import { useI18n } from "@/lib/i18n/use-i18n";
 import type { HttpTypes } from "@medusajs/types";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -17,6 +18,7 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
   const { selectedRegion } = useRegion();
+  const { locale } = useI18n();
 
   const thumbnail = product.thumbnail || product.images?.[0]?.url;
   const variant = product.variants?.[0];
@@ -50,7 +52,7 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
         </Text>
         <View style={styles.priceRow}>
           <Text style={[styles.price, { color: colors.tint }]}>
-            {formatPrice(priceAmount, currencyCode)}
+            {formatPrice(priceAmount, currencyCode, locale)}
           </Text>
         </View>
       </View>
@@ -94,4 +96,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

@@ -6,10 +6,12 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useCart } from '@/context/cart-context';
+import { useI18n } from '@/lib/i18n/use-i18n';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { cart } = useCart();
+  const { messages } = useI18n();
 
   const itemCount = cart?.items?.length || 0;
 
@@ -29,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: 'Medusa Store',
+          title: messages.home.title,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
           headerShown: false, // Let the home stack manage its own headers
         }}
@@ -37,7 +39,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(cart)"
         options={{
-          title: 'Cart',
+          title: messages.cart.title,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="cart.fill" color={color} />,
           tabBarBadge: itemCount > 0 ? itemCount : undefined,
           tabBarBadgeStyle: {
@@ -46,7 +48,14 @@ export default function TabLayout() {
           headerShown: false, // Let the cart stack manage its own headers
         }}
       />
+      <Tabs.Screen
+        name="(account)"
+        options={{
+          title: messages.account.title,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          headerShown: false,
+        }}
+      />
     </Tabs>
   );
 }
-

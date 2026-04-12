@@ -5,6 +5,7 @@ import { Colors } from '@/constants/theme';
 import { useCart } from '@/context/cart-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from '@/lib/format-price';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import { getPaymentProviderInfo } from '@/lib/payment-providers';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
@@ -19,6 +20,7 @@ export default function OrderConfirmationScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { clearCart } = useCart();
+  const { locale, messages, t } = useI18n();
 
   const [order, setOrder] = useState<HttpTypes.StoreOrder | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,11 +38,11 @@ export default function OrderConfirmationScreen() {
       setOrder(fetchedOrder);
     } catch (err) {
       console.error('Failed to fetch order:', err);
-      setError('Failed to load order details');
+      setError(messages.order.failedToLoad);
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, messages.order.failedToLoad]);
 
   // Fetch order when id changes
   useEffect(() => {
@@ -58,17 +60,17 @@ export default function OrderConfirmationScreen() {
   }, [clearCart]);
 
   if (loading) {
-    return <Loading message="Loading order details..." />;
+    return <Loading message={messages.order.loading} />;
   }
 
   if (error || !order) {
     return (
       <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
         <Text style={[styles.errorText, { color: colors.text }]}>
-          {error || 'Order not found'}
+          {error || messages.order.notFound}
         </Text>
         <Button
-          title="Go to Home"
+          title={messages.common.goHome}
           onPress={() => {
             // Reset to home screen and clear the navigation stack
             router.dismissAll();
@@ -87,13 +89,15 @@ export default function OrderConfirmationScreen() {
           <Text style={styles.checkmark}>✓</Text>
         </View>
 
-        <Text style={[styles.title, { color: colors.text }]}>Order Confirmed!</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {messages.order.confirmedTitle}
+        </Text>
         <Text style={[styles.subtitle, { color: colors.icon }]}>
-          We have received your order and will process it as soon as possible.
+          {messages.order.confirmedSubtitle}
         </Text>
 
         <Button
-          title="Continue Shopping"
+          title={messages.common.continueShopping}
           onPress={() => {
             // Reset to home screen and clear the navigation stack
             router.dismissAll();
@@ -103,21 +107,29 @@ export default function OrderConfirmationScreen() {
         />
 
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.icon + '30' }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Order Details</Text>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            {messages.common.orderDetails}
+          </Text>
           
           <View style={styles.infoRow}>
-            <Text style={[styles.label, { color: colors.icon }]}>Order ID</Text>
+            <Text style={[styles.label, { color: colors.icon }]}>
+              {messages.order.orderId}
+            </Text>
             <Text style={[styles.value, { color: colors.text }]}>{order.display_id}</Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, { color: colors.icon }]}>Email</Text>
+            <Text style={[styles.label, { color: colors.icon }]}>
+              {messages.order.emailLabel}
+            </Text>
             <Text style={[styles.value, { color: colors.text }]}>{order.email}</Text>
           </View>
         </View>
 
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.icon + '30' }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Order Items</Text>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            {messages.common.orderItems}
+          </Text>
           
           {order.items?.map((item, index) => (
             <View 
@@ -143,23 +155,25 @@ export default function OrderConfirmationScreen() {
                   </Text>
                 )}
                 <Text style={[styles.itemQuantity, { color: colors.icon }]}>
-                  Qty: {item.quantity}
+                  {t(messages.order.qty, { count: item.quantity })}
                 </Text>
               </View>
               <Text style={[styles.itemPrice, { color: colors.text }]}>
-                {formatPrice(item.subtotal, order.currency_code)}
+                {formatPrice(item.subtotal, order.currency_code, locale)}
               </Text>
             </View>
           ))}
         </View>
 
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.icon + '30' }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Shipping</Text>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            {messages.common.shipping}
+          </Text>
           
           {order.shipping_address && (
             <>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Shipping Address
+                {messages.common.shippingAddress}
               </Text>
               <Text style={[styles.addressText, { color: colors.text }]}>
                 {order.shipping_address.first_name} {order.shipping_address.last_name}
@@ -179,11 +193,11 @@ export default function OrderConfirmationScreen() {
           {order.shipping_methods && order.shipping_methods.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Shipping Method
+                {messages.common.shippingMethod}
               </Text>
               {order.shipping_methods.map((method) => (
                 <Text key={method.id} style={[styles.addressText, { color: colors.text }]}>
-                  {method.name} - {formatPrice(method.amount || 0, order.currency_code)}
+                  {method.name} - {formatPrice(method.amount || 0, order.currency_code, locale)}
                 </Text>
               ))}
             </>
@@ -191,12 +205,14 @@ export default function OrderConfirmationScreen() {
         </View>
 
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.icon + '30' }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Payment</Text>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            {messages.common.payment}
+          </Text>
           
           {order.payment_collections && order.payment_collections.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Payment Method
+                {messages.common.paymentMethod}
               </Text>
               {order.payment_collections[0].payments?.map((payment) => {
                 const providerInfo = getPaymentProviderInfo(payment.provider_id);
@@ -219,7 +235,7 @@ export default function OrderConfirmationScreen() {
           {order.billing_address && (
             <>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Billing Address
+                {messages.common.billingAddress}
               </Text>
               <Text style={[styles.addressText, { color: colors.text }]}>
                 {order.billing_address.first_name} {order.billing_address.last_name}
@@ -238,40 +254,53 @@ export default function OrderConfirmationScreen() {
         </View>
 
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.icon + '30' }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>Order Summary</Text>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            {messages.common.orderSummary}
+          </Text>
           
           <View style={styles.summaryRow}>
-            <Text style={[styles.summaryLabel, { color: colors.text }]}>Subtotal</Text>
+            <Text style={[styles.summaryLabel, { color: colors.text }]}>
+              {messages.common.subtotal}
+            </Text>
             <Text style={[styles.summaryValue, { color: colors.text }]}>
-              {formatPrice(order.item_subtotal || 0, order.currency_code)}
+              {formatPrice(order.item_subtotal || 0, order.currency_code, locale)}
             </Text>
           </View>
 
           <View style={styles.summaryRow}>
-            <Text style={[styles.summaryLabel, { color: colors.text }]}>Discount</Text>
+            <Text style={[styles.summaryLabel, { color: colors.text }]}>
+              {messages.common.discount}
+            </Text>
             <Text style={[styles.summaryValue, { color: colors.text }]}>
-              {(order.discount_total || 0) > 0 ? '-' : ''}{formatPrice(order.discount_total || 0, order.currency_code)}
+              {(order.discount_total || 0) > 0 ? '-' : ''}
+              {formatPrice(order.discount_total || 0, order.currency_code, locale)}
             </Text>
           </View>
 
           <View style={styles.summaryRow}>
-            <Text style={[styles.summaryLabel, { color: colors.text }]}>Shipping</Text>
+            <Text style={[styles.summaryLabel, { color: colors.text }]}>
+              {messages.common.shipping}
+            </Text>
             <Text style={[styles.summaryValue, { color: colors.text }]}>
-              {formatPrice(order.shipping_total || 0, order.currency_code)}
+              {formatPrice(order.shipping_total || 0, order.currency_code, locale)}
             </Text>
           </View>
 
           <View style={styles.summaryRow}>
-            <Text style={[styles.summaryLabel, { color: colors.text }]}>Tax</Text>
+            <Text style={[styles.summaryLabel, { color: colors.text }]}>
+              {messages.common.tax}
+            </Text>
             <Text style={[styles.summaryValue, { color: colors.text }]}>
-              {formatPrice(order.tax_total || 0, order.currency_code)}
+              {formatPrice(order.tax_total || 0, order.currency_code, locale)}
             </Text>
           </View>
 
           <View style={[styles.summaryRow, styles.totalRow, { borderTopColor: colors.border }]}>
-            <Text style={[styles.totalLabel, { color: colors.text }]}>Total</Text>
+            <Text style={[styles.totalLabel, { color: colors.text }]}>
+              {messages.common.total}
+            </Text>
             <Text style={[styles.totalValue, { color: colors.tint }]}>
-              {formatPrice(order.total, order.currency_code)}
+              {formatPrice(order.total, order.currency_code, locale)}
             </Text>
           </View>
         </View>
@@ -431,4 +460,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-

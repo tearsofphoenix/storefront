@@ -1,47 +1,88 @@
 import { DeliveryStep } from '@/components/checkout/delivery-step';
 import { PaymentStep } from '@/components/checkout/payment-step';
 import { ShippingStep } from '@/components/checkout/shipping-step';
+import { Button } from '@/components/ui/button';
 import { Colors } from '@/constants/theme';
 import { useCart } from '@/context/cart-context';
+import { useCustomer } from '@/context/customer-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 
 type CheckoutStep = 'delivery' | 'shipping' | 'payment';
+type CheckoutAddress = {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  countryCode: string;
+  phone: string;
+};
+type AddressSource = {
+  first_name?: string | null;
+  last_name?: string | null;
+  address_1?: string | null;
+  city?: string | null;
+  postal_code?: string | null;
+  country_code?: string | null;
+  phone?: string | null;
+};
+
+const EMPTY_ADDRESS: CheckoutAddress = {
+  firstName: '',
+  lastName: '',
+  address: '',
+  city: '',
+  postalCode: '',
+  countryCode: '',
+  phone: '',
+};
+
+function mapAddress(source?: AddressSource | null): CheckoutAddress {
+  return {
+    firstName: source?.first_name || '',
+    lastName: source?.last_name || '',
+    address: source?.address_1 || '',
+    city: source?.city || '',
+    postalCode: source?.postal_code || '',
+    countryCode: source?.country_code || '',
+    phone: source?.phone || '',
+  };
+}
+
+function areAddressesEqual(left: CheckoutAddress, right: CheckoutAddress) {
+  return (
+    left.firstName === right.firstName &&
+    left.lastName === right.lastName &&
+    left.address === right.address &&
+    left.city === right.city &&
+    left.postalCode === right.postalCode &&
+    left.countryCode === right.countryCode &&
+    left.phone === right.phone
+  );
+}
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { cart, refreshCart } = useCart();
+  const { customer, addresses, isAuthenticated } = useCustomer();
+  const { messages } = useI18n();
 
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('delivery');
   const [loading, setLoading] = useState(false);
 
   // Contact & Address state
   const [email, setEmail] = useState('');
-  const [shippingAddress, setShippingAddress] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    countryCode: '',
-    phone: '',
-  });
+  const [shippingAddress, setShippingAddress] = useState<CheckoutAddress>(EMPTY_ADDRESS);
   const [useSameForBilling, setUseSameForBilling] = useState(true);
-  const [billingAddress, setBillingAddress] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    countryCode: '',
-    phone: '',
-  });
+  const [billingAddress, setBillingAddress] = useState<CheckoutAddress>(EMPTY_ADDRESS);
 
   // Shipping step
   const [shippingOptions, setShippingOptions] = useState<HttpTypes.StoreCartShippingOption[]>([]);
@@ -51,43 +92,63 @@ export default function CheckoutScreen() {
   const [paymentProviders, setPaymentProviders] = useState<HttpTypes.StorePaymentProvider[]>([]);
   const [selectedPaymentProvider, setSelectedPaymentProvider] = useState<string | null>(null);
 
+  const defaultShippingAddress = useMemo(() => {
+    return (
+      addresses.find(
+        (address) =>
+          address.id === customer?.default_shipping_address_id ||
+          address.is_default_shipping
+      ) ||
+      addresses[0] ||
+      null
+    );
+  }, [addresses, customer?.default_shipping_address_id]);
+
+  const defaultBillingAddress = useMemo(() => {
+    return (
+      addresses.find(
+        (address) =>
+          address.id === customer?.default_billing_address_id ||
+          address.is_default_billing
+      ) ||
+      defaultShippingAddress ||
+      null
+    );
+  }, [addresses, customer?.default_billing_address_id, defaultShippingAddress]);
+
   // Sync form state with cart values (handles both prepopulation and reset)
   useEffect(() => {
-    // Populate form with existing cart data or reset to empty values
-    setEmail(cart?.email || '');
-    setShippingAddress({
-      firstName: cart?.shipping_address?.first_name || '',
-      lastName: cart?.shipping_address?.last_name || '',
-      address: cart?.shipping_address?.address_1 || '',
-      city: cart?.shipping_address?.city || '',
-      postalCode: cart?.shipping_address?.postal_code || '',
-      countryCode: cart?.shipping_address?.country_code || '',
-      phone: cart?.shipping_address?.phone || '',
-    });
-    
-    // Billing address - check if different from shipping
-    const hasDifferentBilling = cart?.billing_address && 
-      (cart.billing_address.address_1 !== cart.shipping_address?.address_1 ||
-       cart.billing_address.city !== cart.shipping_address?.city);
-    
-    setUseSameForBilling(!hasDifferentBilling);
-    setBillingAddress({
-      firstName: cart?.billing_address?.first_name || '',
-      lastName: cart?.billing_address?.last_name || '',
-      address: cart?.billing_address?.address_1 || '',
-      city: cart?.billing_address?.city || '',
-      postalCode: cart?.billing_address?.postal_code || '',
-      countryCode: cart?.billing_address?.country_code || '',
-      phone: cart?.billing_address?.phone || '',
-    });
-    
-    // Reset selections when cart is null
+    const fallbackCustomerAddress: AddressSource = {
+      first_name: customer?.first_name,
+      last_name: customer?.last_name,
+      phone: customer?.phone || undefined,
+    };
+    const nextShippingAddress = cart?.shipping_address
+      ? mapAddress(cart.shipping_address)
+      : mapAddress({
+          ...fallbackCustomerAddress,
+          ...defaultShippingAddress,
+        });
+    const nextBillingAddress = cart?.billing_address
+      ? mapAddress(cart.billing_address)
+      : mapAddress({
+          ...fallbackCustomerAddress,
+          ...(defaultBillingAddress || defaultShippingAddress),
+        });
+
+    setEmail(cart?.email || customer?.email || '');
+    setShippingAddress(nextShippingAddress);
+    setBillingAddress(nextBillingAddress);
+    setUseSameForBilling(areAddressesEqual(nextShippingAddress, nextBillingAddress));
+    setSelectedShippingOption(cart?.shipping_methods?.[0]?.shipping_option_id || null);
+    setSelectedPaymentProvider(
+      cart?.payment_collection?.payment_sessions?.[0]?.provider_id || null
+    );
+
     if (!cart) {
-      setSelectedShippingOption(null);
-      setSelectedPaymentProvider(null);
       setCurrentStep('delivery');
     }
-  }, [cart]);
+  }, [cart, customer, defaultBillingAddress, defaultShippingAddress]);
 
   const fetchShippingOptions = useCallback(async () => {
     if (!cart) return;
@@ -100,11 +161,11 @@ export default function CheckoutScreen() {
       setShippingOptions(shipping_options || []);
     } catch (err) {
       console.error('Failed to fetch shipping options:', err);
-      Alert.alert('Error', 'Failed to load shipping options');
+      Alert.alert(messages.checkout.title, messages.checkout.failedToLoadShipping);
     } finally {
       setLoading(false);
     }
-  }, [cart]);
+  }, [cart, messages.checkout.failedToLoadShipping, messages.checkout.title]);
 
   const fetchPaymentProviders = useCallback(async () => {
     if (!cart) return;
@@ -117,11 +178,11 @@ export default function CheckoutScreen() {
       setPaymentProviders(payment_providers || []);
     } catch (err) {
       console.error('Failed to fetch payment providers:', err);
-      Alert.alert('Error', 'Failed to load payment providers');
+      Alert.alert(messages.checkout.title, messages.checkout.failedToLoadPayment);
     } finally {
       setLoading(false);
     }
-  }, [cart]);
+  }, [cart, messages.checkout.failedToLoadPayment, messages.checkout.title]);
 
   useEffect(() => {
     if (currentStep === 'shipping') {
@@ -136,7 +197,7 @@ export default function CheckoutScreen() {
     if (!email || !shippingAddress.firstName || !shippingAddress.lastName || 
         !shippingAddress.address || !shippingAddress.city || !shippingAddress.postalCode || 
         !shippingAddress.countryCode || !shippingAddress.phone) {
-      Alert.alert('Error', 'Please fill in all shipping address fields');
+      Alert.alert(messages.checkout.title, messages.checkout.fillShippingFields);
       return;
     }
 
@@ -145,7 +206,7 @@ export default function CheckoutScreen() {
       if (!billingAddress.firstName || !billingAddress.lastName || !billingAddress.address || 
           !billingAddress.city || !billingAddress.postalCode || !billingAddress.countryCode || 
           !billingAddress.phone) {
-        Alert.alert('Error', 'Please fill in all billing address fields');
+        Alert.alert(messages.checkout.title, messages.checkout.fillBillingFields);
         return;
       }
     }
@@ -184,7 +245,7 @@ export default function CheckoutScreen() {
       setCurrentStep('shipping');
     } catch (err) {
       console.error('Failed to update cart:', err);
-      Alert.alert('Error', 'Failed to save delivery information');
+      Alert.alert(messages.checkout.title, messages.checkout.failedToSaveDelivery);
     } finally {
       setLoading(false);
     }
@@ -192,7 +253,7 @@ export default function CheckoutScreen() {
 
   const handleShippingNext = async () => {
     if (!selectedShippingOption || !cart) {
-      Alert.alert('Error', 'Please select a shipping method');
+      Alert.alert(messages.checkout.title, messages.checkout.selectShippingError);
       return;
     }
 
@@ -207,7 +268,7 @@ export default function CheckoutScreen() {
       setCurrentStep('payment');
     } catch (err) {
       console.error('Failed to add shipping method:', err);
-      Alert.alert('Error', 'Failed to save shipping method');
+      Alert.alert(messages.checkout.title, messages.checkout.failedToSaveShipping);
     } finally {
       setLoading(false);
     }
@@ -215,7 +276,7 @@ export default function CheckoutScreen() {
 
   const handlePlaceOrder = async () => {
     if (!selectedPaymentProvider || !cart) {
-      Alert.alert('Error', 'Please select a payment provider');
+      Alert.alert(messages.checkout.title, messages.checkout.selectPaymentError);
       return;
     }
 
@@ -235,11 +296,17 @@ export default function CheckoutScreen() {
         // Cart will be cleared on the order confirmation page to prevent empty cart flash
         router.replace(`/order-confirmation/${result.order.id}`);
       } else {
-        Alert.alert('Error', result.error?.message || 'Failed to complete order');
+        Alert.alert(
+          messages.checkout.title,
+          result.error?.message || messages.checkout.failedToCompleteOrder
+        );
       }
     } catch (err: any) {
       console.error('Failed to complete order:', err);
-      Alert.alert('Error', err?.message || 'Failed to complete order');
+      Alert.alert(
+        messages.checkout.title,
+        err?.message || messages.checkout.failedToCompleteOrder
+      );
     } finally {
       setLoading(false);
     }
@@ -249,7 +316,7 @@ export default function CheckoutScreen() {
     return (
       <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
         <Text style={[styles.errorText, { color: colors.text }]}>
-          No cart found. Please add items to your cart first.
+          {messages.checkout.noCartFound}
         </Text>
       </View>
     );
@@ -258,9 +325,37 @@ export default function CheckoutScreen() {
   // Active step uses inverted colors: white bg with dark text in dark mode, tint bg with white text in light mode
   const activeStepBg = colorScheme === 'dark' ? '#fff' : colors.tint;
   const activeStepText = colorScheme === 'dark' ? '#000' : '#fff';
+  const stepLabels: Record<CheckoutStep, string> = {
+    delivery: messages.checkout.delivery,
+    shipping: messages.checkout.shipping,
+    payment: messages.checkout.payment,
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {!isAuthenticated && currentStep === 'delivery' ? (
+        <View
+          style={[
+            styles.authBanner,
+            {
+              backgroundColor: colors.background,
+              borderBottomColor: `${colors.icon}20`,
+            },
+          ]}
+        >
+          <Text style={[styles.authTitle, { color: colors.text }]}>
+            {messages.account.signIn}
+          </Text>
+          <Text style={[styles.authDescription, { color: colors.icon }]}>
+            {messages.account.signInSubtitle}
+          </Text>
+          <Button
+            title={messages.account.signIn}
+            variant="secondary"
+            onPress={() => router.push("/(drawer)/(tabs)/(account)/login")}
+          />
+        </View>
+      ) : null}
       <View style={[styles.steps, { borderBottomColor: colors.border }]}>
         {(['delivery', 'shipping', 'payment'] as CheckoutStep[]).map((step, index) => (
           <View key={step} style={styles.stepIndicator}>
@@ -291,7 +386,7 @@ export default function CheckoutScreen() {
                 },
               ]}
             >
-              {step.charAt(0).toUpperCase() + step.slice(1)}
+              {stepLabels[step]}
             </Text>
           </View>
         ))}
@@ -355,6 +450,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  authBanner: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+  },
+  authTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  authDescription: {
+    fontSize: 14,
+    lineHeight: 22,
+    marginBottom: 16,
+  },
   steps: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -387,4 +498,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

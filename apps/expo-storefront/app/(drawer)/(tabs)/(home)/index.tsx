@@ -3,6 +3,7 @@ import { ProductCard } from '@/components/product-card';
 import { Colors } from '@/constants/theme';
 import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
 import { Image } from 'expo-image';
@@ -13,6 +14,7 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { selectedRegion } = useRegion();
+  const { messages } = useI18n();
   
   const [products, setProducts] = useState<HttpTypes.StoreProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,12 +34,12 @@ export default function HomeScreen() {
       setProducts(fetchedProducts);
     } catch (err) {
       console.error('Failed to fetch products:', err);
-      setError('Failed to load products. Please try again.');
+      setError(messages.home.failedToLoadProducts);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [selectedRegion]);
+  }, [messages.home.failedToLoadProducts, selectedRegion]);
 
   useEffect(() => {
     if (selectedRegion) {
@@ -51,7 +53,7 @@ export default function HomeScreen() {
   };
 
   if (loading) {
-    return <Loading message="Loading products..." />;
+    return <Loading message={messages.home.loadingProducts} />;
   }
 
   if (error) {
@@ -81,7 +83,7 @@ export default function HomeScreen() {
               contentFit="cover"
             />
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              Latest Products
+              {messages.home.latestProducts}
             </Text>
           </View>
         }
@@ -97,7 +99,7 @@ export default function HomeScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: colors.text }]}>
-              No products available
+              {messages.home.noProductsAvailable}
             </Text>
           </View>
         }
@@ -149,4 +151,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-

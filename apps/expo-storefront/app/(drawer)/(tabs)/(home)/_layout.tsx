@@ -6,11 +6,13 @@ import { TouchableOpacity } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
+import { useI18n } from '@/lib/i18n/use-i18n';
 
 export default function HomeStackLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const colors = Colors[colorScheme ?? 'light'];
+  const { messages } = useI18n();
 
   return (
     <Stack
@@ -21,7 +23,7 @@ export default function HomeStackLayout() {
       <Stack.Screen 
         name="index"
         options={{
-          title: 'Medusa Store',
+          title: messages.home.title,
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
@@ -35,7 +37,7 @@ export default function HomeStackLayout() {
       <Stack.Screen 
         name="product/[id]"
         options={{
-          title: 'Product Details',
+          title: messages.product.detailsTitle,
           presentation: 'card',
           headerBackButtonDisplayMode: "minimal"
         }}
@@ -43,4 +45,3 @@ export default function HomeStackLayout() {
     </Stack>
   );
 }
-

@@ -8,6 +8,7 @@ import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from '@/lib/format-price';
 import { isVariantInStock } from '@/lib/inventory';
+import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
@@ -21,6 +22,7 @@ export default function ProductDetailsScreen() {
   const { addToCart } = useCart();
   const { selectedRegion } = useRegion();
   const navigation = useNavigation();
+  const { locale, messages, t } = useI18n();
 
   const [product, setProduct] = useState<HttpTypes.StoreProduct | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
@@ -56,11 +58,11 @@ export default function ProductDetailsScreen() {
       }
     } catch (err) {
       console.error('Failed to fetch product:', err);
-      setError('Failed to load product. Please try again.');
+      setError(messages.product.failedToLoadProduct);
     } finally {
       setLoading(false);
     }
-  }, [id, selectedRegion]);
+  }, [id, messages.product.failedToLoadProduct, selectedRegion]);
 
   useEffect(() => {
     if (id && selectedRegion) {
@@ -75,8 +77,12 @@ export default function ProductDetailsScreen() {
       navigation.setOptions({
         title: productTitle,
       });
+    } else {
+      navigation.setOptions({
+        title: messages.product.detailsTitle,
+      });
     }
-  }, [title, product, navigation]);
+  }, [title, product, navigation, messages.product.detailsTitle]);
 
   // Compute selected variant based on selected options
   const selectedVariant = useMemo(() => {
@@ -117,7 +123,11 @@ export default function ProductDetailsScreen() {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) {
-      setToastMessage(shouldShowOptions ? 'Please select all options' : 'Variant not available');
+      setToastMessage(
+        shouldShowOptions
+          ? messages.product.selectAllOptions
+          : messages.product.variantUnavailable
+      );
       setToastVisible(true);
       return;
     }
@@ -125,10 +135,10 @@ export default function ProductDetailsScreen() {
     try {
       setAddingToCart(true);
       await addToCart(selectedVariant.id, quantity);
-      setToastMessage('Product added to cart!');
+      setToastMessage(messages.product.addedToCart);
       setToastVisible(true);
     } catch {
-      setToastMessage('Failed to add product to cart');
+      setToastMessage(messages.product.failedToAddToCart);
       setToastVisible(true);
     } finally {
       setAddingToCart(false);
@@ -143,7 +153,7 @@ export default function ProductDetailsScreen() {
     return (
       <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
         <Text style={[styles.errorText, { color: colors.text }]}>
-          {error || 'Product not found'}
+          {error || messages.product.notFound}
         </Text>
       </View>
     );
@@ -173,11 +183,11 @@ export default function ProductDetailsScreen() {
 
         <View style={styles.priceContainer}>
           <Text style={[styles.price, { color: colors.tint }]}>
-            {formatPrice(priceAmount, currencyCode)}
+            {formatPrice(priceAmount, currencyCode, locale)}
           </Text>
           {!isInStock && (
             <View style={[styles.stockBadge, { backgroundColor: colors.error }]}>
-              <Text style={styles.outOfStockText}>Out of Stock</Text>
+              <Text style={styles.outOfStockText}>{messages.product.outOfStock}</Text>
             </View>
           )}
           {isInStock && selectedVariant?.inventory_quantity !== undefined && 
@@ -185,7 +195,9 @@ export default function ProductDetailsScreen() {
            selectedVariant.manage_inventory !== false && (
             <View style={[styles.stockBadge, { backgroundColor: colors.warning }]}>
               <Text style={styles.lowStockText}>
-                Only {selectedVariant.inventory_quantity} left
+                {t(messages.product.lowStock, {
+                  count: selectedVariant.inventory_quantity!,
+                })}
               </Text>
             </View>
           )}
@@ -243,7 +255,9 @@ export default function ProductDetailsScreen() {
         )}
 
         <View style={styles.quantitySection}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Quantity</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            {messages.common.quantity}
+          </Text>
           <View style={styles.quantityControls}>
             <TouchableOpacity
               style={[styles.quantityButton, { borderColor: colors.icon }]}
@@ -262,7 +276,7 @@ export default function ProductDetailsScreen() {
         </View>
 
         <Button
-          title={isInStock ? "Add to Cart" : "Out of Stock"}
+          title={isInStock ? messages.product.addToCart : messages.product.outOfStock}
           onPress={handleAddToCart}
           loading={addingToCart}
           disabled={!isInStock}
@@ -387,4 +401,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
