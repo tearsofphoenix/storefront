@@ -56,3 +56,14 @@
   - 已登录用户在 delivery step 中可以直接选择当前区域内的已保存地址，不再只能依赖默认预填或手工输入。
   - 选择 saved shipping address 时，如果 billing 与 shipping 共用，同步会立即反映到 billing 状态。
   - 重新打开 `Use same address for billing` 时，billing 会回到当前 shipping 值，避免隐藏状态滞后。
+
+## 2026-04-12 Expo quantity-limit completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，商品详情与购物车数量上限逻辑接入后，Expo lint 仍保持通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `lib/inventory.ts` 的共享数量上限 helper 能同时服务商品详情与购物车项。
+  - `allow_backorder`、`manage_inventory` 与 `inventory_quantity` 的组合逻辑可正常通过编译。
+- 功能结论：
+  - 商品详情页不会再无限增加数量；当选定变体到达前端允许上限时，加号会禁用，并在变体切换后自动回落到合法数量。
+  - 购物车项的数量增加也遵守同一套库存上限逻辑，避免用户在前端把数量点到明显超库存的区间。
+  - 对不追踪库存或允许 backorder 的变体，仍保留 storefront 风格的上限兜底，而不是错误地锁死加购。

@@ -2,6 +2,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from "@/lib/format-price";
+import { getVariantMaxQuantity } from "@/lib/inventory";
 import { useI18n } from "@/lib/i18n/use-i18n";
 import type { HttpTypes } from "@medusajs/types";
 import { Image } from "expo-image";
@@ -22,6 +23,8 @@ export const CartItem = React.memo(function CartItem({ item, currencyCode, onUpd
 
   const thumbnail = item.thumbnail || item.variant?.product?.thumbnail;
   const total = item.subtotal || 0;
+  const maxQuantity = getVariantMaxQuantity(item.variant);
+  const canIncreaseQuantity = maxQuantity === 0 ? false : item.quantity < maxQuantity;
 
   return (
     <View style={[styles.container, { borderBottomColor: colors.icon + "30" }]}>
@@ -49,8 +52,16 @@ export const CartItem = React.memo(function CartItem({ item, currencyCode, onUpd
             <TouchableOpacity
               style={[styles.quantityButton, { borderColor: colors.icon }]}
               onPress={() => onUpdateQuantity(Math.max(1, item.quantity - 1))}
+              disabled={item.quantity <= 1}
             >
-              <Text style={[styles.quantityButtonText, { color: colors.text }]}>-</Text>
+              <Text
+                style={[
+                  styles.quantityButtonText,
+                  { color: item.quantity <= 1 ? colors.icon : colors.text },
+                ]}
+              >
+                -
+              </Text>
             </TouchableOpacity>
             <Text style={[styles.quantity, { color: colors.text }]}>
               {item.quantity}
@@ -58,8 +69,16 @@ export const CartItem = React.memo(function CartItem({ item, currencyCode, onUpd
             <TouchableOpacity
               style={[styles.quantityButton, { borderColor: colors.icon }]}
               onPress={() => onUpdateQuantity(item.quantity + 1)}
+              disabled={!canIncreaseQuantity}
             >
-              <Text style={[styles.quantityButtonText, { color: colors.text }]}>+</Text>
+              <Text
+                style={[
+                  styles.quantityButtonText,
+                  { color: canIncreaseQuantity ? colors.text : colors.icon },
+                ]}
+              >
+                +
+              </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={onRemove} style={styles.removeButton}>

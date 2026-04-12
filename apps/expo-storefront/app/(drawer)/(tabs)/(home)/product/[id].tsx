@@ -7,7 +7,7 @@ import { useCart } from '@/context/cart-context';
 import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatPrice } from '@/lib/format-price';
-import { isVariantInStock } from '@/lib/inventory';
+import { getVariantMaxQuantity, isVariantInStock } from '@/lib/inventory';
 import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
 import type { HttpTypes } from '@medusajs/types';
@@ -120,6 +120,19 @@ export default function ProductDetailsScreen() {
     }
     return productImages.length > 0 ? productImages : [];
   }, [product]);
+
+  const maxQuantity = useMemo(() => {
+    return getVariantMaxQuantity(selectedVariant);
+  }, [selectedVariant]);
+
+  useEffect(() => {
+    if (maxQuantity <= 0) {
+      setQuantity(1);
+      return;
+    }
+
+    setQuantity((currentQuantity) => Math.min(currentQuantity, maxQuantity));
+  }, [maxQuantity]);
 
   const handleAddToCart = async () => {
     if (!selectedVariant) {
@@ -262,15 +275,36 @@ export default function ProductDetailsScreen() {
             <TouchableOpacity
               style={[styles.quantityButton, { borderColor: colors.icon }]}
               onPress={() => setQuantity(Math.max(1, quantity - 1))}
+              disabled={quantity <= 1}
             >
-              <Text style={[styles.quantityButtonText, { color: colors.text }]}>-</Text>
+              <Text
+                style={[
+                  styles.quantityButtonText,
+                  { color: quantity <= 1 ? colors.icon : colors.text },
+                ]}
+              >
+                -
+              </Text>
             </TouchableOpacity>
             <Text style={[styles.quantity, { color: colors.text }]}>{quantity}</Text>
             <TouchableOpacity
               style={[styles.quantityButton, { borderColor: colors.icon }]}
-              onPress={() => setQuantity(quantity + 1)}
+              onPress={() => setQuantity((currentQuantity) => currentQuantity + 1)}
+              disabled={!isInStock || quantity >= maxQuantity}
             >
-              <Text style={[styles.quantityButtonText, { color: colors.text }]}>+</Text>
+              <Text
+                style={[
+                  styles.quantityButtonText,
+                  {
+                    color:
+                      !isInStock || quantity >= maxQuantity
+                        ? colors.icon
+                        : colors.text,
+                  },
+                ]}
+              >
+                +
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
