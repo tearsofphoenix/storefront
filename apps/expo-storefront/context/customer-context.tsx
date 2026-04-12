@@ -20,6 +20,12 @@ type RegisterCustomerInput = {
   phone?: string;
 };
 
+type UpdateCustomerInput = {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+};
+
 type CustomerAddressInput = {
   firstName: string;
   lastName: string;
@@ -43,6 +49,7 @@ type CustomerContextValue = {
   register: (input: RegisterCustomerInput) => Promise<void>;
   logout: () => Promise<void>;
   refreshCustomer: () => Promise<void>;
+  updateCustomer: (input: UpdateCustomerInput) => Promise<void>;
   refreshAddresses: () => Promise<HttpTypes.StoreCustomerAddress[]>;
   createAddress: (input: CustomerAddressInput) => Promise<void>;
   updateAddress: (addressId: string, input: CustomerAddressInput) => Promise<void>;
@@ -65,6 +72,14 @@ function mapAddressInputToPayload(input: CustomerAddressInput) {
     phone: input.phone,
     is_default_shipping: input.isDefaultShipping,
     is_default_billing: input.isDefaultBilling,
+  };
+}
+
+function mapCustomerInputToPayload(input: UpdateCustomerInput) {
+  return {
+    first_name: input.firstName,
+    last_name: input.lastName,
+    phone: input.phone,
   };
 }
 
@@ -107,6 +122,23 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   }, [fetchAddresses]);
+
+  const updateCustomer = useCallback(
+    async (input: UpdateCustomerInput) => {
+      setError(null);
+
+      try {
+        await sdk.store.customer.update(mapCustomerInputToPayload(input));
+        await refreshCustomer();
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to update customer profile";
+        setError(message);
+        throw err;
+      }
+    },
+    [refreshCustomer]
+  );
 
   const createAddress = useCallback(
     async (input: CustomerAddressInput) => {
@@ -316,6 +348,7 @@ export function CustomerProvider({ children }: { children: React.ReactNode }) {
         register,
         logout,
         refreshCustomer,
+        updateCustomer,
         refreshAddresses: fetchAddresses,
         createAddress,
         updateAddress,

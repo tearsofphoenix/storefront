@@ -124,6 +124,8 @@ const localeMessages = {
       guestTitle: "Sign in to your account",
       guestDescription: "Access your saved profile, previous orders, and faster checkout on mobile.",
       overview: "Account Overview",
+      profile: "Profile",
+      profileDescription: "Manage your name and phone details for faster checkout.",
       personalDetails: "Personal Details",
       signedInAs: "Signed in as",
       recentOrders: "Recent Orders",
@@ -154,6 +156,12 @@ const localeMessages = {
       fillAddressFields: "Please complete all required address fields",
       defaultShippingDescription: "Use this address first when selecting a delivery address at checkout.",
       defaultBillingDescription: "Use this address first when selecting a billing address at checkout.",
+      emailReadOnlyDescription: "Your sign-in email is shown here and can't be updated from mobile account settings yet.",
+      profileSaved: "Profile updated successfully",
+      profileSaveFailed: "Failed to update your profile",
+      addressNotFound: "Address not found",
+      addressMissingDescription: "We couldn't find this saved address in your account.",
+      backToAddresses: "Back to Addresses",
       noOrders: "No orders yet",
       noAddresses: "No saved addresses yet",
       signOutSuccess: "Signed out successfully",
@@ -303,6 +311,8 @@ const localeMessages = {
       guestDescription:
         "Retrouvez votre profil, vos commandes et un paiement plus rapide sur mobile.",
       overview: "Aperçu du compte",
+      profile: "Profil",
+      profileDescription: "Gérez votre nom et votre téléphone pour accélérer le paiement.",
       personalDetails: "Informations personnelles",
       signedInAs: "Connecté en tant que",
       recentOrders: "Commandes récentes",
@@ -340,6 +350,14 @@ const localeMessages = {
         "Utiliser cette adresse en priorité pour la livraison lors du paiement.",
       defaultBillingDescription:
         "Utiliser cette adresse en priorité pour la facturation lors du paiement.",
+      emailReadOnlyDescription:
+        "L'e-mail lié à votre connexion est affiché ici et ne peut pas encore être modifié depuis les réglages du compte mobile.",
+      profileSaved: "Profil mis à jour avec succès",
+      profileSaveFailed: "Impossible de mettre à jour votre profil",
+      addressNotFound: "Adresse introuvable",
+      addressMissingDescription:
+        "Nous n'avons pas retrouvé cette adresse enregistrée dans votre compte.",
+      backToAddresses: "Retour aux adresses",
       noOrders: "Aucune commande",
       noAddresses: "Aucune adresse enregistrée",
       signOutSuccess: "Déconnexion réussie",
@@ -486,6 +504,8 @@ const localeMessages = {
       guestTitle: "登入你的帳戶",
       guestDescription: "在手機上查看個人資料、歷史訂單，並享受更快速的結帳。",
       overview: "帳戶概覽",
+      profile: "個人資料",
+      profileDescription: "管理姓名與電話，讓之後結帳更快速。",
       personalDetails: "個人資料",
       signedInAs: "目前登入帳號",
       recentOrders: "近期訂單",
@@ -516,6 +536,12 @@ const localeMessages = {
       fillAddressFields: "請填寫完整的必要地址欄位",
       defaultShippingDescription: "結帳時優先將這筆地址作為收件地址。",
       defaultBillingDescription: "結帳時優先將這筆地址作為帳單地址。",
+      emailReadOnlyDescription: "這裡會顯示你的登入電子郵件，目前無法在行動端帳戶設定中修改。",
+      profileSaved: "個人資料已更新",
+      profileSaveFailed: "更新個人資料失敗",
+      addressNotFound: "找不到地址",
+      addressMissingDescription: "你的帳戶中找不到這筆已儲存地址。",
+      backToAddresses: "返回地址列表",
       noOrders: "目前沒有訂單",
       noAddresses: "目前沒有已儲存地址",
       signOutSuccess: "已成功登出",
@@ -543,5 +569,5 @@ const localeMessages = {
 export type I18nMessages = (typeof localeMessages)["en-US"];
 
 export function getMessages(locale: SupportedLocale): I18nMessages {
-  return localeMessages[locale] ?? localeMessages[defaultLocale];
+  return (localeMessages[locale] ?? localeMessages[defaultLocale]) as I18nMessages;
 }

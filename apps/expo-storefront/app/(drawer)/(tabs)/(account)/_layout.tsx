@@ -49,6 +49,13 @@ export default function AccountStackLayout() {
         }}
       />
       <Stack.Screen
+        name="profile"
+        options={{
+          title: messages.account.profile,
+          headerBackButtonDisplayMode: "minimal",
+        }}
+      />
+      <Stack.Screen
         name="orders/index"
         options={{
           title: messages.account.orders,

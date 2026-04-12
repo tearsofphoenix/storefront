@@ -30,7 +30,7 @@ export default function AccountScreen() {
   const [recentOrders, setRecentOrders] = useState<HttpTypes.StoreOrder[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
 
-  const orderCount = customer?.orders?.length || 0;
+  const orderCount = recentOrders.length;
   const defaultShippingAddress = useMemo(() => {
     return getDefaultShippingAddress(addresses);
   }, [addresses]);
@@ -71,9 +71,16 @@ export default function AccountScreen() {
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.content}>
         <View style={[styles.card, { backgroundColor: colors.background, borderColor: `${colors.icon}30` }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>
-            {messages.account.overview}
-          </Text>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.cardTitle, { color: colors.text }]}>
+              {messages.account.personalDetails}
+            </Text>
+            <TouchableOpacity onPress={() => router.push("/(drawer)/(tabs)/(account)/profile")}>
+              <Text style={[styles.linkText, { color: colors.tint }]}>
+                {messages.account.profile}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Text style={[styles.name, { color: colors.text }]}>
             {[customer.first_name, customer.last_name].filter(Boolean).join(" ") || messages.common.guest}
           </Text>

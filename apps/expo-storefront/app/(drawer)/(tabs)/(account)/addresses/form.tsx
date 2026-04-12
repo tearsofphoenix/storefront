@@ -89,6 +89,23 @@ export default function AddressFormScreen() {
     );
   }
 
+  if (params.id && !editingAddress) {
+    return (
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {messages.account.addressNotFound}
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.icon }]}>
+          {messages.account.addressMissingDescription}
+        </Text>
+        <Button
+          title={messages.account.backToAddresses}
+          onPress={() => router.replace("/(drawer)/(tabs)/(account)/addresses")}
+        />
+      </View>
+    );
+  }
+
   const handleSave = async () => {
     clearError();
 
@@ -209,6 +226,11 @@ export default function AddressFormScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
   },
   content: {
     padding: 20,

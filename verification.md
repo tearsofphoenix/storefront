@@ -33,3 +33,15 @@
   - 点击 `Sign In` 后成功进入 `/login`，显示登录表单。
   - 在登录页切换语言到 `Français` 后，国家选择、账户标题、登录文案、tab 标签均切换为法语。
   - 直接打开 `/checkout` 时，法语状态下可见 `Paiement` 与 `Aucun panier trouvé...` 文案，说明 checkout 也接入了同一套 i18n 上下文。
+
+## 2026-04-12 Expo storefront account profile completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，新增 `profile` 页面、账户概览入口、customer profile 更新逻辑以及地址编辑缺失态后，Expo lint 仍保持通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `customer-context` 新增的 `updateCustomer` 接口与 `sdk.store.customer.update` 类型兼容。
+  - `account/profile` 路由与 `_layout.tsx` 的注册一致。
+  - `messages.ts` 新增的 `profile` / `profileDescription` / `profileSaved` / `addressNotFound` 等键在三种语言下结构一致。
+- 功能结论：
+  - 账户页现在具备登录注册、订单列表/详情、地址簿/编辑，以及资料页中的姓名/电话更新能力。
+  - 电子邮件在资料页中展示为只读，这与当前 web storefront 对账户邮箱更新的处理范围保持一致。
+  - 地址编辑在目标地址缺失时不再静默回退为“新增地址”，而是给出明确返回入口。
