@@ -1,6 +1,10 @@
 {
   "name": "panda-commerce-monorepo",
   "private": true,
+  "workspaces": [
+    "apps/storefront",
+    "apps/expo-storefront"
+  ],
   "packageManager": "bun@1.3.5",
   "scripts": {
     "dev": "cd apps/storefront && bun run dev",
@@ -10,6 +14,11 @@
     "dev:storefront": "cd apps/storefront && bun run dev",
     "build:storefront": "cd apps/storefront && bun run build",
     "lint:storefront": "cd apps/storefront && bun run lint",
+    "dev:expo": "cd apps/expo-storefront && bun run start",
+    "ios:expo": "cd apps/expo-storefront && bun run ios",
+    "android:expo": "cd apps/expo-storefront && bun run android",
+    "web:expo": "cd apps/expo-storefront && bun run web",
+    "lint:expo": "cd apps/expo-storefront && bun run lint",
     "dev:payload": "cd apps/payload-cms && pnpm run dev",
     "build:payload": "cd apps/payload-cms && pnpm run build",
     "lint:payload": "cd apps/payload-cms && pnpm run lint"
