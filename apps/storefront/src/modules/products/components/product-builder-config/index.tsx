@@ -28,6 +28,21 @@ const isMeaningfulVariantTitle = (title?: string | null) => {
   return title.trim().toLowerCase() !== "default variant"
 }
 
+const getSelectedVariant = <
+  T extends {
+    id: string
+    title: string
+    calculated_price?: {
+      calculated_amount: number
+    }
+  },
+>(
+  variants: T[],
+  selectedVariantId?: string
+) => {
+  return variants.find((variant) => variant.id === selectedVariantId) ?? variants[0]
+}
+
 export const ProductBuilderConfig = ({
   builder,
   currencyCode,
@@ -123,6 +138,11 @@ export const ProductBuilderConfig = ({
               return null
             }
 
+            const selectedVariant = getSelectedVariant(
+              item.product.variants,
+              selectedComplementary[item.id]
+            )
+
             return (
               <label
                 key={item.id}
@@ -165,7 +185,7 @@ export const ProductBuilderConfig = ({
                   </Text>
                   {item.product.variants.length > 1 ? (
                     <Select
-                      value={selectedComplementary[item.id] || variant.id}
+                      value={selectedComplementary[item.id] || selectedVariant.id}
                       disabled={!selectedComplementary[item.id]}
                       onValueChange={(value) =>
                         setSelectedComplementary((prev) => ({
@@ -185,13 +205,15 @@ export const ProductBuilderConfig = ({
                         ))}
                       </Select.Content>
                     </Select>
-                  ) : isMeaningfulVariantTitle(variant.title) ? (
-                    <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  ) : isMeaningfulVariantTitle(selectedVariant.title) ? (
+                    <Text className="text-xs text-ui-fg-muted">
+                      {selectedVariant.title}
+                    </Text>
                   ) : null}
-                  {variant.calculated_price ? (
+                  {selectedVariant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({
-                        amount: variant.calculated_price.calculated_amount,
+                        amount: selectedVariant.calculated_price.calculated_amount,
                         currency_code: currencyCode,
                       })}
                     </Text>
@@ -218,6 +240,11 @@ export const ProductBuilderConfig = ({
             if (!variant) {
               return null
             }
+
+            const selectedVariant = getSelectedVariant(
+              item.product.variants,
+              selectedAddons[item.id]
+            )
 
             return (
               <label
@@ -261,7 +288,7 @@ export const ProductBuilderConfig = ({
                   </Text>
                   {item.product.variants.length > 1 ? (
                     <Select
-                      value={selectedAddons[item.id] || variant.id}
+                      value={selectedAddons[item.id] || selectedVariant.id}
                       disabled={!selectedAddons[item.id]}
                       onValueChange={(value) =>
                         setSelectedAddons((prev) => ({
@@ -281,13 +308,15 @@ export const ProductBuilderConfig = ({
                         ))}
                       </Select.Content>
                     </Select>
-                  ) : isMeaningfulVariantTitle(variant.title) ? (
-                    <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  ) : isMeaningfulVariantTitle(selectedVariant.title) ? (
+                    <Text className="text-xs text-ui-fg-muted">
+                      {selectedVariant.title}
+                    </Text>
                   ) : null}
-                  {variant.calculated_price ? (
+                  {selectedVariant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({
-                        amount: variant.calculated_price.calculated_amount,
+                        amount: selectedVariant.calculated_price.calculated_amount,
                         currency_code: currencyCode,
                       })}
                     </Text>

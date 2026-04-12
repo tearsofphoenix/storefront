@@ -12,7 +12,10 @@ const LoyaltyActivityList = async ({
   points,
   activities,
 }: LoyaltyActivityListProps) => {
-  const { messages, t } = await getI18n()
+  const { locale, messages, t } = await getI18n()
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+  })
 
   return (
     <div className="flex flex-col gap-y-8">
@@ -64,7 +67,7 @@ const LoyaltyActivityList = async ({
                               })}
                         </span>
                         <div className="flex flex-wrap items-center gap-x-2 text-small-regular text-ui-fg-subtle">
-                          <span>{new Date(activity.createdAt).toDateString()}</span>
+                          <span>{dateFormatter.format(new Date(activity.createdAt))}</span>
                           <span>·</span>
                           <span>
                             {convertToLocale({
