@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -32,42 +33,12 @@ export const ExpressCartProvider = ({ children }: CartProviderProps) => {
   const [cart, setCart] = useState<HttpTypes.StoreCart>()
   const { region } = useExpressRegion()
 
-  useEffect(() => {
-    if (!region) {
-      return
-    }
-    if (cart) {
-      localStorage.setItem("express_cart_id", cart.id)
-      return
-    }
+  const clearStoredCart = useCallback(() => {
+    localStorage.removeItem("express_cart_id")
+    setCart(undefined)
+  }, [])
 
-    const cartId = localStorage.getItem("express_cart_id")
-    if (!cartId) {
-      refreshCart()
-    } else {
-      sdk.store.cart.retrieve(cartId, {
-        fields: "+items.variant.*,+items.variant.options.*,+items.variant.options.option.*"
-      })
-        .then(({ cart: dataCart }) => {
-          setCart(dataCart)
-        })
-    }
-  }, [cart, region])
-
-  useEffect(() => {
-    if (!cart || !region || cart.region_id === region.id) {
-      return
-    }
-
-    sdk.store.cart.update(cart.id, {
-      region_id: region.id
-    })
-      .then(({ cart: dataCart }) => {
-        setCart(dataCart)
-      })
-  }, [region])
-
-  const refreshCart = async () => {
+  const createFreshCart = useCallback(async () => {
     if (!region) {
       return
     }
@@ -80,7 +51,58 @@ export const ExpressCartProvider = ({ children }: CartProviderProps) => {
     setCart(dataCart)
 
     return dataCart
-  }
+  }, [region])
+
+  const refreshCart = useCallback(async () => {
+    return createFreshCart()
+  }, [createFreshCart])
+
+  useEffect(() => {
+    if (!region) {
+      return
+    }
+
+    if (cart) {
+      localStorage.setItem("express_cart_id", cart.id)
+      return
+    }
+
+    const cartId = localStorage.getItem("express_cart_id")
+
+    if (!cartId) {
+      void createFreshCart()
+      return
+    }
+
+    sdk.store.cart
+      .retrieve(cartId, {
+        fields: "+items.variant.*,+items.variant.options.*,+items.variant.options.option.*",
+      })
+      .then(({ cart: dataCart }) => {
+        setCart(dataCart)
+      })
+      .catch(() => {
+        clearStoredCart()
+        void createFreshCart()
+      })
+  }, [cart, clearStoredCart, createFreshCart, region])
+
+  useEffect(() => {
+    if (!cart || !region || cart.region_id === region.id) {
+      return
+    }
+
+    sdk.store.cart
+      .update(cart.id, {
+        region_id: region.id
+      })
+      .then(({ cart: dataCart }) => {
+        setCart(dataCart)
+      })
+      .catch(() => {
+        clearStoredCart()
+      })
+  }, [cart, clearStoredCart, region])
 
   const addToCart = async (variantId: string, quantity: number) => {
     const newCart = await refreshCart()
@@ -104,16 +126,20 @@ export const ExpressCartProvider = ({ children }: CartProviderProps) => {
     updateData?: HttpTypes.StoreUpdateCart
     shippingMethodData?: HttpTypes.StoreAddCartShippingMethods
   }) => {
+    if (!cart) {
+      throw new Error("Express cart is not ready")
+    }
+
     if (!updateData && !shippingMethodData) {
       return cart
     }
     let returnedCart = cart
     if (updateData) {
-      returnedCart = (await sdk.store.cart.update(cart!.id, updateData)).cart
+      returnedCart = (await sdk.store.cart.update(cart.id, updateData)).cart
     }
 
     if (shippingMethodData) {
-      returnedCart = (await sdk.store.cart.addShippingMethod(cart!.id, shippingMethodData)).cart
+      returnedCart = (await sdk.store.cart.addShippingMethod(cart.id, shippingMethodData)).cart
     }
 
     setCart(returnedCart)
@@ -122,7 +148,11 @@ export const ExpressCartProvider = ({ children }: CartProviderProps) => {
   }
 
   const updateItemQuantity = async (itemId: string, quantity: number) => {
-    const { cart: dataCart } = await sdk.store.cart.updateLineItem(cart!.id, itemId, {
+    if (!cart) {
+      throw new Error("Express cart is not ready")
+    }
+
+    const { cart: dataCart } = await sdk.store.cart.updateLineItem(cart.id, itemId, {
       quantity,
     })
     setCart(dataCart)
@@ -130,10 +160,9 @@ export const ExpressCartProvider = ({ children }: CartProviderProps) => {
     return dataCart
   }
 
-  const unsetCart = () => {
-    localStorage.removeItem("express_cart_id")
-    setCart(undefined)
-  }
+  const unsetCart = useCallback(() => {
+    clearStoredCart()
+  }, [clearStoredCart])
 
   return (
     <CartContext.Provider value={{

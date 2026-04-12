@@ -1,4 +1,5 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
+import Image from "next/image"
 import { PayloadHeroBlock } from "types/payload"
 
 import { CmsLink } from "./cms-link"
@@ -64,11 +65,16 @@ export const HeroSection = ({
               <source src={videoUrl} />
             </video>
           ) : imageUrl ? (
-            <img
-              alt={backgroundImage?.alt || headline}
-              className="aspect-[4/3] w-full object-cover"
-              src={imageUrl}
-            />
+            <div className="relative aspect-[4/3] w-full">
+              <Image
+                alt={backgroundImage?.alt || headline}
+                className="object-cover"
+                fill
+                priority
+                sizes="(min-width: 640px) 52vw, 100vw"
+                src={imageUrl}
+              />
+            </div>
           ) : (
             <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e7dcc8,#f5efe3)] text-sm text-[#6b7280]">
               Payload Hero Media

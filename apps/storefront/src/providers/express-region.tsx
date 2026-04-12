@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -33,6 +34,11 @@ export const ExpressRegionProvider = (
     HttpTypes.StoreRegion
   >()
 
+  const clearStoredRegion = useCallback(() => {
+    localStorage.removeItem("express_region_id")
+    setRegion(undefined)
+  }, [])
+
   useEffect(() => {
     if (regions.length) {
       return
@@ -42,7 +48,10 @@ export const ExpressRegionProvider = (
       .then(({ regions }) => {
         setRegions(regions)
       })
-  }, [])
+      .catch(() => {
+        setRegions([])
+      })
+  }, [regions.length])
 
   useEffect(() => {
     if (region) {
@@ -60,8 +69,14 @@ export const ExpressRegionProvider = (
         .then(({ region: dataRegion }) => {
           setRegion(dataRegion)
         })
+        .catch(() => {
+          clearStoredRegion()
+          if (regions.length) {
+            setRegion(regions[0])
+          }
+        })
     }
-  }, [region, regions])
+  }, [clearStoredRegion, region, regions])
 
   return (
     <RegionContext.Provider value={{

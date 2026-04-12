@@ -1,4 +1,5 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
+import Image from "next/image"
 import { PayloadMediaStoryBlock } from "types/payload"
 
 export const MediaStorySection = ({
@@ -21,11 +22,15 @@ export const MediaStorySection = ({
       >
         <div className="overflow-hidden bg-[#e6dcc9]">
           {imageUrl ? (
-            <img
-              alt={media?.alt || title}
-              className="aspect-[4/3] w-full object-cover"
-              src={imageUrl}
-            />
+            <div className="relative aspect-[4/3] w-full">
+              <Image
+                alt={media?.alt || title}
+                className="object-cover"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                src={imageUrl}
+              />
+            </div>
           ) : (
             <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
               Payload Story Media

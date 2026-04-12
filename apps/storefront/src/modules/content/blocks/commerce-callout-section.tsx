@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { HttpTypes } from "@medusajs/types"
+import Image from "next/image"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductActionsWrapper from "@modules/products/templates/product-actions-wrapper"
 import ProductInfo from "@modules/products/templates/product-info"
@@ -34,11 +35,15 @@ export const CommerceCalloutSection = ({
         {showImage !== false ? (
           <div className="overflow-hidden bg-[#e5dac7]">
             {imageUrl ? (
-              <img
-                alt={product.title}
-                className="aspect-[4/3] w-full object-cover"
-                src={imageUrl}
-              />
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  alt={product.title}
+                  className="object-cover"
+                  fill
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  src={imageUrl}
+                />
+              </div>
             ) : (
               <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
                 Product media

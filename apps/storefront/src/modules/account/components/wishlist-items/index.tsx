@@ -3,14 +3,16 @@
 import { removeWishlistItem, type WishlistItem as WishlistItemType } from "@lib/data/wishlist"
 import { useI18n } from "@lib/i18n/use-i18n"
 import { Button } from "@medusajs/ui"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useRouter } from "next/navigation"
 
 type WishlistItemsProps = {
   items: WishlistItemType[]
+  readOnly?: boolean
 }
 
-const WishlistItems = ({ items }: WishlistItemsProps) => {
+const WishlistItems = ({ items, readOnly = false }: WishlistItemsProps) => {
   const router = useRouter()
   const { messages } = useI18n()
 
@@ -44,25 +46,36 @@ const WishlistItems = ({ items }: WishlistItemsProps) => {
             size="square"
           />
           <div className="flex flex-col gap-y-2 p-4">
-            <h3 className="text-base-semi">
-              {item.product_variant?.product?.title ?? "Unknown product"}
-            </h3>
+            {item.product_variant?.product?.handle ? (
+              <LocalizedClientLink
+                href={`/products/${item.product_variant.product.handle}`}
+                className="text-base-semi"
+              >
+                {item.product_variant?.product?.title ?? messages.account.unknownProduct}
+              </LocalizedClientLink>
+            ) : (
+              <h3 className="text-base-semi">
+                {item.product_variant?.product?.title ?? messages.account.unknownProduct}
+              </h3>
+            )}
             {isMeaningfulVariantTitle(item.product_variant?.title) && (
               <span className="text-small-regular text-ui-fg-subtle">
                 {item.product_variant.title}
               </span>
             )}
-            <div className="flex items-center gap-x-2 mt-2">
-              <Button
-                variant="secondary"
-                size="small"
-                className="!flex-1"
-                onClick={() => handleRemove(item.id)}
-                data-testid="remove-wishlist-item"
-              >
-                {messages.account.removeFromWishlist}
-              </Button>
-            </div>
+            {!readOnly ? (
+              <div className="mt-2 flex items-center gap-x-2">
+                <Button
+                  variant="secondary"
+                  size="small"
+                  className="!flex-1"
+                  onClick={() => handleRemove(item.id)}
+                  data-testid="remove-wishlist-item"
+                >
+                  {messages.account.removeFromWishlist}
+                </Button>
+              </div>
+            ) : null}
           </div>
         </li>
       ))}

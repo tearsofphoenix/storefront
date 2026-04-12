@@ -49,7 +49,7 @@ export const ExpressRouter = ({
     )) {
       return router.push(`${basePath}?step=shipping`)
     }
-  }, [isCartValid, activeTab])
+  }, [activeTab, basePath, cart, isCartValid, router])
 
   return (
     <>

@@ -3,7 +3,7 @@
 import { Button, Input, RadioGroup } from "@medusajs/ui"
 import { useExpressCart } from "@providers/express-cart"
 import { StepCard } from "./step-card"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { sdk } from "@lib/config"
 import { convertToLocale } from "@lib/util/money"
@@ -16,6 +16,9 @@ import {
   paymentInfoMap,
 } from "@lib/constants"
 import { Spinner } from "@medusajs/icons"
+import { useI18n } from "@lib/i18n/use-i18n"
+import ErrorMessage from "@modules/checkout/components/error-message"
+import Thumbnail from "@modules/products/components/thumbnail"
 
 type PaymentCardProps = {
   handle: string
@@ -33,46 +36,89 @@ export const PaymentCard = ({
   const { cart, updateItemQuantity, unsetCart } = useExpressCart()
   const [loading, setLoading] = useState(true)
   const [paymentProviders, setPaymentProviders] = useState<HttpTypes.StorePaymentProvider[]>([])
+  const [paymentCollection, setPaymentCollection] = useState<HttpTypes.StorePaymentCollection | null>(
+    cart?.payment_collection ?? null
+  )
   const [selectedPaymentProvider, setSelectedPaymentProvider] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const router = useRouter()
+  const { messages, t } = useI18n()
+
+  const activeSession = useMemo(() => {
+    return (
+      paymentCollection?.payment_sessions?.find((session) => session.status === "pending") ??
+      paymentCollection?.payment_sessions?.[0] ??
+      cart?.payment_collection?.payment_sessions?.find(
+        (session) => session.status === "pending"
+      ) ??
+      cart?.payment_collection?.payment_sessions?.[0]
+    )
+  }, [cart?.payment_collection?.payment_sessions, paymentCollection?.payment_sessions])
 
   useEffect(() => {
-    if (!loading || !cart) return
+    if (!cart) {
+      setPaymentProviders([])
+      setLoading(false)
+      return
+    }
 
-    sdk.store.payment.listPaymentProviders({
-      region_id: cart.region_id || "",
-    })
+    setLoading(true)
+    setErrorMessage(null)
+
+    sdk.store.payment
+      .listPaymentProviders({
+        region_id: cart.region_id || "",
+      })
       .then(({ payment_providers }) => {
         setPaymentProviders(payment_providers)
         setLoading(false)
       })
-  }, [loading, cart])
+      .catch(() => {
+        setErrorMessage(messages.common.genericErrorRetry)
+        setLoading(false)
+      })
+  }, [cart, cart?.region_id, messages.common.genericErrorRetry])
 
-  const initiateSession = async (providerId: string) => {
+  useEffect(() => {
+    if (cart?.payment_collection) {
+      setPaymentCollection(cart.payment_collection)
+    }
+  }, [cart?.payment_collection])
+
+  useEffect(() => {
+    if (activeSession?.provider_id) {
+      setSelectedPaymentProvider(activeSession.provider_id)
+    }
+  }, [activeSession?.provider_id])
+
+  const initiateSession = useCallback(async (providerId: string) => {
     if (!providerId || !cart) return
 
-    await sdk.store.payment.initiatePaymentSession(cart, {
+    const { payment_collection } = await sdk.store.payment.initiatePaymentSession(cart, {
       provider_id: providerId,
     })
-  }
+    setPaymentCollection(payment_collection)
+  }, [cart])
 
   useEffect(() => {
     if (!selectedPaymentProvider || !cart) return
 
     setLoading(true)
+    setErrorMessage(null)
     initiateSession(selectedPaymentProvider)
       .then(() => setLoading(false))
-      .catch(() => setLoading(false))
-  }, [selectedPaymentProvider])
+      .catch(() => {
+        setErrorMessage(messages.common.genericErrorRetry)
+        setLoading(false)
+      })
+  }, [cart, initiateSession, messages.common.genericErrorRetry, selectedPaymentProvider])
 
   const isFreeOrder = isZeroTotalCart(cart)
 
   const canPlaceOrder = useMemo(() => {
     if (isFreeOrder) return true
     if (!selectedPaymentProvider) return false
-    // For hosted redirect providers, allow placing order after session init
     if (isHostedRedirectPayment(selectedPaymentProvider)) return true
     if (isManual(selectedPaymentProvider)) return true
     if (isStripeLike(selectedPaymentProvider)) return true
@@ -84,7 +130,7 @@ export const PaymentCard = ({
       return paymentInfoMap[providerId].title
     }
     if (providerId.startsWith("pp_system_default")) {
-      return "Cash on Delivery"
+      return messages.common.cashOnDelivery
     }
     return providerId
   }
@@ -122,7 +168,6 @@ export const PaymentCard = ({
 
     try {
       if (isHostedRedirectPayment(selectedPaymentProvider)) {
-        // Complete the cart first, then redirect to hosted payment
         const data = await sdk.store.cart.complete(cart.id)
 
         if (data.type === "cart") {
@@ -131,10 +176,10 @@ export const PaymentCard = ({
           return
         }
 
-        // Get redirect data from payment session
-        const session = cart.payment_collection?.payment_sessions?.find(
-          (s) => s.provider_id === selectedPaymentProvider
-        )
+        const session =
+          paymentCollection?.payment_sessions?.find(
+            (s) => s.provider_id === selectedPaymentProvider
+          ) ?? activeSession
 
         if (session?.data && typeof session.data === "object") {
           const sessionData = session.data as Record<string, unknown>
@@ -152,13 +197,11 @@ export const PaymentCard = ({
           }
         }
 
-        // Fallback: redirect to confirmation
         unsetCart()
         router.push(`/${countryCode}/express/confirmation/${data.order.id}`)
         return
       }
 
-      // Standard flow (Stripe, Manual, etc.)
       const data = await sdk.store.cart.complete(cart.id)
 
       if (data.type === "cart") {
@@ -170,26 +213,32 @@ export const PaymentCard = ({
       }
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Payment failed"
+        error instanceof Error ? error.message : messages.common.paymentConfirmationFailed
       )
+    } finally {
       setSubmitting(false)
     }
   }
 
   return (
     <StepCard
-      title="Payment"
+      title={messages.common.payment}
       isActive={isActive}
       isDone={false}
       path={`${basePath}?step=payment`}
     >
       {loading && isActive && <Spinner />}
 
-      {/* Order summary */}
-      <span className="text-sm font-medium">Your order</span>
+      <span className="text-sm font-medium">{messages.common.yourOrder}</span>
       {cart?.items?.map((item) => (
         <div className="flex gap-2" key={item.id}>
-          <img src={item.thumbnail || ""} alt={item.title} className="w-24 h-24 rounded object-cover" />
+          <Thumbnail
+            thumbnail={item.thumbnail}
+            images={item.variant?.product?.images}
+            alt={item.product_title ?? ""}
+            size="square"
+            className="w-24 p-0"
+          />
           <div className="flex flex-col gap-1">
             <span className="text-base">{item.product_title}</span>
             {item.variant?.options?.map((option) => (
@@ -199,7 +248,7 @@ export const PaymentCard = ({
               </span>
             ))}
             <span className="flex gap-1 text-sm items-center">
-              <span className="text-ui-fg-muted">Qty:</span>
+              <span className="text-ui-fg-muted">{messages.common.quantity}:</span>
               <Input
                 type="number"
                 min={1}
@@ -217,21 +266,20 @@ export const PaymentCard = ({
 
       <hr className="bg-ui-bg-subtle" />
 
-      {/* Totals */}
       <div className="flex justify-between">
-        <span className="text-sm text-ui-fg-muted">Subtotal:</span>
+        <span className="text-sm text-ui-fg-muted">{messages.common.subtotal}:</span>
         <span className="text-sm text-ui-fg-base">
           {convertToLocale({ amount: cart?.item_subtotal || 0, currency_code: cart?.currency_code })}
         </span>
       </div>
       <div className="flex justify-between">
-        <span className="text-sm text-ui-fg-muted">Shipping:</span>
+        <span className="text-sm text-ui-fg-muted">{messages.common.shipping}:</span>
         <span className="text-sm text-ui-fg-base">
           {convertToLocale({ amount: cart?.shipping_total || 0, currency_code: cart?.currency_code })}
         </span>
       </div>
       <div className="flex justify-between font-medium">
-        <span className="text-sm">Total:</span>
+        <span className="text-sm">{messages.common.total}:</span>
         <span className="text-sm">
           {convertToLocale({ amount: cart?.total || 0, currency_code: cart?.currency_code })}
         </span>
@@ -239,8 +287,7 @@ export const PaymentCard = ({
 
       <hr className="bg-ui-bg-subtle" />
 
-      {/* Delivery address summary */}
-      <span className="text-sm font-medium">Delivery address</span>
+      <span className="text-sm font-medium">{messages.common.deliveryAddress}</span>
       <p className="text-xs text-ui-fg-muted">
         {cart?.shipping_address?.first_name} {cart?.shipping_address?.last_name}<br />
         {cart?.shipping_address?.address_1}<br />
@@ -249,8 +296,7 @@ export const PaymentCard = ({
 
       <hr className="bg-ui-bg-subtle" />
 
-      {/* Payment method selection */}
-      <span className="text-sm font-medium">Payment method</span>
+      <span className="text-sm font-medium">{messages.common.paymentMethod}</span>
       <div className="flex flex-col gap-2">
         <RadioGroup
           value={selectedPaymentProvider}
@@ -265,9 +311,7 @@ export const PaymentCard = ({
         </RadioGroup>
       </div>
 
-      {errorMessage && (
-        <p className="text-sm text-red-600">{errorMessage}</p>
-      )}
+      <ErrorMessage error={errorMessage} data-testid="express-payment-error" />
 
       <hr className="bg-ui-bg-subtle" />
       <Button
@@ -276,7 +320,12 @@ export const PaymentCard = ({
         onClick={placeOrder}
         isLoading={submitting}
       >
-        Pay {convertToLocale({ amount: cart?.total || 0, currency_code: cart?.currency_code })}
+        {t(messages.common.payAmount, {
+          amount: convertToLocale({
+            amount: cart?.total || 0,
+            currency_code: cart?.currency_code,
+          }),
+        })}
       </Button>
     </StepCard>
   )

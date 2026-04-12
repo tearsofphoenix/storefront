@@ -1,4 +1,5 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
+import Image from "next/image"
 import { PayloadFeatureGridBlock } from "types/payload"
 
 export const FeatureGridSection = ({
@@ -34,11 +35,15 @@ export const FeatureGridSection = ({
               className="overflow-hidden bg-[#f4ede1]"
             >
               {imageUrl ? (
-                <img
-                  alt={item.image?.alt || item.title}
-                  className="aspect-[4/3] w-full object-cover"
-                  src={imageUrl}
-                />
+                <div className="relative aspect-[4/3] w-full">
+                  <Image
+                    alt={item.image?.alt || item.title}
+                    className="object-cover"
+                    fill
+                    sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    src={imageUrl}
+                  />
+                </div>
               ) : null}
               <div className="flex flex-col gap-3 p-6">
                 <h3 className="text-xl font-semibold text-[#111827]">

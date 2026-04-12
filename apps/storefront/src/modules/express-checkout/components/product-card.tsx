@@ -10,6 +10,20 @@ import { useExpressCart } from "@providers/express-cart"
 import { useRouter } from "next/navigation"
 import { StepCard } from "./step-card"
 import { convertToLocale } from "@lib/util/money"
+import { useI18n } from "@lib/i18n/use-i18n"
+import ErrorMessage from "@modules/checkout/components/error-message"
+import Thumbnail from "@modules/products/components/thumbnail"
+
+const optionsAsKeymap = (
+  variantOptions: HttpTypes.StoreProductVariant["options"]
+) => {
+  return variantOptions?.reduce((acc: Record<string, string>, option: any) => {
+    if (option.option_id && option.id) {
+      acc[option.option_id] = option.id
+    }
+    return acc
+  }, {})
+}
 
 type ProductCardProps = {
   handle: string
@@ -19,41 +33,74 @@ type ProductCardProps = {
 
 export const ProductCard = ({ handle, isActive, basePath }: ProductCardProps) => {
   const [loading, setLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [product, setProduct] = useState<HttpTypes.StoreProduct>()
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
   const [quantity, setQuantity] = useState(1)
+  const [errorMessage, setErrorMessage] = useState("")
   const { region } = useExpressRegion()
   const { cart, addToCart } = useExpressCart()
   const router = useRouter()
+  const { messages, t } = useI18n()
 
   useEffect(() => {
-    if (product || !region) return
-
-    sdk.store.product.list({
-      handle,
-      region_id: region.id,
-      fields: `*variants.calculated_price,+variants.inventory_quantity`,
-    })
-      .then(({ products }) => {
-        if (products.length) {
-          setProduct(products[0])
-        }
-        setLoading(false)
-      })
-  }, [product, region])
-
-  const selectedVariant = useMemo(() => {
-    if (
-      !product?.variants ||
-      !product.options ||
-      Object.keys(selectedOptions).length !== product.options?.length
-    ) {
+    if (!region) {
       return
     }
 
-    return product.variants.find((variant) => variant.options?.every(
-      (optionValue) => optionValue.id === selectedOptions[optionValue.option_id!]
-    ))
+    setLoading(true)
+    setErrorMessage("")
+
+    sdk.store.product
+      .list({
+        handle,
+        region_id: region.id,
+        fields: `*variants.calculated_price,+variants.inventory_quantity`,
+      })
+      .then(({ products }) => {
+        if (products.length) {
+          setProduct(products[0])
+        } else {
+          setProduct(undefined)
+          setErrorMessage(messages.common.productNotFound)
+        }
+        setLoading(false)
+      })
+      .catch(() => {
+        setProduct(undefined)
+        setErrorMessage(messages.common.genericErrorRetry)
+        setLoading(false)
+      })
+  }, [handle, messages.common.genericErrorRetry, messages.common.productNotFound, region])
+
+  useEffect(() => {
+    if (product?.variants?.length !== 1) {
+      return
+    }
+
+    const variantOptions = optionsAsKeymap(product.variants[0].options)
+    setSelectedOptions(variantOptions ?? {})
+  }, [product])
+
+  const selectedVariant = useMemo(() => {
+    if (!product?.variants?.length) {
+      return
+    }
+
+    if (!product.options?.length) {
+      return product.variants[0]
+    }
+
+    if (Object.keys(selectedOptions).length !== product.options.length) {
+      return
+    }
+
+    return product.variants.find((variant) =>
+      variant.options?.every(
+        (optionValue) =>
+          optionValue.id === selectedOptions[optionValue.option_id!]
+      )
+    )
   }, [selectedOptions, product])
 
   const price = useMemo(() => {
@@ -78,31 +125,44 @@ export const ProductCard = ({ handle, isActive, basePath }: ProductCardProps) =>
 
   const handleAddToCart = () => {
     if (!selectedVariant || !isInStock || !quantity) return
-    setLoading(true)
+    setIsSubmitting(true)
+    setErrorMessage("")
 
     addToCart(selectedVariant.id!, quantity)
       .then(() => {
         router.push(`${basePath}?step=address`)
       })
+      .catch((error) => {
+        setErrorMessage(
+          error instanceof Error ? error.message : messages.common.genericErrorRetry
+        )
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   return (
     <StepCard
-      title="Product"
+      title={messages.common.product}
       isActive={isActive}
       isDone={!!cart?.items?.length}
       path={basePath}
     >
       {loading && <Spinner />}
-      {!loading && !product && <div>Product not found</div>}
+      {!loading && !product && (
+        <div className="text-sm text-ui-fg-subtle">
+          {errorMessage || messages.common.productNotFound}
+        </div>
+      )}
       {!loading && product && (
         <div className="flex gap-4 flex-col">
           <div className="flex gap-4">
-            <img
-              src={product.thumbnail || ""}
-              className="rounded"
-              width={160}
-              height={200}
+            <Thumbnail
+              thumbnail={product.thumbnail}
+              images={product.images}
+              className="w-40 p-0"
+              size="square"
               alt={product.title}
             />
             <div className="flex flex-col gap-1">
@@ -129,7 +189,11 @@ export const ProductCard = ({ handle, isActive, basePath }: ProductCardProps) =>
                 value={selectedOptions[option.id!]}
               >
                 <Select.Trigger>
-                  <Select.Value placeholder={`Select ${option.title}`} />
+                  <Select.Value
+                    placeholder={t(messages.common.selectNamedOption, {
+                      name: option.title ?? messages.common.selectPlaceholder,
+                    })}
+                  />
                 </Select.Trigger>
                 <Select.Content>
                   {option.values?.map((value) => (
@@ -142,26 +206,42 @@ export const ProductCard = ({ handle, isActive, basePath }: ProductCardProps) =>
             </div>
           ))}
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-ui-fg-muted">Quantity</span>
+            <span className="text-xs text-ui-fg-muted">
+              {messages.common.quantity}
+            </span>
             <Input
               name="quantity"
-              placeholder="Quantity"
+              placeholder={messages.common.quantity}
               type="number"
               min="1"
               max={selectedVariant?.inventory_quantity || undefined}
               value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
+              onChange={(e) => {
+                const nextQuantity = Number(e.target.value)
+
+                if (Number.isNaN(nextQuantity)) {
+                  setQuantity(1)
+                  return
+                }
+
+                setQuantity(Math.max(1, nextQuantity))
+              }}
             />
           </div>
           <hr className="bg-ui-bg-subtle" />
+          <ErrorMessage
+            error={errorMessage}
+            data-testid="express-product-error"
+          />
           <Button
-            disabled={!selectedVariant || !isInStock || loading}
+            disabled={!selectedVariant || !isInStock || loading || isSubmitting}
             onClick={handleAddToCart}
+            isLoading={isSubmitting}
             className="w-full"
           >
-            {!selectedVariant && "Select Options"}
-            {selectedVariant && !isInStock && "Out of Stock"}
-            {selectedVariant && isInStock && "Add to Cart"}
+            {!selectedVariant && messages.common.selectOptions}
+            {selectedVariant && !isInStock && messages.common.outOfStock}
+            {selectedVariant && isInStock && messages.common.addToCart}
           </Button>
         </div>
       )}

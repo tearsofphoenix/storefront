@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { getI18n } from "@lib/i18n/server"
 import { retrieveWishlist } from "@lib/data/wishlist"
 import WishlistItems from "@modules/account/components/wishlist-items"
+import WishlistShare from "@modules/account/components/wishlist-share"
 
 export async function generateMetadata(): Promise<Metadata> {
   const { messages } = await getI18n()
@@ -25,6 +26,7 @@ export default async function Wishlists() {
         </p>
       </div>
       <div>
+        <WishlistShare disabled={!wishlist?.items?.length} />
         {wishlist?.items && wishlist.items.length > 0 ? (
           <WishlistItems items={wishlist.items} />
         ) : (

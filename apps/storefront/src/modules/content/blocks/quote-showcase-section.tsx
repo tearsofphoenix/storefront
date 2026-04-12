@@ -1,4 +1,5 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
+import Image from "next/image"
 import { PayloadQuoteShowcaseBlock } from "types/payload"
 
 export const QuoteShowcaseSection = ({
@@ -26,11 +27,15 @@ export const QuoteShowcaseSection = ({
           <div className="flex flex-wrap items-center justify-between gap-4 pt-5">
             <div className="flex items-center gap-4">
               {avatarUrl ? (
-                <img
-                  alt={avatar?.alt || author}
-                  className="h-14 w-14 object-cover"
-                  src={avatarUrl}
-                />
+                <div className="relative h-14 w-14 overflow-hidden">
+                  <Image
+                    alt={avatar?.alt || author}
+                    className="object-cover"
+                    fill
+                    sizes="56px"
+                    src={avatarUrl}
+                  />
+                </div>
               ) : (
                 <div className="flex h-14 w-14 items-center justify-center bg-white/10 text-sm font-semibold text-white/70">
                   {author.slice(0, 1)}
