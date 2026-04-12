@@ -270,6 +270,47 @@ export default function ChatbotScreen() {
       setIsStreamingResponse(true);
 
       try {
+        if (Platform.OS !== "web") {
+          const response = await sdk.client.fetch<{
+            message: string;
+            parts?: ChatbotMessagePart[];
+            sources?: ChatbotSource[];
+            handoff_message?: string;
+          }>("/store/chatbot/message", {
+            method: "POST",
+            body: {
+              session_id: sessionId,
+              page_path: activeProductContext ? `/products/${activeProductContext.handle}` : "/chatbot",
+              country_code: selectedCountryCode,
+              language: locale,
+              product_handle: activeProductContext?.handle,
+              product_context: activeProductContext ?? undefined,
+              messages: requestMessages.map((message) => ({
+                role: message.role,
+                content: message.content,
+              })),
+            },
+          });
+
+          setChatMessages((currentMessages) =>
+            currentMessages.map((message) =>
+              message.id === assistantMessageId
+                ? {
+                    ...message,
+                    content: response.message,
+                    parts: response.parts,
+                    sources: response.sources,
+                    handoffMessage: response.handoff_message,
+                    isStreaming: false,
+                    statusText: undefined,
+                  }
+                : message
+            )
+          );
+
+          return;
+        }
+
         const { stream, abort } = await sdk.client.fetchStream("/store/chatbot/message", {
           method: "POST",
           body: {

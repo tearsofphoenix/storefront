@@ -89,3 +89,15 @@
   - Expo tabs 现在新增了一个 AI chatbot 页面，使用与 web storefront 相同的 settings / message store routes 与流式协议。
   - 聊天页支持 welcome message、suggested questions、reset、status/chunk/done/error 处理，以及 `text` / `product-list` / `product-detail` 三类消息 part 展示。
   - 商品详情页新增“Ask AI about this product”入口，进入 chatbot tab 时会携带当前商品上下文，向现有 chatbot route 发送 `product_context` 以对齐 storefront 的 product-aware 支持。
+
+## 2026-04-12 Expo chatbot native-send fix
+
+- `cd apps/expo-storefront && bun run lint`: passed，chatbot native 发送策略调整后未引入新的 Expo lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认 native/web 分支下的消息返回结构与现有聊天状态更新逻辑兼容。
+- 调试结论：
+  - `GET /store/chatbot/settings` 在线返回正常。
+  - 使用同一套 Medusa JS SDK 在本地脚本中调用 `sdk.client.fetchStream("/store/chatbot/message")` 时，可收到 `status` / `chunk` / `done` 事件，说明后端协议本身正常。
+  - 因此本次回归收敛到 Expo 原生运行时的流式消费差异，而不是 chatbot 路由或请求体整体错误。
+- 修复结论：
+  - Expo chatbot 在原生端现在改为使用 `sdk.client.fetch("/store/chatbot/message")` 发送普通 POST，请求成功后直接复用返回的 `message` / `parts` / `sources` / `handoff_message` 更新会话。
+  - Web 端仍保留 `sdk.client.fetchStream(...)` 的流式体验，因此不会回退既有浏览器行为。
