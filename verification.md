@@ -139,3 +139,13 @@
   - Google redirect URL 生成与账户认证错误映射已抽成共享 helper，login/register 不再各自维护重复逻辑。
 - 未完成的自动化验证：
   - 本地未执行完整 Google OAuth 外部授权流，原因同上，仍依赖真实 Google 登录会话。
+
+## 2026-04-13 Expo app scheme rename to panda
+
+- `cd apps/expo-storefront && bun run lint`: passed，Expo scheme 从 `pandacommercemobile` 改为 `panda` 后未引入新的 lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认 scheme 变更未影响现有 Expo 代码编译。
+- 实现结论：
+  - Expo app scheme 已从 `pandacommercemobile` 改为 `panda`，因此移动端默认 Google OAuth fallback callback 也随之变为 `panda://oauth/google`。
+  - `account-auth.ts` 仍通过 Expo runtime 动态生成 callback URL，不需要额外代码改动。
+- 配置注意：
+  - Medusa 后端中的 `GOOGLE_CALLBACK_URL` 和 Google Console 中涉及移动端的 callback / redirect 配置，都应同步改为新 scheme。
