@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Checkbox, Input, Label, Text } from "@medusajs/ui"
+import { Checkbox, Input, Label, Select, Text } from "@medusajs/ui"
 
+import { useI18n } from "@lib/i18n/use-i18n"
 import { convertToLocale } from "@lib/util/money"
 import Thumbnail from "@modules/products/components/thumbnail"
 import type { BuilderConfig, ProductBuilder } from "@types/product-builder"
@@ -19,28 +20,39 @@ const emptyConfig: BuilderConfig = {
   addon_variants: [],
 }
 
+const isMeaningfulVariantTitle = (title?: string | null) => {
+  if (!title) {
+    return false
+  }
+
+  return title.trim().toLowerCase() !== "default variant"
+}
+
 export const ProductBuilderConfig = ({
   builder,
   currencyCode,
   onConfigChange,
 }: ProductBuilderConfigProps) => {
+  const { messages } = useI18n()
   const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>(
     {}
   )
-  const [selectedComplementary, setSelectedComplementary] = useState<string[]>([])
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([])
+  const [selectedComplementary, setSelectedComplementary] = useState<
+    Record<string, string>
+  >({})
+  const [selectedAddons, setSelectedAddons] = useState<Record<string, string>>({})
 
   useEffect(() => {
     setCustomFieldValues({})
-    setSelectedComplementary([])
-    setSelectedAddons([])
+    setSelectedComplementary({})
+    setSelectedAddons({})
   }, [builder?.id])
 
   useEffect(() => {
     onConfigChange({
       custom_field_values: customFieldValues,
-      complementary_product_variants: selectedComplementary,
-      addon_variants: selectedAddons,
+      complementary_product_variants: Object.values(selectedComplementary),
+      addon_variants: Object.values(selectedAddons),
     })
   }, [customFieldValues, onConfigChange, selectedAddons, selectedComplementary])
 
@@ -65,7 +77,7 @@ export const ProductBuilderConfig = ({
       {builder.custom_fields.length > 0 && (
         <div className="flex flex-col gap-3">
           <Text className="text-sm font-medium text-[var(--pi-text)]">
-            Customization
+            {messages.product.builderCustomization}
           </Text>
           {builder.custom_fields.map((field) => (
             <div key={field.id} className="flex flex-col gap-1.5">
@@ -98,7 +110,7 @@ export const ProductBuilderConfig = ({
       {builder.complementary_products.length > 0 && (
         <div className="flex flex-col gap-3">
           <Text className="text-sm font-medium text-[var(--pi-text)]">
-            Also goes well with
+            {messages.product.builderComplementaryProducts}
           </Text>
           {builder.complementary_products.map((item) => {
             if (!item.product) {
@@ -117,17 +129,24 @@ export const ProductBuilderConfig = ({
                 className="flex cursor-pointer items-center gap-3 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-3"
               >
                 <Checkbox
-                  checked={selectedComplementary.includes(variant.id)}
+                  checked={Boolean(selectedComplementary[item.id])}
                   onCheckedChange={(checked) => {
                     if (checked) {
                       setSelectedComplementary((prev) =>
-                        prev.includes(variant.id) ? prev : [...prev, variant.id]
+                        prev[item.id]
+                          ? prev
+                          : {
+                              ...prev,
+                              [item.id]: variant.id,
+                            }
                       )
                       return
                     }
 
                     setSelectedComplementary((prev) =>
-                      prev.filter((id) => id !== variant.id)
+                      Object.fromEntries(
+                        Object.entries(prev).filter(([key]) => key !== item.id)
+                      )
                     )
                   }}
                 />
@@ -144,7 +163,31 @@ export const ProductBuilderConfig = ({
                   <Text className="text-sm text-[var(--pi-text)]">
                     {item.product.title}
                   </Text>
-                  <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  {item.product.variants.length > 1 ? (
+                    <Select
+                      value={selectedComplementary[item.id] || variant.id}
+                      disabled={!selectedComplementary[item.id]}
+                      onValueChange={(value) =>
+                        setSelectedComplementary((prev) => ({
+                          ...prev,
+                          [item.id]: value,
+                        }))
+                      }
+                    >
+                      <Select.Trigger>
+                        <Select.Value placeholder={messages.product.builderSelectVariant} />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {item.product.variants.map((productVariant) => (
+                          <Select.Item key={productVariant.id} value={productVariant.id}>
+                            {productVariant.title}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select>
+                  ) : isMeaningfulVariantTitle(variant.title) ? (
+                    <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  ) : null}
                   {variant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({
@@ -162,7 +205,9 @@ export const ProductBuilderConfig = ({
 
       {builder.addons.length > 0 && (
         <div className="flex flex-col gap-3">
-          <Text className="text-sm font-medium text-[var(--pi-text)]">Add-ons</Text>
+          <Text className="text-sm font-medium text-[var(--pi-text)]">
+            {messages.product.builderAddons}
+          </Text>
           {builder.addons.map((item) => {
             if (!item.product) {
               return null
@@ -180,17 +225,24 @@ export const ProductBuilderConfig = ({
                 className="flex cursor-pointer items-center gap-3 border border-[var(--pi-border)] bg-[var(--pi-surface)] p-3"
               >
                 <Checkbox
-                  checked={selectedAddons.includes(variant.id)}
+                  checked={Boolean(selectedAddons[item.id])}
                   onCheckedChange={(checked) => {
                     if (checked) {
                       setSelectedAddons((prev) =>
-                        prev.includes(variant.id) ? prev : [...prev, variant.id]
+                        prev[item.id]
+                          ? prev
+                          : {
+                              ...prev,
+                              [item.id]: variant.id,
+                            }
                       )
                       return
                     }
 
                     setSelectedAddons((prev) =>
-                      prev.filter((id) => id !== variant.id)
+                      Object.fromEntries(
+                        Object.entries(prev).filter(([key]) => key !== item.id)
+                      )
                     )
                   }}
                 />
@@ -207,7 +259,31 @@ export const ProductBuilderConfig = ({
                   <Text className="text-sm text-[var(--pi-text)]">
                     {item.product.title}
                   </Text>
-                  <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  {item.product.variants.length > 1 ? (
+                    <Select
+                      value={selectedAddons[item.id] || variant.id}
+                      disabled={!selectedAddons[item.id]}
+                      onValueChange={(value) =>
+                        setSelectedAddons((prev) => ({
+                          ...prev,
+                          [item.id]: value,
+                        }))
+                      }
+                    >
+                      <Select.Trigger>
+                        <Select.Value placeholder={messages.product.builderSelectVariant} />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {item.product.variants.map((productVariant) => (
+                          <Select.Item key={productVariant.id} value={productVariant.id}>
+                            {productVariant.title}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select>
+                  ) : isMeaningfulVariantTitle(variant.title) ? (
+                    <Text className="text-xs text-ui-fg-muted">{variant.title}</Text>
+                  ) : null}
                   {variant.calculated_price ? (
                     <Text className="text-xs text-ui-fg-muted">
                       {convertToLocale({

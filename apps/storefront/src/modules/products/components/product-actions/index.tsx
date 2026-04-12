@@ -132,9 +132,47 @@ export default function ProductActions({
 
   const inView = useIntersection(actionsRef, "0px")
 
+  const builderValidationError = useMemo(() => {
+    if (!builder) {
+      return null
+    }
+
+    for (const field of builder.custom_fields) {
+      const value = builderConfig.custom_field_values[field.id]
+
+      if (field.is_required && (!value || !String(value).trim())) {
+        return messages.product.builderFieldRequired.replace("{field}", field.name)
+      }
+
+      if (
+        value &&
+        field.type === "number" &&
+        Number.isNaN(Number(value))
+      ) {
+        return messages.product.builderFieldMustBeNumber.replace(
+          "{field}",
+          field.name
+        )
+      }
+    }
+
+    return null
+  }, [builder, builderConfig.custom_field_values, messages.product.builderFieldMustBeNumber, messages.product.builderFieldRequired])
+
+  useEffect(() => {
+    if (error) {
+      setError(null)
+    }
+  }, [builderConfig, error, options])
+
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
+
+    if (builderValidationError) {
+      setError(builderValidationError)
+      return null
+    }
 
     setIsAdding(true)
     setError(null)
@@ -157,7 +195,7 @@ export default function ProductActions({
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to add this product to the cart"
+        err instanceof Error ? err.message : messages.common.genericErrorRetry
       )
     } finally {
       setIsAdding(false)

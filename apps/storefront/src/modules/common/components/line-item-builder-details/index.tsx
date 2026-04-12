@@ -1,3 +1,6 @@
+"use client"
+
+import { useI18n } from "@lib/i18n/use-i18n"
 import { Text } from "@medusajs/ui"
 
 type BuilderFieldValue = {
@@ -12,13 +15,14 @@ type LineItemBuilderDetailsProps = {
 }
 
 const getFieldLabel = (field: BuilderFieldValue) => {
-  return field.name?.trim() || field.field_id?.trim() || "Customization"
+  return field.name?.trim() || field.field_id?.trim()
 }
 
 const LineItemBuilderDetails = ({
   metadata,
   compact = false,
 }: LineItemBuilderDetailsProps) => {
+  const { messages } = useI18n()
   const customFields = Array.isArray(metadata?.custom_fields)
     ? (metadata.custom_fields as BuilderFieldValue[])
     : []
@@ -37,13 +41,15 @@ const LineItemBuilderDetails = ({
         <Text
           className={compact ? "text-xs text-ui-fg-muted" : "text-xs text-ui-fg-muted"}
         >
-          Customized product
+          {messages.product.builderCustomizedProduct}
         </Text>
       ) : (
         <Text
           className={compact ? "text-xs text-ui-fg-muted" : "text-xs text-ui-fg-muted"}
         >
-          {isAddon ? "Builder add-on" : "Builder complementary item"}
+          {isAddon
+            ? messages.product.builderAddonItem
+            : messages.product.builderComplementaryItem}
         </Text>
       )}
       {customFields.map((field, index) => (
@@ -51,7 +57,8 @@ const LineItemBuilderDetails = ({
           key={`${field.field_id || field.name || "field"}-${index}`}
           className={compact ? "text-xs text-ui-fg-subtle" : "text-xs text-ui-fg-subtle"}
         >
-          {getFieldLabel(field)}: {String(field.value ?? "")}
+          {getFieldLabel(field) || messages.product.builderCustomization}:{" "}
+          {String(field.value ?? "")}
         </Text>
       ))}
     </div>
