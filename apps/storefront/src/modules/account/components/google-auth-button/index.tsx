@@ -2,7 +2,10 @@
 
 import { sdk } from "@lib/config"
 import { useI18n } from "@lib/i18n/use-i18n"
-import { getBaseURL } from "@lib/util/env"
+import {
+  getGoogleAuthCallbackUrl,
+  GOOGLE_AUTH_COUNTRY_COOKIE,
+} from "@lib/util/google-auth"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { Button } from "@medusajs/ui"
 import { useParams, useSearchParams } from "next/navigation"
@@ -36,12 +39,6 @@ const GoogleLogo = () => {
   )
 }
 
-const getGoogleCallbackUrl = (countryCode: string) => {
-  const baseUrl = getBaseURL().replace(/\/$/, "")
-
-  return `${baseUrl}/${countryCode}/account/google`
-}
-
 const GoogleAuthButton = () => {
   const { messages } = useI18n()
   const params = useParams()
@@ -60,8 +57,10 @@ const GoogleAuthButton = () => {
     setIsPending(true)
 
     try {
+      document.cookie = `${GOOGLE_AUTH_COUNTRY_COOKIE}=${countryCode}; Path=/; Max-Age=600; SameSite=Lax`
+
       const result = await sdk.auth.login("customer", "google", {
-        callback_url: getGoogleCallbackUrl(countryCode),
+        callback_url: getGoogleAuthCallbackUrl(),
       })
 
       if (typeof result === "string") {

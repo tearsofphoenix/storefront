@@ -15,7 +15,23 @@ type AccountAuthMessageCatalog = {
   };
 };
 
+const MOBILE_GOOGLE_CALLBACK_PATH = "/api/auth/mobile/google";
+
+function normalizeBaseUrl(url: string) {
+  return url.trim().replace(/\/+$/, "");
+}
+
 export function getGoogleRedirectUrl() {
+  const storefrontUrl = process.env.EXPO_PUBLIC_STOREFRONT_URL;
+
+  if (storefrontUrl) {
+    return `${normalizeBaseUrl(storefrontUrl)}${MOBILE_GOOGLE_CALLBACK_PATH}`;
+  }
+
+  return getGoogleReturnUrl();
+}
+
+export function getGoogleReturnUrl() {
   if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
     return `${Constants.linkingUri}oauth/google`;
   }

@@ -149,3 +149,24 @@
   - `account-auth.ts` 仍通过 Expo runtime 动态生成 callback URL，不需要额外代码改动。
 - 配置注意：
   - Medusa 后端中的 `GOOGLE_CALLBACK_URL` 和 Google Console 中涉及移动端的 callback / redirect 配置，都应同步改为新 scheme。
+
+## 2026-04-13 Google OAuth fixed callback routing for storefront and Expo
+
+- `cd apps/storefront && bun run lint`: passed，新增固定 Google OAuth callback route 与 mobile bridge route 后，storefront lint 通过。
+- `cd apps/expo-storefront && bun run lint`: passed，Expo Google callback helper 改为优先使用 storefront HTTPS callback 后，Expo lint 通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认 Expo callback helper 拆分为 `callback_url` 与 app return URL 后编译正常。
+- 实现结论：
+  - Web storefront 的 Google 登录不再使用带国家代码的动态 callback，例如 `/hk/account/google`；现在统一改为固定 callback：`/api/auth/google`。
+  - Web 登录按钮会在发起 OAuth 前写入 `_google_auth_country_code` cookie，Google 登录完成后固定 callback route 再按该 cookie 重定向回对应的 `/{countryCode}/account`。
+  - Expo Google 登录的 `callback_url` 现在优先走 storefront 的固定 HTTPS mobile bridge：`{EXPO_PUBLIC_STOREFRONT_URL}/api/auth/mobile/google`，bridge 再 302 到 `panda://oauth/google`。
+  - Expo `openAuthSessionAsync` 仍监听 app deep link `panda://oauth/google`，避免把 HTTPS callback 错当成原生 return URL。
+- 最终需要注册到 Google Cloud Console 的 Authorized redirect URIs：
+  - storefront web: `https://estore.pandacat.ai/api/auth/google`
+  - Expo mobile bridge: `https://estore.pandacat.ai/api/auth/mobile/google`
+- 最终需要配置的环境变量：
+  - storefront `NEXT_PUBLIC_BASE_URL=https://estore.pandacat.ai`
+  - Expo `EXPO_PUBLIC_STOREFRONT_URL=https://estore.pandacat.ai`
+  - Medusa 后端 `GOOGLE_CALLBACK_URL=https://estore.pandacat.ai/api/auth/google`
+- 配置注意：
+  - 旧的 `https://estore.pandacat.ai/hk/account/google` 这类动态国家路径不应再注册到 Google Cloud Console，也不应再作为 Medusa Google callback 使用。
+  - `panda://oauth/google` 不是 Google Cloud Console 的 redirect URI；它只作为 Expo app 内部 deep link，由 storefront mobile bridge 负责跳转过去。

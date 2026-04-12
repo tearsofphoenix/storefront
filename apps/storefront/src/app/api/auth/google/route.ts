@@ -1,13 +1,8 @@
 import { sdk } from "@lib/config"
 import { getCacheTag } from "@lib/data/cookies"
+import { GOOGLE_AUTH_COUNTRY_COOKIE } from "@lib/util/google-auth"
 import { revalidateTag } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
-
-type GoogleCallbackContext = {
-  params: Promise<{
-    countryCode: string
-  }>
-}
 
 type DecodedGoogleAuthToken = {
   actor_id?: string | null
@@ -35,6 +30,18 @@ type DecodedGoogleAuthToken = {
   }
 }
 
+const getCountryCode = (request: NextRequest) => {
+  const cookieCountryCode = request.cookies
+    .get(GOOGLE_AUTH_COUNTRY_COOKIE)
+    ?.value?.toLowerCase()
+
+  if (cookieCountryCode && /^[a-z]{2}$/.test(cookieCountryCode)) {
+    return cookieCountryCode
+  }
+
+  return process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
+}
+
 const getAccountUrl = (request: NextRequest, countryCode: string) => {
   return new URL(`/${countryCode}/account`, request.url)
 }
@@ -46,7 +53,9 @@ const getErrorRedirectResponse = (
   const redirectUrl = getAccountUrl(request, countryCode)
   redirectUrl.searchParams.set("auth_error", "google")
 
-  return NextResponse.redirect(redirectUrl)
+  const response = NextResponse.redirect(redirectUrl)
+  response.cookies.delete(GOOGLE_AUTH_COUNTRY_COOKIE)
+  return response
 }
 
 const decodeGoogleAuthToken = (token: string): DecodedGoogleAuthToken => {
@@ -125,11 +134,8 @@ const transferCartIfPossible = async (request: NextRequest, token: string) => {
   )
 }
 
-export async function GET(
-  request: NextRequest,
-  context: GoogleCallbackContext
-) {
-  const { countryCode } = await context.params
+export async function GET(request: NextRequest) {
+  const countryCode = getCountryCode(request)
 
   if (request.nextUrl.searchParams.get("error")) {
     return getErrorRedirectResponse(request, countryCode)
@@ -171,6 +177,7 @@ export async function GET(
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
     })
+    response.cookies.delete(GOOGLE_AUTH_COUNTRY_COOKIE)
 
     return response
   } catch {
