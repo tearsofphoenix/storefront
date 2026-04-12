@@ -7,11 +7,13 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useCart } from '@/context/cart-context';
 import { useI18n } from '@/lib/i18n/use-i18n';
+import { getStorefrontSiteName } from '@/lib/storefront-branding';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { cart } = useCart();
   const { messages } = useI18n();
+  const storefrontSiteName = getStorefrontSiteName();
 
   const itemCount = cart?.items?.length || 0;
 
@@ -31,7 +33,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: messages.home.title,
+          title: storefrontSiteName || messages.home.title,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
           headerShown: false, // Let the home stack manage its own headers
         }}

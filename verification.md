@@ -67,3 +67,14 @@
   - 商品详情页不会再无限增加数量；当选定变体到达前端允许上限时，加号会禁用，并在变体切换后自动回落到合法数量。
   - 购物车项的数量增加也遵守同一套库存上限逻辑，避免用户在前端把数量点到明显超库存的区间。
   - 对不追踪库存或允许 backorder 的变体，仍保留 storefront 风格的上限兜底，而不是错误地锁死加购。
+
+## 2026-04-12 Expo home live-branding completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，首页站点名与 featured banner 改动未引入新的 Expo lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `getStorefrontSiteName` 的 Expo config / manifest 读取逻辑可被 home stack 与 tabs 复用。
+  - 首页 `homepage-featured` 集合与 banner 商品图加载逻辑可通过编译。
+- 功能结论：
+  - 首页顶部的商店名称不再使用硬编码文案，而是优先读取 Expo 环境与 manifest 中的真实站点名。
+  - 首页顶部图片不再使用硬编码外链，而是优先取 `homepage-featured` 集合中的真实商品图片，并在缺失时回退到首个集合或首页首个商品。
+  - Home tab 与 home stack 标题现在与实际 storefront branding 保持一致。

@@ -5,33 +5,79 @@ import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useI18n } from '@/lib/i18n/use-i18n';
 import { sdk } from '@/lib/sdk';
+import { getStorefrontSiteName } from '@/lib/storefront-branding';
 import type { HttpTypes } from '@medusajs/types';
 import { Image } from 'expo-image';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+
+const DEFAULT_HOMEPAGE_COLLECTION_HANDLE = "homepage-featured";
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { selectedRegion } = useRegion();
   const { messages } = useI18n();
+  const storefrontSiteName = getStorefrontSiteName();
   
   const [products, setProducts] = useState<HttpTypes.StoreProduct[]>([]);
+  const [featuredCollectionTitle, setFeaturedCollectionTitle] = useState<string | null>(null);
+  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = useCallback(async () => {
+  const fetchHomeData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const { products: fetchedProducts } = await sdk.store.product.list({
-        region_id: selectedRegion?.id,
-        fields: '*variants.calculated_price,+variants.inventory_quantity',
-      });
-      
+
+      const productFields = '*images,*variants.calculated_price,+variants.inventory_quantity';
+      const [{ products: fetchedProducts }, featuredCollectionsResponse] = await Promise.all([
+        sdk.store.product.list({
+          region_id: selectedRegion?.id,
+          fields: productFields,
+        }),
+        sdk.store.collection.list({
+          handle: DEFAULT_HOMEPAGE_COLLECTION_HANDLE,
+          fields: "id,handle,title",
+          limit: 1,
+        }),
+      ]);
+
+      let homepageCollection = featuredCollectionsResponse.collections[0] ?? null;
+
+      if (!homepageCollection) {
+        const fallbackCollectionsResponse = await sdk.store.collection.list({
+          fields: "id,handle,title",
+          limit: 1,
+        });
+
+        homepageCollection = fallbackCollectionsResponse.collections[0] ?? null;
+      }
+
+      let featuredProducts: HttpTypes.StoreProduct[] = [];
+
+      if (homepageCollection?.id) {
+        const featuredProductsResponse = await sdk.store.product.list({
+          region_id: selectedRegion?.id,
+          collection_id: homepageCollection.id,
+          fields: productFields,
+          limit: 4,
+        });
+
+        featuredProducts = featuredProductsResponse.products;
+      }
+
+      const featuredProduct = featuredProducts[0] ?? fetchedProducts[0] ?? null;
+
       setProducts(fetchedProducts);
+      setFeaturedCollectionTitle(homepageCollection?.title || null);
+      setBannerImageUrl(
+        featuredProduct?.thumbnail ||
+          featuredProduct?.images?.[0]?.url ||
+          null
+      );
     } catch (err) {
       console.error('Failed to fetch products:', err);
       setError(messages.home.failedToLoadProducts);
@@ -43,13 +89,13 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (selectedRegion) {
-      fetchProducts();
+      fetchHomeData();
     }
-  }, [selectedRegion, fetchProducts]);
+  }, [selectedRegion, fetchHomeData]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchProducts();
+    fetchHomeData();
   };
 
   if (loading) {
@@ -77,8 +123,22 @@ export default function HomeScreen() {
         removeClippedSubviews={true}
         ListHeaderComponent={
           <View style={styles.header}>
+            <View style={styles.headerCopy}>
+              <Text style={[styles.storeName, { color: colors.text }]}>
+                {storefrontSiteName || messages.home.title}
+              </Text>
+              {featuredCollectionTitle ? (
+                <Text style={[styles.featuredCollection, { color: colors.icon }]}>
+                  {featuredCollectionTitle}
+                </Text>
+              ) : null}
+            </View>
             <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=800' }}
+              source={
+                bannerImageUrl
+                  ? { uri: bannerImageUrl }
+                  : undefined
+              }
               style={[styles.banner, { backgroundColor: colors.imagePlaceholder }]}
               contentFit="cover"
             />
@@ -120,6 +180,20 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
+  },
+  headerCopy: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 12,
+  },
+  storeName: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  featuredCollection: {
+    fontSize: 14,
+    lineHeight: 20,
   },
   banner: {
     width: '100%',

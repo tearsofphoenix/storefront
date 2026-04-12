@@ -7,12 +7,14 @@ import { TouchableOpacity } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useI18n } from '@/lib/i18n/use-i18n';
+import { getStorefrontSiteName } from '@/lib/storefront-branding';
 
 export default function HomeStackLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const colors = Colors[colorScheme ?? 'light'];
   const { messages } = useI18n();
+  const storefrontSiteName = getStorefrontSiteName();
 
   return (
     <Stack
@@ -23,7 +25,7 @@ export default function HomeStackLayout() {
       <Stack.Screen 
         name="index"
         options={{
-          title: messages.home.title,
+          title: storefrontSiteName || messages.home.title,
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
