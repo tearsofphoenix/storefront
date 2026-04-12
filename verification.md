@@ -115,3 +115,15 @@
   - 登录页新增 Google 登录按钮、重定向中状态、错误提示，以及 `GOOGLE_AUTH_*` 错误码到 i18n 文案的映射。
 - 未完成的自动化验证：
   - 本地未执行完整 Google OAuth 端到端登录，因为这一步依赖外部 Google 授权页面与实际登录会话，不适合在当前无人工交互的本地自动化流程中伪造。
+
+## 2026-04-12 Expo account Google register-entry completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，register 页补齐 Google 登录入口后未引入新的 Expo lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - register 页对 `loginWithGoogle` 的调用与现有 customer-context 类型兼容。
+  - register 页新增的 Google loading/error 映射与现有 account i18n 结构兼容。
+- 实现结论：
+  - Expo register 页现在与 web storefront 一样，在 email/password 注册表单下方提供 Google 登录入口。
+  - register 页复用了 login 页相同的 redirect URL 生成策略与 `GOOGLE_AUTH_*` 错误映射，没有新增底层鉴权实现。
+- 未完成的自动化验证：
+  - 本地未执行完整 Google OAuth 外部授权流，原因同上，仍依赖真实 Google 登录会话。
