@@ -9,23 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Constants, { ExecutionEnvironment } from "expo-constants";
-import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
 import { Colors } from '@/constants/theme';
 import { useCustomer } from '@/context/customer-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import {
+  GOOGLE_AUTH_ERROR,
+  getGoogleRedirectUrl,
+  resolveAccountAuthErrorMessage,
+} from '@/lib/account-auth';
 import { useI18n } from '@/lib/i18n/use-i18n';
-
-function getGoogleRedirectUrl() {
-  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
-    return `${Constants.linkingUri}oauth/google`;
-  }
-
-  return Linking.createURL("oauth/google");
-}
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -50,34 +45,8 @@ export default function LoginScreen() {
   }, [authError]);
 
   const resolvedError = useMemo(() => {
-    const currentError = message || error || routeError;
-
-    if (currentError === "AUTH_REQUIRES_ACTION") {
-      return messages.account.authRequiresAction;
-    }
-
-    if (currentError === "GOOGLE_AUTH_UNAVAILABLE") {
-      return messages.account.googleAuthUnavailable;
-    }
-
-    if (currentError === "GOOGLE_AUTH_CANCELLED") {
-      return messages.account.googleAuthCancelled;
-    }
-
-    if (currentError === "GOOGLE_AUTH_ERROR") {
-      return messages.account.googleAuthError;
-    }
-
-    return currentError;
-  }, [
-    error,
-    message,
-    messages.account.authRequiresAction,
-    messages.account.googleAuthCancelled,
-    messages.account.googleAuthError,
-    messages.account.googleAuthUnavailable,
-    routeError,
-  ]);
+    return resolveAccountAuthErrorMessage(message || error || routeError, messages);
+  }, [error, message, messages, routeError]);
 
   const handleLogin = async () => {
     clearError();
@@ -108,7 +77,7 @@ export default function LoginScreen() {
         router.replace("/(drawer)/(tabs)/(account)");
       }
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "GOOGLE_AUTH_ERROR");
+      setMessage(err instanceof Error ? err.message : GOOGLE_AUTH_ERROR);
     } finally {
       setActiveAuthMethod(null);
     }

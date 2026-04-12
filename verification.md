@@ -127,3 +127,15 @@
   - register 页复用了 login 页相同的 redirect URL 生成策略与 `GOOGLE_AUTH_*` 错误映射，没有新增底层鉴权实现。
 - 未完成的自动化验证：
   - 本地未执行完整 Google OAuth 外部授权流，原因同上，仍依赖真实 Google 登录会话。
+
+## 2026-04-12 Expo account guest Google entry completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，游客态 Google 登录入口与共享账户认证 helper 接入后未引入新的 Expo lint 错误。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - 新增的 `lib/account-auth.ts` 可同时被 `login.tsx`、`register.tsx` 与 `member-only-state.tsx` 复用。
+  - `MemberOnlyState` 对 `loginWithGoogle` 的调用及错误文案解析与现有 i18n 结构兼容。
+- 实现结论：
+  - Expo 的游客态账户入口现在支持直接 Google 登录，不再必须先进入 login/register 页面；account、orders、addresses、profile 等所有复用 `MemberOnlyState` 的受限页面都会显示该入口。
+  - Google redirect URL 生成与账户认证错误映射已抽成共享 helper，login/register 不再各自维护重复逻辑。
+- 未完成的自动化验证：
+  - 本地未执行完整 Google OAuth 外部授权流，原因同上，仍依赖真实 Google 登录会话。
