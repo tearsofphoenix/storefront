@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Colors } from '@/constants/theme';
 import { useRegion } from '@/context/region-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { formatAddressLines, getAddressTitle } from '@/lib/account';
 import { useI18n } from '@/lib/i18n/use-i18n';
-import React, { useEffect, useRef, useState } from 'react';
+import type { HttpTypes } from '@medusajs/types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -14,6 +16,7 @@ import {
   Switch,
   Text,
   TextInput,
+  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -29,6 +32,7 @@ interface Address {
 
 interface DeliveryStepProps {
   email: string;
+  savedAddresses: HttpTypes.StoreCustomerAddress[];
   shippingAddress: Address;
   billingAddress: Address;
   useSameForBilling: boolean;
@@ -37,11 +41,14 @@ interface DeliveryStepProps {
   onShippingAddressChange: (field: keyof Address, value: string) => void;
   onBillingAddressChange: (field: keyof Address, value: string) => void;
   onUseSameForBillingChange: (value: boolean) => void;
+  onSelectShippingAddress: (address: HttpTypes.StoreCustomerAddress) => void;
+  onSelectBillingAddress: (address: HttpTypes.StoreCustomerAddress) => void;
   onNext: () => void;
 }
 
 export function DeliveryStep({
   email,
+  savedAddresses,
   shippingAddress,
   billingAddress,
   useSameForBilling,
@@ -50,6 +57,8 @@ export function DeliveryStep({
   onShippingAddressChange,
   onBillingAddressChange,
   onUseSameForBillingChange,
+  onSelectShippingAddress,
+  onSelectBillingAddress,
   onNext,
 }: DeliveryStepProps) {
   const colorScheme = useColorScheme();
@@ -59,7 +68,20 @@ export function DeliveryStep({
   const scrollViewRef = useRef<ScrollView>(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  const countries = selectedRegion?.countries || [];
+  const countries = useMemo(() => selectedRegion?.countries || [], [selectedRegion?.countries]);
+  const countriesInRegion = useMemo(
+    () => countries.map((country) => country.iso_2 || country.id).filter(Boolean),
+    [countries]
+  );
+  const addressesInRegion = useMemo(
+    () =>
+      savedAddresses.filter(
+        (address) =>
+          address.country_code &&
+          countriesInRegion.includes(address.country_code)
+      ),
+    [countriesInRegion, savedAddresses]
+  );
 
   useEffect(() => {
     const keyboardWillShowListener = Keyboard.addListener(
@@ -76,6 +98,89 @@ export function DeliveryStep({
       keyboardWillHideListener.remove();
     };
   }, []);
+
+  const isSelectedAddress = (
+    savedAddress: HttpTypes.StoreCustomerAddress,
+    currentAddress: Address
+  ) => {
+    return (
+      (savedAddress.first_name || '') === currentAddress.firstName &&
+      (savedAddress.last_name || '') === currentAddress.lastName &&
+      (savedAddress.address_1 || '') === currentAddress.address &&
+      (savedAddress.city || '') === currentAddress.city &&
+      (savedAddress.postal_code || '') === currentAddress.postalCode &&
+      (savedAddress.country_code || '') === currentAddress.countryCode &&
+      (savedAddress.phone || '') === currentAddress.phone
+    );
+  };
+
+  const renderSavedAddresses = (
+    currentAddress: Address,
+    onSelectAddress: (address: HttpTypes.StoreCustomerAddress) => void
+  ) => {
+    if (addressesInRegion.length === 0) {
+      return null;
+    }
+
+    return (
+      <View
+        style={[
+          styles.savedAddressesCard,
+          {
+            backgroundColor: colors.background,
+            borderColor: `${colors.icon}20`,
+          },
+        ]}
+      >
+        <Text style={[styles.savedAddressesTitle, { color: colors.text }]}>
+          {messages.account.savedAddresses}
+        </Text>
+        <Text style={[styles.savedAddressesDescription, { color: colors.icon }]}>
+          {messages.checkout.useSavedAddress}
+        </Text>
+
+        <View style={styles.savedAddressesList}>
+          {addressesInRegion.map((address) => {
+            const isSelected = isSelectedAddress(address, currentAddress);
+
+            return (
+              <TouchableOpacity
+                key={address.id}
+                style={[
+                  styles.savedAddressOption,
+                  {
+                    backgroundColor: isSelected
+                      ? `${colors.tint}12`
+                      : colors.background,
+                    borderColor: isSelected ? colors.tint : `${colors.icon}20`,
+                  },
+                ]}
+                onPress={() => onSelectAddress(address)}
+              >
+                <Text
+                  style={[
+                    styles.savedAddressName,
+                    { color: isSelected ? colors.tint : colors.text },
+                  ]}
+                >
+                  {getAddressTitle(address) || messages.checkout.savedAddress}
+                </Text>
+
+                {formatAddressLines(address).map((line) => (
+                  <Text
+                    key={`${address.id}-${line}`}
+                    style={[styles.savedAddressLine, { color: colors.icon }]}
+                  >
+                    {line}
+                  </Text>
+                ))}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <KeyboardAvoidingView 
@@ -115,6 +220,8 @@ export function DeliveryStep({
             {messages.checkout.shippingAddress}
           </Text>
 
+          {renderSavedAddresses(shippingAddress, onSelectShippingAddress)}
+
           <AddressForm
             firstName={shippingAddress.firstName}
             lastName={shippingAddress.lastName}
@@ -148,6 +255,8 @@ export function DeliveryStep({
               <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 20 }]}>
                 {messages.checkout.billingAddress}
               </Text>
+
+              {renderSavedAddresses(billingAddress, onSelectBillingAddress)}
 
               <AddressForm
                 firstName={billingAddress.firstName}
@@ -223,6 +332,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 16,
+  },
+  savedAddressesCard: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+  },
+  savedAddressesTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  savedAddressesDescription: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  savedAddressesList: {
+    gap: 12,
+  },
+  savedAddressOption: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+  },
+  savedAddressName: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  savedAddressLine: {
+    fontSize: 13,
+    lineHeight: 18,
   },
   switchLabel: {
     fontSize: 16,

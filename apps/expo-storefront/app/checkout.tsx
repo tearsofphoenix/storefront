@@ -192,6 +192,59 @@ export default function CheckoutScreen() {
     }
   }, [currentStep, fetchShippingOptions, fetchPaymentProviders]);
 
+  const handleShippingAddressChange = useCallback(
+    (field: keyof CheckoutAddress, value: string) => {
+      setShippingAddress((prev) => {
+        const next = { ...prev, [field]: value };
+
+        if (useSameForBilling) {
+          setBillingAddress(next);
+        }
+
+        return next;
+      });
+    },
+    [useSameForBilling]
+  );
+
+  const handleBillingAddressChange = useCallback(
+    (field: keyof CheckoutAddress, value: string) => {
+      setBillingAddress((prev) => ({ ...prev, [field]: value }));
+    },
+    []
+  );
+
+  const handleUseSameForBillingChange = useCallback(
+    (value: boolean) => {
+      setUseSameForBilling(value);
+
+      if (value) {
+        setBillingAddress(shippingAddress);
+      }
+    },
+    [shippingAddress]
+  );
+
+  const handleSelectShippingAddress = useCallback(
+    (address: HttpTypes.StoreCustomerAddress) => {
+      const nextAddress = mapAddress(address);
+
+      setShippingAddress(nextAddress);
+
+      if (useSameForBilling) {
+        setBillingAddress(nextAddress);
+      }
+    },
+    [useSameForBilling]
+  );
+
+  const handleSelectBillingAddress = useCallback(
+    (address: HttpTypes.StoreCustomerAddress) => {
+      setBillingAddress(mapAddress(address));
+    },
+    []
+  );
+
   const handleDeliveryNext = async () => {
     // Validate shipping address
     if (!email || !shippingAddress.firstName || !shippingAddress.lastName || 
@@ -396,18 +449,17 @@ export default function CheckoutScreen() {
         {currentStep === 'delivery' && (
           <DeliveryStep
             email={email}
+            savedAddresses={addresses}
             shippingAddress={shippingAddress}
             billingAddress={billingAddress}
             useSameForBilling={useSameForBilling}
             loading={loading}
             onEmailChange={setEmail}
-            onShippingAddressChange={(field, value) => 
-              setShippingAddress(prev => ({ ...prev, [field]: value }))
-            }
-            onBillingAddressChange={(field, value) => 
-              setBillingAddress(prev => ({ ...prev, [field]: value }))
-            }
-            onUseSameForBillingChange={setUseSameForBilling}
+            onShippingAddressChange={handleShippingAddressChange}
+            onBillingAddressChange={handleBillingAddressChange}
+            onUseSameForBillingChange={handleUseSameForBillingChange}
+            onSelectShippingAddress={handleSelectShippingAddress}
+            onSelectBillingAddress={handleSelectBillingAddress}
             onNext={handleDeliveryNext}
           />
         )}

@@ -45,3 +45,14 @@
   - 账户页现在具备登录注册、订单列表/详情、地址簿/编辑，以及资料页中的姓名/电话更新能力。
   - 电子邮件在资料页中展示为只读，这与当前 web storefront 对账户邮箱更新的处理范围保持一致。
   - 地址编辑在目标地址缺失时不再静默回退为“新增地址”，而是给出明确返回入口。
+
+## 2026-04-12 Expo checkout saved-address completion
+
+- `cd apps/expo-storefront && bun run lint`: passed，checkout delivery step 新增 saved-address 选择与 billing 同步逻辑后，Expo lint 仍保持通过。
+- `cd apps/expo-storefront && bunx tsc --noEmit`: passed，TypeScript 已确认：
+  - `DeliveryStep` 新增的 saved-address props 与 `checkout.tsx` 中的状态处理函数类型一致。
+  - 当前区域地址过滤、saved-address 选中回填，以及 `useSameForBilling` 的同步逻辑均可通过编译。
+- 功能结论：
+  - 已登录用户在 delivery step 中可以直接选择当前区域内的已保存地址，不再只能依赖默认预填或手工输入。
+  - 选择 saved shipping address 时，如果 billing 与 shipping 共用，同步会立即反映到 billing 状态。
+  - 重新打开 `Use same address for billing` 时，billing 会回到当前 shipping 值，避免隐藏状态滞后。
