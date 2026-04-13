@@ -188,5 +188,18 @@
 - `cd apps/storefront && bun run lint`: passed，theme manifest 解析兼容 shorthand preset 字符串后，storefront lint 通过。
 - 实现结论：
   - `MEDUSA_SAAS_THEME_MANIFEST` 现在同时支持完整 JSON manifest，以及 `electronics-pro` 这类纯 preset 字符串。
+
+## 2026-04-13 Google OAuth production mismatch investigation
+
+- 使用 DevTools 直接访问 `https://estore.pandacat.ai/hk/account` 并点击 `Continue with Google`，已复现线上 `redirect_uri_mismatch`。
+- 线上真实请求链路：
+  - storefront 向 `https://estore-admin.pandacat.ai/auth/customer/google` 发出 `POST`，请求体为 `{"callback_url":"https://estore.pandacat.ai/api/auth/google"}`
+  - Medusa 随后把浏览器重定向到 Google，使用的 `client_id` 为 `892178929987-n3m0nlgl5aki03tl4tjt5gbpi5rvkr93.apps.googleusercontent.com`
+  - Google 返回 `Error 400: redirect_uri_mismatch`
+- 调查结论：
+  - 线上 storefront 已不再使用旧的 `/{countryCode}/account/google` 作为 OAuth redirect URI。
+  - 当前生产故障的根因是：Google Cloud Console 中与上述 `client_id` 对应的 OAuth Client，没有正确登记 `https://estore.pandacat.ai/api/auth/google` 这个 redirect URI，或者你修改的是另一个 OAuth Client。
+- 本次代码侧补充：
+  - 新增兼容路由 `/{countryCode}/account/google`，会把旧动态 callback 请求统一转发到 `/api/auth/google`，用于兼容旧 bundle、旧书签或旧配置。
   - 当环境变量不是合法 JSON 时，storefront 会把原始字符串包装成最小 theme manifest，并继续走现有 preset 解析链路。
   - 现有 `storefront_theme` cookie 覆盖优先级保持不变；验证 shorthand env 是否生效时，仍需要清除该 cookie 或使用无痕窗口。

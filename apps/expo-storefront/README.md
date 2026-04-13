@@ -20,12 +20,14 @@ cp .env.template .env
 ```bash
 EXPO_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY=
 EXPO_PUBLIC_MEDUSA_URL=
+EXPO_PUBLIC_STOREFRONT_URL=
 ```
 
 说明：
 
 - `EXPO_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY`：Medusa Admin 中的 publishable key。
 - `EXPO_PUBLIC_MEDUSA_URL`：Medusa 后端地址。真机或 Expo Go 调试时，必须使用宿主机局域网 IP，例如 `http://192.168.1.100:9000`。
+- `EXPO_PUBLIC_STOREFRONT_URL`：Web storefront 的 HTTPS 域名。Google 登录等第三方 OAuth 需要先回到 `${EXPO_PUBLIC_STOREFRONT_URL}/api/auth/mobile/google`，再跳回 `panda://oauth/google`。
 
 ## 启动方式
 
