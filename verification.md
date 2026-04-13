@@ -201,5 +201,15 @@
   - 当前生产故障的根因是：Google Cloud Console 中与上述 `client_id` 对应的 OAuth Client，没有正确登记 `https://estore.pandacat.ai/api/auth/google` 这个 redirect URI，或者你修改的是另一个 OAuth Client。
 - 本次代码侧补充：
   - 新增兼容路由 `/{countryCode}/account/google`，会把旧动态 callback 请求统一转发到 `/api/auth/google`，用于兼容旧 bundle、旧书签或旧配置。
+
+## 2026-04-13 Google OAuth compatibility callback fallback
+
+- 使用 DevTools 直接测试 Google OAuth 授权地址后确认：
+  - `https://estore.pandacat.ai/us/account/google` 对当前生产 `client_id=892178929987-n3m0nlgl5aki03tl4tjt5gbpi5rvkr93.apps.googleusercontent.com` 会进入 Google 登录页，不会触发 `redirect_uri_mismatch`。
+  - `https://estore.pandacat.ai/api/auth/google` 仍然会被 Google 拒绝，说明当前 OAuth Client 还没补齐这个新 URI。
+- 实现结论：
+  - web storefront 的 `callback_url` 先回退为固定默认地区兼容路径 `/{NEXT_PUBLIC_DEFAULT_REGION}/account/google`。
+  - 该兼容路径再由 storefront 内部路由转发到 `/api/auth/google`，继续复用新的统一 callback 处理逻辑和国家 cookie 重定向逻辑。
+  - 这样可以在不等待 Google Cloud Console 更新完成的前提下，直接恢复生产 Google 登录。
   - 当环境变量不是合法 JSON 时，storefront 会把原始字符串包装成最小 theme manifest，并继续走现有 preset 解析链路。
   - 现有 `storefront_theme` cookie 覆盖优先级保持不变；验证 shorthand env 是否生效时，仍需要清除该 cookie 或使用无痕窗口。

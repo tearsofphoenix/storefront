@@ -90,13 +90,18 @@ pnpm build
 
 ## Google OAuth 生产配置
 
-当前仓库中的 Google 登录已统一改为固定 callback，不再使用 `/{countryCode}/account/google` 这类动态路径。
+当前仓库中的 Google 登录在生产上走固定兼容 callback，避免继续命中未更新的 Google OAuth client 配置。
 
 - Medusa 后端 `GOOGLE_CALLBACK_URL` 必须配置为 `https://estore.pandacat.ai/api/auth/google`
 - storefront `NEXT_PUBLIC_BASE_URL` 必须配置为 `https://estore.pandacat.ai`
 - Expo `EXPO_PUBLIC_STOREFRONT_URL` 必须配置为 `https://estore.pandacat.ai`
-- Google Cloud Console 中，当前实际使用的 OAuth Client 必须包含以下 Authorized redirect URIs：
-  - `https://estore.pandacat.ai/api/auth/google`
+- Web storefront 当前实际发出的 Google redirect URI 是固定默认地区路径：
+  - `https://estore.pandacat.ai/us/account/google`
+  - 该路径会在 storefront 内部继续转发到 `https://estore.pandacat.ai/api/auth/google`
+- Google Cloud Console 中，当前实际使用的 OAuth Client 至少必须包含以下 Authorized redirect URIs：
+  - `https://estore.pandacat.ai/us/account/google`
   - `https://estore.pandacat.ai/api/auth/mobile/google`
+- 建议额外保留：
+  - `https://estore.pandacat.ai/api/auth/google`
 
 排障时请以浏览器真实发出的 `client_id` 为准，确认你修改的是同一个 Google OAuth Client，而不是只在另一个 client 上补了 redirect URI。
