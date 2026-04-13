@@ -37,6 +37,7 @@ const SideMenu = ({
 
   const sideMenuItems = [
     { label: messages.common.store, href: "/store", testId: "store-link" },
+    { label: "For brands", href: "/for-brands", testId: "for-brands-link" },
     {
       label: messages.common.account,
       href: "/account",
