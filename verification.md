@@ -182,3 +182,11 @@
   - Expo 首页现在会在加载商品与 featured collection 时并行请求该 API，并把返回的店铺名写入共享 branding helper。
   - Expo home stack 与 tabs 继续复用同一个 branding helper，因此首页正文、导航标题与 tab 标题会一起显示真实店铺名。
   - Expo 端已移除对 app name `Panda Commerce Mobile` 的最终标题回退，不再把 app name 当店铺名显示。
+
+## 2026-04-13 Storefront shorthand theme manifest support
+
+- `cd apps/storefront && bun run lint`: passed，theme manifest 解析兼容 shorthand preset 字符串后，storefront lint 通过。
+- 实现结论：
+  - `MEDUSA_SAAS_THEME_MANIFEST` 现在同时支持完整 JSON manifest，以及 `electronics-pro` 这类纯 preset 字符串。
+  - 当环境变量不是合法 JSON 时，storefront 会把原始字符串包装成最小 theme manifest，并继续走现有 preset 解析链路。
+  - 现有 `storefront_theme` cookie 覆盖优先级保持不变；验证 shorthand env 是否生效时，仍需要清除该 cookie 或使用无痕窗口。

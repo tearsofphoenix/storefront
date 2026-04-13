@@ -83,7 +83,7 @@ export function readStorefrontThemeManifest(): StorefrontThemeManifestEnvelope {
       theme: parsed.theme ?? null,
     }
   } catch {
-    return createEmptyThemeManifest()
+    return createThemeManifestFromToken(raw)
   }
 }
 
@@ -232,6 +232,34 @@ function createEmptyThemeManifest(): StorefrontThemeManifestEnvelope {
     manifestHash: process.env.MEDUSA_SAAS_THEME_MANIFEST_HASH ?? "unknown",
     activeThemeId: null,
     theme: null,
+  }
+}
+
+function createThemeManifestFromToken(
+  value: string
+): StorefrontThemeManifestEnvelope {
+  const normalizedValue = readStringValue(value)
+
+  if (!normalizedValue) {
+    return createEmptyThemeManifest()
+  }
+
+  return {
+    version: process.env.MEDUSA_SAAS_THEME_MANIFEST_VERSION ?? "legacy",
+    storeId: "unknown",
+    generatedAt: "",
+    manifestHash: process.env.MEDUSA_SAAS_THEME_MANIFEST_HASH ?? "unknown",
+    activeThemeId: normalizedValue,
+    theme: {
+      id: normalizedValue,
+      slug: normalizedValue,
+      name: normalizedValue,
+      version: "shorthand",
+      capabilities: [],
+      config: {
+        themePreset: normalizedValue,
+      },
+    },
   }
 }
 
