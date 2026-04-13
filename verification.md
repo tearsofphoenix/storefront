@@ -148,7 +148,7 @@
   - Expo app scheme 已从 `pandacommercemobile` 改为 `panda`，因此移动端默认 Google OAuth fallback callback 也随之变为 `panda://oauth/google`。
   - `account-auth.ts` 仍通过 Expo runtime 动态生成 callback URL，不需要额外代码改动。
 - 配置注意：
-  - Medusa 后端中的 `GOOGLE_CALLBACK_URL` 和 Google Console 中涉及移动端的 callback / redirect 配置，都应同步改为新 scheme。
+  - `panda://oauth/google` 只用于 Expo app 内部 deep link，不是 Google Cloud Console 的 redirect URI，也不是 Medusa 后端的 `GOOGLE_CALLBACK_URL`。
 
 ## 2026-04-13 Google OAuth fixed callback routing for storefront and Expo
 
