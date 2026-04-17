@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState, useTransition } from "react"
 
 import {
+  DEFAULT_STOREFRONT_THEME_KEY,
   listStorefrontThemePresets,
   resolveStorefrontThemePresetKey,
   STOREFRONT_THEME_COOKIE_KEY,
@@ -24,7 +25,9 @@ type ThemeSwitcherProps = {
 export default function ThemeSwitcher({ className = "" }: ThemeSwitcherProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [selectedTheme, setSelectedTheme] = useState<StorefrontThemePresetKey>("dawn")
+  const [selectedTheme, setSelectedTheme] = useState<StorefrontThemePresetKey>(
+    DEFAULT_STOREFRONT_THEME_KEY
+  )
   const optionMap = useMemo(
     () => new Set(THEME_OPTIONS.map((option) => option.key)),
     []

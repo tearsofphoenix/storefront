@@ -195,7 +195,7 @@ const PRESET_DEFINITIONS = [
 
 export type StorefrontThemePresetKey = (typeof PRESET_DEFINITIONS)[number]["key"]
 
-export const DEFAULT_STOREFRONT_THEME_KEY: StorefrontThemePresetKey = "dawn"
+export const DEFAULT_STOREFRONT_THEME_KEY: StorefrontThemePresetKey = "home-living"
 
 const PRESET_MAP = new Map<StorefrontThemePresetKey, StorefrontThemePreset>(
   PRESET_DEFINITIONS.map((preset) => [preset.key, preset])
