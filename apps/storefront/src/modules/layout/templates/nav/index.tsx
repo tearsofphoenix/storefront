@@ -71,13 +71,6 @@ export default async function Nav() {
                 </LocalizedClientLink>
                 <LocalizedClientLink
                   className="text-[12px] uppercase tracking-[0.12em]"
-                  href="/for-brands"
-                  style={{ color: "var(--pi-text)" }}
-                >
-                  For brands
-                </LocalizedClientLink>
-                <LocalizedClientLink
-                  className="text-[12px] uppercase tracking-[0.12em]"
                   href="/account"
                   data-testid="nav-account-link"
                   style={{ color: "var(--pi-text)" }}
@@ -183,13 +176,6 @@ export default async function Nav() {
               style={{ color: "var(--pi-muted)" }}
             >
               {messages.common.store}
-            </LocalizedClientLink>
-            <LocalizedClientLink
-              className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
-              href="/for-brands"
-              style={{ color: "var(--pi-muted)" }}
-            >
-              For brands
             </LocalizedClientLink>
             <LocalizedClientLink
               className="text-[12px] font-medium uppercase tracking-[0.14em] transition-colors"
