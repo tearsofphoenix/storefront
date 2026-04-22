@@ -1,6 +1,7 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
 import Image from "next/image"
 import { PayloadMediaStoryBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const MediaStorySection = ({
   body,
@@ -14,13 +15,13 @@ export const MediaStorySection = ({
   const bodyText = body?.trim()
 
   return (
-    <section className="content-container py-12 small:py-16">
+    <section className={sectionStyles.section}>
       <div
-        className={`grid gap-8 bg-[#f2eadf] p-6 small:p-10 lg:grid-cols-2 lg:items-center ${
+        className={`grid ${sectionStyles.sectionGridGap} ${sectionStyles.surfaceAlt} ${sectionStyles.inset} lg:grid-cols-2 lg:items-center ${
           isImageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
-        <div className="overflow-hidden bg-[#e6dcc9]">
+        <div className="overflow-hidden rounded-xl border border-black/12 bg-[#f3f3f3]">
           {imageUrl ? (
             <div className="relative aspect-[4/3] w-full">
               <Image
@@ -32,22 +33,22 @@ export const MediaStorySection = ({
               />
             </div>
           ) : (
-            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
+            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#f0f0f0,#fafafa)] text-sm text-[#6f6f6f]">
               Payload Story Media
             </div>
           )}
         </div>
-        <div className="flex max-w-xl flex-col gap-4">
+        <div className={`${sectionStyles.stackLg} max-w-xl`}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+            <p className={sectionStyles.eyebrow}>
               {eyebrow}
             </p>
           ) : null}
-          <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+          <h2 className={sectionStyles.title}>
             {title}
           </h2>
           {bodyText ? (
-            <p className="whitespace-pre-line text-base leading-7 text-[#4b5563]">
+            <p className={`whitespace-pre-line ${sectionStyles.bodyLarge}`}>
               {bodyText}
             </p>
           ) : null}

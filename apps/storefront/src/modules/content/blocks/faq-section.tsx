@@ -1,4 +1,5 @@
 import { PayloadFaqBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const FAQSection = ({ items, title }: PayloadFaqBlock) => {
   if (!items?.length) {
@@ -6,23 +7,23 @@ export const FAQSection = ({ items, title }: PayloadFaqBlock) => {
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
+    <section className={sectionStyles.section}>
       <div className="mx-auto max-w-3xl">
         {title ? (
-          <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+          <h2 className={sectionStyles.title}>
             {title}
           </h2>
         ) : null}
-        <div className="mt-8 space-y-4">
+        <div className={`${sectionStyles.sectionTopGap} space-y-3`}>
           {items.map((item, index) => (
             <details
               key={item.id || `${item.question}-${index}`}
-              className="group bg-[#f5eee4] p-5"
+              className={`group ${sectionStyles.cardSoft} ${sectionStyles.cardPadding}`}
             >
-              <summary className="cursor-pointer list-none text-base font-semibold text-[#111827]">
+              <summary className={`cursor-pointer list-none ${sectionStyles.cardTitle}`}>
                 {item.question}
               </summary>
-              <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[#4b5563]">
+              <p className={`mt-3 whitespace-pre-line ${sectionStyles.bodySmall}`}>
                 {item.answer}
               </p>
             </details>

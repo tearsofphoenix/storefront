@@ -1,4 +1,5 @@
 import { PayloadStatStripBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const StatStripSection = ({
   eyebrow,
@@ -10,30 +11,30 @@ export const StatStripSection = ({
   }
 
   return (
-    <section className="content-container py-10 small:py-12">
-      <div className="bg-[#1c1b19] px-6 py-8 text-white small:px-8">
+    <section className={sectionStyles.sectionCompact}>
+      <div className={`${sectionStyles.surfaceDark} ${sectionStyles.insetTight}`}>
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+          <p className={sectionStyles.eyebrowOnDark}>
             {eyebrow}
           </p>
         ) : null}
         {title ? (
-          <h2 className="mt-2 text-2xl font-semibold leading-tight text-white small:text-3xl">
+          <h2 className={`mt-1.5 ${sectionStyles.titleOnDark}`}>
             {title}
           </h2>
         ) : null}
-        <div className="mt-6 grid gap-4 small:grid-cols-2 xl:grid-cols-4">
+        <div className={`${sectionStyles.sectionTopGap} grid ${sectionStyles.sectionGridGap} small:grid-cols-2 xl:grid-cols-4`}>
           {items.map((item, index) => (
             <article
               key={item.id || `${item.value}-${index}`}
-              className="bg-white/5 px-5 py-5"
+              className="rounded-2xl border border-white/15 bg-white/5 p-5 small:p-6"
             >
-              <p className="text-3xl font-semibold text-white">{item.value}</p>
-              <p className="mt-2 text-sm font-medium text-white/80">
+              <p className={sectionStyles.displayTitleOnDark}>{item.value}</p>
+              <p className={`mt-2 ${sectionStyles.label} text-white/80`}>
                 {item.label}
               </p>
               {item.description ? (
-                <p className="mt-2 text-sm leading-6 text-white/56">
+                <p className={`mt-2 ${sectionStyles.bodySmallOnDark}`}>
                   {item.description}
                 </p>
               ) : null}

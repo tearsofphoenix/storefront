@@ -1,6 +1,7 @@
 import { getPayloadMediaUrl } from "@lib/payload/client"
 import Image from "next/image"
 import { PayloadQuoteShowcaseBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const QuoteShowcaseSection = ({
   author,
@@ -13,21 +14,21 @@ export const QuoteShowcaseSection = ({
   const avatarUrl = getPayloadMediaUrl(avatar?.url)
 
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="bg-[#181818] px-6 py-10 text-white small:px-10 small:py-14">
-        <div className="mx-auto flex max-w-4xl flex-col gap-6">
+    <section className={sectionStyles.section}>
+      <div className={`${sectionStyles.surfaceDark} ${sectionStyles.inset}`}>
+        <div className={`${sectionStyles.stackLg} mx-auto max-w-4xl`}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+            <p className={sectionStyles.eyebrowOnDark}>
               {eyebrow}
             </p>
           ) : null}
-          <blockquote className="text-3xl font-semibold leading-tight small:text-4xl">
+          <blockquote className={sectionStyles.displayTitleOnDark}>
             “{quote}”
           </blockquote>
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-5">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4">
             <div className="flex items-center gap-4">
               {avatarUrl ? (
-                <div className="relative h-14 w-14 overflow-hidden">
+                <div className="relative h-14 w-14 overflow-hidden rounded-full border border-white/20">
                   <Image
                     alt={avatar?.alt || author}
                     className="object-cover"
@@ -37,19 +38,21 @@ export const QuoteShowcaseSection = ({
                   />
                 </div>
               ) : (
-                <div className="flex h-14 w-14 items-center justify-center bg-white/10 text-sm font-semibold text-white/70">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 text-sm font-semibold text-white/70">
                   {author.slice(0, 1)}
                 </div>
               )}
               <div>
-                <p className="text-base font-semibold text-white">{author}</p>
+                <p className={sectionStyles.cardTitle.replace("text-[#111111]", "text-white")}>
+                  {author}
+                </p>
                 {role ? (
-                  <p className="text-sm text-white/64">{role}</p>
+                  <p className={sectionStyles.bodySmallOnDark}>{role}</p>
                 ) : null}
               </div>
             </div>
             {highlight ? (
-              <div className="bg-white/8 px-4 py-2 text-sm font-medium text-white/80">
+              <div className={`rounded-full border border-white/20 bg-white/8 px-4 py-2 ${sectionStyles.label} text-white/80`}>
                 {highlight}
               </div>
             ) : null}

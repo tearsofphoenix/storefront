@@ -3,6 +3,7 @@ import Image from "next/image"
 import { PayloadHeroBlock } from "types/payload"
 
 import { CmsLink } from "./cms-link"
+import { sectionStyles } from "./section-styles"
 
 export const HeroSection = ({
   backgroundImage,
@@ -18,26 +19,28 @@ export const HeroSection = ({
   const videoUrl = getPayloadMediaUrl(backgroundVideo?.url)
 
   return (
-    <section className="bg-[#f3ecdf]">
-      <div className="content-container grid gap-10 py-14 small:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] small:items-center small:py-20">
-        <div className="flex max-w-xl flex-col gap-5">
+    <section className={sectionStyles.heroSection}>
+      <div
+        className={`grid ${sectionStyles.sectionGridGap} ${sectionStyles.surface} ${sectionStyles.inset} small:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] small:items-center`}
+      >
+        <div className={`${sectionStyles.stackLg} max-w-xl`}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+            <p className={sectionStyles.eyebrow}>
               {eyebrow}
             </p>
           ) : null}
-          <h2 className="text-4xl font-semibold leading-tight text-[#111827] small:text-5xl">
+          <h2 className={sectionStyles.displayTitle}>
             {headline}
           </h2>
           {subheadline ? (
-            <p className="whitespace-pre-line text-base leading-7 text-[#4b5563] small:text-lg">
+            <p className={`whitespace-pre-line ${sectionStyles.bodyLarge}`}>
               {subheadline}
             </p>
           ) : null}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-1">
             {primaryCTA?.label && primaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center bg-[#111827] px-5 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85"
+                className={sectionStyles.primaryButton}
                 href={primaryCTA.href}
               >
                 {primaryCTA.label}
@@ -45,7 +48,7 @@ export const HeroSection = ({
             ) : null}
             {secondaryCTA?.label && secondaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center bg-[#e9dfcf] px-5 py-3 text-sm font-medium text-[#111827] transition-colors hover:bg-[#e1d6c6]"
+                className={sectionStyles.secondaryButton}
                 href={secondaryCTA.href}
               >
                 {secondaryCTA.label}
@@ -53,7 +56,7 @@ export const HeroSection = ({
             ) : null}
           </div>
         </div>
-        <div className="overflow-hidden bg-[#e6dcc9]">
+        <div className="overflow-hidden rounded-xl border border-black/12 bg-[#f3f3f3]">
           {mediaType === "video" && videoUrl ? (
             <video
               autoPlay
@@ -76,7 +79,7 @@ export const HeroSection = ({
               />
             </div>
           ) : (
-            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e7dcc8,#f5efe3)] text-sm text-[#6b7280]">
+            <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#f0f0f0,#fafafa)] text-sm text-[#6f6f6f]">
               Payload Hero Media
             </div>
           )}
