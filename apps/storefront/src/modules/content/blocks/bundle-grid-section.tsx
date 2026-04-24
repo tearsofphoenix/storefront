@@ -2,6 +2,7 @@ import { HttpTypes } from "@medusajs/types"
 import { PayloadBundleGridBlock } from "types/payload"
 
 import { CmsProductCard } from "./cms-product-card"
+import { sectionStyles } from "./section-styles"
 
 type BundleGridSectionProps = PayloadBundleGridBlock & {
   productsByHandle?: Record<string, HttpTypes.StoreProduct>
@@ -35,26 +36,26 @@ export const BundleGridSection = ({
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="bg-[#f1e9de] px-6 py-8 small:px-8">
-        <div className="flex flex-col gap-3">
+    <section className={sectionStyles.section}>
+      <div className={`${sectionStyles.surface} ${sectionStyles.inset}`}>
+        <div className={sectionStyles.stackMd}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+            <p className={sectionStyles.eyebrow}>
               {eyebrow}
             </p>
           ) : null}
           {title ? (
-            <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+            <h2 className={sectionStyles.title}>
               {title}
             </h2>
           ) : null}
           {description ? (
-            <p className="max-w-3xl whitespace-pre-line text-base leading-7 text-[#4b5563]">
+            <p className={`max-w-3xl whitespace-pre-line ${sectionStyles.body}`}>
               {description}
             </p>
           ) : null}
         </div>
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+        <div className={`${sectionStyles.sectionTopGap} grid ${sectionStyles.sectionGridGap} lg:grid-cols-2`}>
           {bundleItems.map((bundle, index) => (
             <CmsProductCard
               key={bundle.id || `${bundle.product.handle}-${index}`}

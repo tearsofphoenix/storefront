@@ -1,4 +1,5 @@
 import { PayloadBenefitStripBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const BenefitStripSection = ({
   description,
@@ -10,29 +11,29 @@ export const BenefitStripSection = ({
   }
 
   return (
-    <section className="content-container py-10 small:py-12">
-      <div className="bg-[#efe7d8] px-6 py-6 small:px-8">
+    <section className={sectionStyles.sectionCompact}>
+      <div className={`${sectionStyles.surface} ${sectionStyles.insetTight}`}>
         {title ? (
-          <h2 className="text-2xl font-semibold leading-tight text-[#111827] small:text-3xl">
+          <h2 className="text-2xl font-semibold leading-tight text-[#111111] small:text-3xl">
             {title}
           </h2>
         ) : null}
         {description ? (
-          <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-6 text-[#4b5563] small:text-base">
+          <p className={`mt-3 max-w-3xl whitespace-pre-line ${sectionStyles.body}`}>
             {description}
           </p>
         ) : null}
-        <div className="mt-6 grid gap-4 small:grid-cols-2 xl:grid-cols-4">
+        <div className={`${sectionStyles.sectionTopGap} grid ${sectionStyles.sectionGridGap} small:grid-cols-2 xl:grid-cols-4`}>
           {items.map((item, index) => (
             <article
               key={item.id || `${item.title}-${index}`}
-              className="bg-[#f8f3ea] px-5 py-5"
+              className={`${sectionStyles.cardSoft} ${sectionStyles.cardPadding}`}
             >
-              <h3 className="text-base font-semibold text-[#111827]">
+              <h3 className={sectionStyles.cardTitle}>
                 {item.title}
               </h3>
               {item.description ? (
-                <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#4b5563]">
+                <p className={`mt-2 whitespace-pre-line ${sectionStyles.bodySmall}`}>
                   {item.description}
                 </p>
               ) : null}

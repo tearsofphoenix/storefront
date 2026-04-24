@@ -1,6 +1,7 @@
 import { PayloadCtaBlock } from "types/payload"
 
 import { CmsLink } from "./cms-link"
+import { sectionStyles } from "./section-styles"
 
 export const CTASection = ({
   description,
@@ -9,21 +10,21 @@ export const CTASection = ({
   title,
 }: PayloadCtaBlock) => {
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="bg-[#111827] px-6 py-10 text-white small:px-10 small:py-14">
-        <div className="mx-auto flex max-w-3xl flex-col items-start gap-4">
-          <h2 className="text-3xl font-semibold leading-tight small:text-4xl">
+    <section className={sectionStyles.section}>
+      <div className={`${sectionStyles.surfaceDark} ${sectionStyles.inset}`}>
+        <div className={`${sectionStyles.stackLg} mx-auto max-w-3xl items-start`}>
+          <h2 className={sectionStyles.titleOnDark}>
             {title}
           </h2>
           {description ? (
-            <p className="whitespace-pre-line text-base leading-7 text-white/78">
+            <p className={`whitespace-pre-line ${sectionStyles.bodyOnDark}`}>
               {description}
             </p>
           ) : null}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-1">
             {primaryCTA?.label && primaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center bg-white px-5 py-3 text-sm font-medium text-[#111827] transition-opacity hover:opacity-85"
+                className="inline-flex items-center justify-center rounded-[12.5px] bg-white px-6 py-3 text-[12.8px] font-medium uppercase tracking-[0.04em] text-[#111111] transition-colors hover:bg-[#f0f0f0]"
                 href={primaryCTA.href}
               >
                 {primaryCTA.label}
@@ -31,7 +32,7 @@ export const CTASection = ({
             ) : null}
             {secondaryCTA?.label && secondaryCTA.href ? (
               <CmsLink
-                className="inline-flex items-center justify-center bg-white/8 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/14"
+                className="inline-flex items-center justify-center rounded-[12.5px] border border-white/25 bg-white/10 px-6 py-3 text-[12.8px] font-medium uppercase tracking-[0.04em] text-white transition-colors hover:bg-white/16"
                 href={secondaryCTA.href}
               >
                 {secondaryCTA.label}

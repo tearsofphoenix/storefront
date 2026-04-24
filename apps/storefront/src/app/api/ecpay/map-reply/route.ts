@@ -54,7 +54,10 @@ export async function POST(req: NextRequest) {
   const cvsTelephone = formData.get("CVSTelephone")?.toString()
   const logisticsSubType = formData.get("LogisticsSubType")?.toString()
   const extraData = formData.get("ExtraData")?.toString()
-  const { cartId, returnPath } = parseExtraData(extraData)
+  const fallback = parseExtraData(extraData)
+  const cartId = req.nextUrl.searchParams.get("cartId") || fallback.cartId
+  const returnPath =
+    req.nextUrl.searchParams.get("returnPath") || fallback.returnPath
   
   const redirectUrl = new URL(resolveReturnPath(returnPath), req.url)
   

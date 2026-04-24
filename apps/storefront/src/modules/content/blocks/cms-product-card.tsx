@@ -3,6 +3,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import { getI18n } from "@lib/i18n/server"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { sectionStyles } from "./section-styles"
 
 type CmsProductCardProps = {
   product: HttpTypes.StoreProduct
@@ -30,42 +31,42 @@ export const CmsProductCard = async ({
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group block">
       <article
-        className={`overflow-hidden bg-[#f8f3ea] transition-transform duration-200 group-hover:-translate-y-1 ${
+        className={`overflow-hidden rounded-2xl border border-black/10 bg-white transition-transform duration-200 group-hover:-translate-y-1 ${
           isBundle ? "lg:group-hover:-translate-y-1.5" : ""
         }`}
       >
-        <div className="p-4">
+        <div className="p-4 small:p-5">
           <Thumbnail
             thumbnail={product.thumbnail}
             images={product.images}
             alt={product.title ?? ""}
             size="full"
-            className="border-none bg-[#ebe2d2] p-0 shadow-none"
+            className="border-none bg-[#f3f1ec] p-0 shadow-none"
             style={{
-              background: "#ebe2d2",
-              borderRadius: 0,
+              background: "#f3f1ec",
+              borderRadius: 14,
             }}
           />
         </div>
-        <div className="flex flex-col gap-3 px-5 pb-5">
+        <div className="flex flex-col gap-3 px-5 pb-5 small:px-6 small:pb-6">
           <div className="flex flex-wrap items-center gap-2">
             {badge ? (
-              <span className="bg-[#111827] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+              <span className={`rounded-[10px] bg-[#111111] px-3 py-1 ${sectionStyles.label} text-white`}>
                 {badge}
               </span>
             ) : null}
             {highlight ? (
-              <span className="bg-[#efe6d7] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#111827]">
+              <span className={`rounded-[10px] border border-black/10 bg-[#f7f5f1] px-3 py-1 ${sectionStyles.label} text-[#111111]`}>
                 {highlight}
               </span>
             ) : null}
           </div>
           <div>
-            <h3 className="text-lg font-semibold leading-7 text-[#111827]">
+            <h3 className={sectionStyles.cardTitle}>
               {product.title}
             </h3>
             {description ? (
-              <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#4b5563]">
+              <p className={`mt-2 whitespace-pre-line ${sectionStyles.bodySmall}`}>
                 {description}
               </p>
             ) : null}
@@ -73,17 +74,17 @@ export const CmsProductCard = async ({
           {cheapestPrice ? (
             <div className="flex items-end gap-2">
               {cheapestPrice.price_type === "sale" ? (
-                <span className="text-sm text-[#9ca3af] line-through">
+                <span className={sectionStyles.caption + " line-through"}>
                   {cheapestPrice.original_price}
                 </span>
               ) : null}
-              <span className="text-base font-semibold text-[#111827]">
+              <span className={sectionStyles.subTitle}>
                 {cheapestPrice.calculated_price}
               </span>
             </div>
           ) : null}
           {isBundle ? (
-            <span className="inline-flex w-fit items-center bg-[#111827] px-4 py-2 text-sm font-medium text-white transition-opacity group-hover:opacity-85">
+            <span className={`${sectionStyles.primaryButton} w-fit`}>
               {ctaLabel || messages.common.exploreBundle}
             </span>
           ) : null}

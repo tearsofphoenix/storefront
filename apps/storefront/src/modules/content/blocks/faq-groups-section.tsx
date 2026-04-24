@@ -1,4 +1,5 @@
 import { PayloadFaqGroupsBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const FaqGroupsSection = ({
   description,
@@ -10,42 +11,42 @@ export const FaqGroupsSection = ({
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
+    <section className={sectionStyles.section}>
       <div className="mx-auto max-w-4xl">
         {title ? (
-          <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+          <h2 className={sectionStyles.title}>
             {title}
           </h2>
         ) : null}
         {description ? (
-          <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-[#4b5563]">
+          <p className={`mt-4 max-w-3xl whitespace-pre-line ${sectionStyles.body}`}>
             {description}
           </p>
         ) : null}
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div className={`${sectionStyles.sectionTopGap} grid ${sectionStyles.sectionGridGap} lg:grid-cols-2`}>
           {groups.map((group, groupIndex) => (
             <section
               key={group.id || `${group.title}-${groupIndex}`}
-              className="bg-[#f4ede2] p-5"
+              className={`${sectionStyles.cardSoft} ${sectionStyles.cardPadding}`}
             >
-              <h3 className="text-xl font-semibold text-[#111827]">
+              <h3 className={sectionStyles.subTitle}>
                 {group.title}
               </h3>
               {group.description ? (
-                <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#4b5563]">
+                <p className={`mt-2 whitespace-pre-line ${sectionStyles.bodySmall}`}>
                   {group.description}
                 </p>
               ) : null}
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-2.5">
                 {group.items?.map((item, itemIndex) => (
                   <details
                     key={item.id || `${item.question}-${itemIndex}`}
-                    className="bg-[#faf6ee] p-4"
+                    className={`${sectionStyles.card} p-4 small:p-5`}
                   >
-                    <summary className="cursor-pointer list-none text-sm font-semibold text-[#111827]">
+                    <summary className={`cursor-pointer list-none ${sectionStyles.cardTitle}`}>
                       {item.question}
                     </summary>
-                    <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[#4b5563]">
+                    <p className={`mt-3 whitespace-pre-line ${sectionStyles.bodySmall}`}>
                       {item.answer}
                     </p>
                   </details>

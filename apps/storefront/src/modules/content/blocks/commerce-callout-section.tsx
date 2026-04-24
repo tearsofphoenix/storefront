@@ -5,6 +5,7 @@ import ProductActions from "@modules/products/components/product-actions"
 import ProductActionsWrapper from "@modules/products/templates/product-actions-wrapper"
 import ProductInfo from "@modules/products/templates/product-info"
 import { PayloadCommerceCalloutBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 type CommerceCalloutSectionProps = PayloadCommerceCalloutBlock & {
   images: HttpTypes.StoreProductImage[]
@@ -26,14 +27,14 @@ export const CommerceCalloutSection = ({
   const imageFirst = imagePosition === "left"
 
   return (
-    <section className="content-container py-12 small:py-16">
+    <section className={sectionStyles.section}>
       <div
-        className={`grid gap-8 bg-[#f1e9de] p-6 small:p-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
+        className={`grid ${sectionStyles.sectionGridGap} ${sectionStyles.surface} ${sectionStyles.inset} lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.85fr)] lg:items-start ${
           imageFirst ? "" : "lg:[&>*:first-child]:order-2"
         }`}
       >
         {showImage !== false ? (
-          <div className="overflow-hidden bg-[#e5dac7]">
+          <div className="overflow-hidden rounded-xl border border-black/12 bg-[#f3f3f3]">
             {imageUrl ? (
               <div className="relative aspect-[4/3] w-full">
                 <Image
@@ -41,11 +42,11 @@ export const CommerceCalloutSection = ({
                   className="object-cover"
                   fill
                   sizes="(min-width: 1024px) 45vw, 100vw"
-                  src={imageUrl}
-                />
-              </div>
-            ) : (
-              <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#e4d8c3,#f5eee3)] text-sm text-[#6b7280]">
+                src={imageUrl}
+              />
+            </div>
+          ) : (
+              <div className="flex min-h-[320px] items-center justify-center bg-[linear-gradient(135deg,#f0f0f0,#fafafa)] text-sm text-[#6f6f6f]">
                 Product media
               </div>
             )}
@@ -53,15 +54,15 @@ export const CommerceCalloutSection = ({
         ) : (
           <div />
         )}
-        <div className="flex flex-col gap-5">
+        <div className={sectionStyles.stackLg}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+            <p className={sectionStyles.eyebrow}>
               {eyebrow}
             </p>
           ) : null}
           <ProductInfo product={product} />
           {supportingText ? (
-            <p className="whitespace-pre-line text-sm leading-7 text-[#4b5563]">
+            <p className="whitespace-pre-line text-sm leading-7 text-[#4b4b4b]">
               {supportingText}
             </p>
           ) : null}

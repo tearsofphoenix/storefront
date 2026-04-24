@@ -1,5 +1,6 @@
 import { getI18n } from "@lib/i18n/server"
 import { PayloadComparisonTableBlock } from "types/payload"
+import { sectionStyles } from "./section-styles"
 
 export const ComparisonTableSection = async ({
   description,
@@ -16,49 +17,49 @@ export const ComparisonTableSection = async ({
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="overflow-hidden bg-[#f7f2e8]">
-        <div className="border-b border-black/8 px-6 py-6 small:px-8">
+    <section className={sectionStyles.section}>
+      <div className={`${sectionStyles.surface} overflow-hidden`}>
+        <div className={`${sectionStyles.insetTight} border-b border-black/10`}>
           {eyebrow ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+            <p className={sectionStyles.eyebrow}>
               {eyebrow}
             </p>
           ) : null}
-          <h2 className="mt-2 text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+          <h2 className={`mt-1.5 ${sectionStyles.title}`}>
             {title}
           </h2>
           {description ? (
-            <p className="mt-4 max-w-3xl whitespace-pre-line text-base leading-7 text-[#4b5563]">
+            <p className={`mt-3 max-w-3xl whitespace-pre-line ${sectionStyles.bodyLarge}`}>
               {description}
             </p>
           ) : null}
         </div>
-        <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] border-b border-black/8 bg-[#efe7d8] px-6 py-4 text-sm font-semibold text-[#111827] small:px-8">
+        <div className={`grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] border-b border-black/10 bg-[#f1eee8] px-6 py-4 ${sectionStyles.label} text-[#111111] small:px-8`}>
           <div>{messages.common.feature}</div>
           <div>{leftColumnLabel}</div>
           <div>{rightColumnLabel}</div>
         </div>
-        <div className="divide-y divide-black/8">
+        <div className="divide-y divide-black/10">
           {rows.map((row, index) => (
             <div
               key={row.id || `${row.feature}-${index}`}
-              className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] gap-3 px-6 py-4 small:px-8"
+              className="grid grid-cols-[minmax(160px,1.1fr)_minmax(140px,1fr)_minmax(140px,1fr)] gap-2 px-6 py-4 small:px-8"
             >
-              <div className="text-sm font-medium text-[#111827]">{row.feature}</div>
+              <div className={sectionStyles.bodySmall}>{row.feature}</div>
               <div
-                className={`text-sm leading-6 ${
+                className={`${sectionStyles.bodySmall} ${
                   row.emphasis === "left"
-                    ? "font-semibold text-[#111827]"
-                    : "text-[#4b5563]"
+                    ? "font-semibold text-[#111111]"
+                    : "text-[#4b4b4b]"
                 }`}
               >
                 {row.leftValue}
               </div>
               <div
-                className={`text-sm leading-6 ${
+                className={`${sectionStyles.bodySmall} ${
                   row.emphasis === "right"
-                    ? "font-semibold text-[#111827]"
-                    : "text-[#4b5563]"
+                    ? "font-semibold text-[#111111]"
+                    : "text-[#4b4b4b]"
                 }`}
               >
                 {row.rightValue}

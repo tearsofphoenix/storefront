@@ -2,6 +2,7 @@ import { HttpTypes } from "@medusajs/types"
 import { PayloadProductShelfBlock } from "types/payload"
 
 import { CmsProductCard } from "./cms-product-card"
+import { sectionStyles } from "./section-styles"
 
 type ProductShelfSectionProps = PayloadProductShelfBlock & {
   productsByHandle?: Record<string, HttpTypes.StoreProduct>
@@ -35,25 +36,25 @@ export const ProductShelfSection = ({
   }
 
   return (
-    <section className="content-container py-12 small:py-16">
-      <div className="flex flex-col gap-3">
+    <section className={sectionStyles.section}>
+      <div className={sectionStyles.stackMd}>
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7280]">
+          <p className={sectionStyles.eyebrow}>
             {eyebrow}
           </p>
         ) : null}
         {title ? (
-          <h2 className="text-3xl font-semibold leading-tight text-[#111827] small:text-4xl">
+          <h2 className={sectionStyles.title}>
             {title}
           </h2>
         ) : null}
         {description ? (
-          <p className="max-w-3xl whitespace-pre-line text-base leading-7 text-[#4b5563]">
+          <p className={`max-w-3xl whitespace-pre-line ${sectionStyles.body}`}>
             {description}
           </p>
         ) : null}
       </div>
-      <div className="mt-8 grid gap-5 small:grid-cols-2 xl:grid-cols-4">
+      <div className={`${sectionStyles.sectionTopGap} grid ${sectionStyles.sectionGridGap} small:grid-cols-2 xl:grid-cols-4`}>
         {productItems.map((item, index) => (
           <CmsProductCard
             key={item.id || `${item.product.handle}-${index}`}
