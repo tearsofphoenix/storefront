@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start -p 8000",
     "lint": "next lint",
+    "verify:ecpay-checkout": "node ./scripts/verify-ecpay-checkout.mjs",
     "analyze": "ANALYZE=true next build",
     "docker:up": "docker compose up --build -d",
     "docker:down": "docker compose down"

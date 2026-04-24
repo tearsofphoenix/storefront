@@ -12,7 +12,7 @@ import { Button, clx, Heading, Text } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import ECPayMapSelector from "../ecpay-map"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
@@ -385,11 +385,25 @@ const Shipping: React.FC<ShippingProps> = ({
   const hasConfiguredEcpaySettings = Boolean(
     ecpaySettings?.is_configured && ecpaySettings.merchant_id
   )
-  const mapReplyUrl = `${
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    (typeof window !== "undefined" ? window.location.origin : "")
-  }/api/ecpay/map-reply`
-  const mapReturnPath = `${pathname}?step=delivery`
+  const mapReplyUrl = useMemo(() => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      (typeof window !== "undefined" ? window.location.origin : "")
+
+    if (!baseUrl) {
+      return ""
+    }
+
+    const url = new URL("/api/ecpay/map-reply", baseUrl)
+    url.searchParams.set("cartId", cart.id)
+    url.searchParams.set("returnPath", `${pathname}?step=delivery`)
+
+    return url.toString()
+  }, [cart.id, pathname])
+  const mapReplyToken =
+    cart.shipping_address?.country_code?.toLowerCase() ||
+    pathname.split("/").filter(Boolean)[0] ||
+    ""
 
   return (
     <section className="rm-panel px-6 py-6 small:px-8 small:py-8">
@@ -575,7 +589,7 @@ const Shipping: React.FC<ShippingProps> = ({
                                 logisticsSubType={getEcpayLogisticsSubType(option.name)}
                                 serverReplyUrl={mapReplyUrl}
                                 cartId={cart.id}
-                                returnPath={mapReturnPath}
+                                extraData={mapReplyToken}
                                 disabled={isLoading}
                               />
                             ) : (
