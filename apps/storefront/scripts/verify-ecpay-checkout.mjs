@@ -86,6 +86,36 @@ const request = async (path, init = {}) => {
   return payload
 }
 
+const formatFetchCause = (error) => {
+  const cause = error?.cause
+
+  if (!cause) {
+    return error?.message || String(error)
+  }
+
+  return [cause.code, cause.address, cause.port]
+    .filter(Boolean)
+    .join(" ")
+}
+
+const assertStorefrontReachable = async () => {
+  try {
+    const response = await fetch(`${storefrontBaseUrl}/api/storefront/info`, {
+      method: "GET",
+    })
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`)
+    }
+  } catch (error) {
+    throw new Error(
+      `[verify-ecpay-checkout] local storefront server is not reachable at ${storefrontBaseUrl}. Start the storefront with \`bun run dev:storefront\` or set NEXT_PUBLIC_BASE_URL to a running storefront before running this check. Cause: ${formatFetchCause(
+        error
+      )}`
+    )
+  }
+}
+
 const getAvailableSalesChannels = async () => {
   const payload = await request("/store/products?limit=50&fields=id,*sales_channels", {
     method: "GET",
@@ -240,6 +270,8 @@ const main = async () => {
       )}`
     )
   }
+
+  await assertStorefrontReachable()
 
   const mapReplyResponse = await fetch(
     `${storefrontBaseUrl}/api/ecpay/map-reply?cartId=${encodeURIComponent(

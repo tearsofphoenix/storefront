@@ -1,10 +1,7 @@
 "use client"
 
-import React, { useEffect, useActionState } from "react"
-import Input from "@modules/common/components/input"
-import AccountInfo from "../account-info"
+import { Text } from "@medusajs/ui"
 import { HttpTypes } from "@medusajs/types"
-import { toast } from "@medusajs/ui"
 import { useI18n } from "@lib/i18n/use-i18n"
 
 type MyInformationProps = {
@@ -13,59 +10,24 @@ type MyInformationProps = {
 
 const ProfilePassword: React.FC<MyInformationProps> = ({ customer }) => {
   const { messages } = useI18n()
-  const [successState, setSuccessState] = React.useState(false)
-
-  // TODO: Add support for password updates
-  const updatePassword = async () => {
-    toast.info(messages.account.passwordUpdateNotImplemented)
-  }
-
-  const clearState = () => {
-    setSuccessState(false)
-  }
 
   return (
-    <form
-      action={updatePassword}
-      onReset={() => clearState()}
-      className="w-full"
+    <div
+      className="rm-panel p-5 text-small-regular"
+      data-testid="account-password-editor"
     >
-      <AccountInfo
-        label={messages.common.password}
-        currentInfo={
-          <span>{messages.account.passwordHiddenReason}</span>
-        }
-        isSuccess={successState}
-        isError={false}
-        errorMessage={undefined}
-        clearState={clearState}
-        data-testid="account-password-editor"
-      >
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label={messages.account.oldPassword}
-            name="old_password"
-            required
-            type="password"
-            data-testid="old-password-input"
-          />
-          <Input
-            label={messages.account.newPassword}
-            type="password"
-            name="new_password"
-            required
-            data-testid="new-password-input"
-          />
-          <Input
-            label={messages.account.confirmPassword}
-            type="password"
-            name="confirm_password"
-            required
-            data-testid="confirm-password-input"
-          />
-        </div>
-      </AccountInfo>
-    </form>
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-grey-50">
+          {messages.common.password}
+        </span>
+        <Text className="font-semibold">
+          {messages.account.passwordHiddenReason}
+        </Text>
+        <Text className="text-sm text-ui-fg-muted">
+          {messages.account.passwordUpdateNotImplemented}
+        </Text>
+      </div>
+    </div>
   )
 }
 

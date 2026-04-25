@@ -128,6 +128,11 @@ async function getCountryCode(
  * Middleware to handle region selection and onboarding status.
  */
 export async function middleware(request: NextRequest) {
+  // 静态资源不参与地区识别或重定向。
+  if (request.nextUrl.pathname.includes(".")) {
+    return NextResponse.next()
+  }
+
   let cacheIdCookie = request.cookies.get("_medusa_cache_id")
 
   let cacheId = cacheIdCookie?.value || crypto.randomUUID()
@@ -141,11 +146,6 @@ export async function middleware(request: NextRequest) {
   }
 
   const countryCode = regionMap && (await getCountryCode(request, regionMap))
-
-  // check if the url is a static asset
-  if (request.nextUrl.pathname.includes(".")) {
-    return NextResponse.next()
-  }
 
   const urlCountryCode = request.nextUrl.pathname.split("/")[1]?.toLowerCase()
   const urlHasCountryCode = Boolean(
